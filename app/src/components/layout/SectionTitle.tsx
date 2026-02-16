@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { TiArrowBackOutline } from "react-icons/ti";
+import { TiArrowBack } from "react-icons/ti";
 
 interface SectionTitleProps {
   text: string;
@@ -13,16 +13,18 @@ export const SectionTitle = ({
   backArrowPath,
 }: SectionTitleProps) => {
   return (
-    <div className="flex justify-center items-center gap-4 py-4">
+    <div className="flex items-center p-4">
       {backArrow && backArrowPath && (
         <Link
           to={backArrowPath}
           className="active:translate-y-0.5 transition-all"
         >
-          <TiArrowBackOutline className="text-heading" size={24} />
+          <TiArrowBack className="text-heading" size={24} />
         </Link>
       )}
-      <h1>{text}</h1>
+      <div className="flex-1 text-center">
+        <h1>{text}</h1>
+      </div>
     </div>
   );
 };

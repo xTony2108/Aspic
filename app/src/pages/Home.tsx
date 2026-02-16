@@ -23,6 +23,8 @@ export const Home = () => {
           timeText="50 min"
           cost="80,00"
           Icon={RiMentalHealthFill}
+          link="/consulenza-psicologica"
+          fullCard={true}
         />
         <ServiceCard
           title="Valutazione Psicodiagnostica"
@@ -30,6 +32,8 @@ export const Home = () => {
           timeText="60-90 min"
           cost="120,00"
           Icon={FaClipboardUser}
+          link="/valutazione-psicodiagnostica"
+          fullCard={true}
         />
       </div>
       <div className="py-6 text-center">
