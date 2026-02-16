@@ -4,11 +4,13 @@
   --color-bg: #f8fafc;
   --color-primary: #307de8;
   --color-secondary: #0056d21a;
+  --color-tertiary: #f0f7ff;
   --color-heading: #0e131b;
   --color-p-small: #64748b;
   --color-important: #fef2f2;
   --color-warn: #b91c1c;
   --color-highlight: #0056d2;
+  --color-borderDefault: #e2e8f0;
   --font-inter: "Inter", sans-serif;
 }
 
