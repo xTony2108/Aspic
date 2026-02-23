@@ -1,23 +1,42 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #f8fafc;
-  --color-primary: #307de8;
+  --color-bg: #ededed;
+  --color-primary: #263780;
   --color-secondary: #0056d21a;
   --color-tertiary: #f0f7ff;
   --color-heading: #0e131b;
-  --color-p-small: #64748b;
-  --color-important: #fef2f2;
+  --color-p-small: #6b7280;
+  --color-warnBg: #fef2f2;
+  --color-progressBar: #d0d9e7;
   --color-warn: #b91c1c;
+  --color-warnBorder: #fecaca;
   --color-highlight: #0056d2;
   --color-borderDefault: #e2e8f0;
-  --font-inter: "Inter", sans-serif;
+  --font-inter: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
 @layer base {
   #root {
     background-color: var(--color-bg);
     font-family: var(--font-inter);
+  }
+
+  input,
+  textarea {
+    outline: none;
+  }
+
+  input:focus-within,
+  textarea:focus-within {
+    outline: 1px solid #263780;
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
   }
 
   h1 {
@@ -37,6 +56,42 @@
   }
   p {
     color: var(--color-p-small);
-    font-size: var(--text-xs);
+    font-size: var(--text-sm);
+  }
+}
+
+@layer components {
+  main {
+    @apply max-w-7xl mx-auto
+           sm:max-w-2xl
+           md:max-w-3xl
+           lg:max-w-4xl
+           xl:max-w-5xl
+           2xl:max-w-7xl;
+  }
+
+  main h1 {
+    @apply sm:text-4xl md:text-5xl font-bold tracking-tight;
+  }
+
+  main h2 {
+    @apply sm:text-3xl md:text-4xl font-bold;
+  }
+
+  main h3 {
+    @apply sm:text-2xl md:text-3xl font-bold;
+  }
+
+  main span,
+  main p {
+    @apply sm:text-base md:text-lg leading-relaxed;
+  }
+
+  main ul {
+    @apply list-disc pl-6 mb-4 space-y-2;
+  }
+
+  main label {
+    @apply block text-sm md:text-base font-medium;
   }
 }

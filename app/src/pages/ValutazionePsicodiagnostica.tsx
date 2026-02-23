@@ -5,7 +5,7 @@ import { LuMessagesSquare } from "react-icons/lu";
 import { FaRegLightbulb } from "react-icons/fa";
 import { MdChecklistRtl } from "react-icons/md";
 import { IoDocumentTextOutline } from "react-icons/io5";
-import { SessionDuration } from "../components/layout/SessionDuration";
+import { MdOutlineAccessTime } from "react-icons/md";
 
 export const ValutazionePsicodiagnostica = () => {
   return (
@@ -16,7 +16,7 @@ export const ValutazionePsicodiagnostica = () => {
         backArrowPath="../"
       />
       <div className="px-5 my-4">
-        <h2 className="text-3xl mb-4">Valutazione Psicodiagnostica</h2>
+        <h2 className="mb-4">Valutazione Psicodiagnostica</h2>
         <p className="text-base">
           Un percorso strutturato volto a definire il funzionamento cognitivo
           attraverso la valutazione clinica e l'utilizzo di strumenti
@@ -30,8 +30,8 @@ export const ValutazionePsicodiagnostica = () => {
         </ul>
       </div>
       <div className="px-5 mb-6">
-        <h3 className="text-p-small my-4">Cosa comprende il percorso</h3>
-        <div className="flex flex-col gap-4">
+        <h2 className="text-heading my-4">Cosa comprende il percorso</h2>
+        <div className="flex flex-col space-y-6 lg:space-y-10">
           <ServiceCard
             title="Colloquio clinico"
             description="Inquadramento iniziale e raccolta anamnestica"
@@ -58,12 +58,21 @@ export const ValutazionePsicodiagnostica = () => {
           />
         </div>
       </div>
-      <SessionDuration time="60-90 minuti" />
+      <div className="px-5 mb-6">
+        <h2 className="text-heading my-4">Informazioni</h2>
+        <ServiceCard
+          title="Durata sessione"
+          description="60-90 minuti"
+          fullCard={false}
+          Icon={MdOutlineAccessTime}
+        />
+      </div>
       <div className="sticky bottom-0 bg-bg border-t border-borderDefault p-5">
         <Button
           text="Prossimo Passaggio"
-          link="/consulenza-psicologica/step-1"
+          link="/valutazione-psicodiagnostica/form"
           arrow={true}
+          type="link"
         />
       </div>
     </>
