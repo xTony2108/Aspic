@@ -23,12 +23,12 @@ export const ServiceCard = ({
   fullCard,
 }: ServiceCardProps) => {
   return (
-    <div className="rounded-2xl flex flex-col gap-5 bg-white p-5 drop-shadow-lg">
+    <div className="rounded-2xl flex flex-col gap-5 bg-white p-5 lg:p-10 drop-shadow-lg transition hover:shadow-xl hover:-translate-y-1">
       <div className="flex gap-4">
         <div
           className={`bg-secondary rounded-full w-14 h-14 flex items-center justify-center shrink-0 ${!fullCard && "self-center"}`}
         >
-          <Icon color="#307de8" size={"50%"} />
+          <Icon className="text-primary" size={28} />
         </div>
         <div>
           <h3 className="mb-0.5">{title}</h3>
@@ -47,7 +47,7 @@ export const ServiceCard = ({
           )}
         </div>
       </div>
-      {fullCard && link && <Button text="Seleziona" link={link} />}
+      {fullCard && link && <Button text="Seleziona" link={link} type="link" />}
     </div>
   );
 };

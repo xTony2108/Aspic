@@ -5,7 +5,9 @@ export const Root = () => {
   return (
     <div className="min-h-dvh">
       <Header />
-      <Outlet />
+      <main>
+        <Outlet />
+      </main>
     </div>
   );
 };

@@ -13,7 +13,7 @@ export const SectionTitle = ({
   backArrowPath,
 }: SectionTitleProps) => {
   return (
-    <div className="flex items-center p-4">
+    <div className="flex items-center px-5 mb-12 lg:mb-16">
       {backArrow && backArrowPath && (
         <Link
           to={backArrowPath}
