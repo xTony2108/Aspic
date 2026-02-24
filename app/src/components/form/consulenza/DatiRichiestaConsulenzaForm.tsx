@@ -1,22 +1,22 @@
 import type z from "zod";
-import { consulenzaSchema } from "./consulenzaSchema";
+import { consulenzaSchema } from "../consulenzaSchema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { IoWarningOutline } from "react-icons/io5";
 import { FaExclamation } from "react-icons/fa6";
-import { FormRadioWithDot } from "./FormRadioWithDot";
-import { FormRadioNoDot } from "./FormRadioNoDot";
-import { FormCheckbox } from "./FormCheckbox";
-import { Button } from "../layout/Button";
-import { InfoBox } from "./InfoBox";
+import { FormRadioWithDot } from "../FormRadioWithDot";
+import { FormRadioNoDot } from "../FormRadioNoDot";
+import { FormCheckbox } from "../FormCheckbox";
+import { Button } from "../../layout/Button";
+import { InfoBox } from "../InfoBox";
 import { BsInfoCircle } from "react-icons/bs";
 import { useNavigate } from "@tanstack/react-router";
-import { useConsulenzaFormStore } from "../../store";
+import { useConsulenzaFormStore } from "../../../store";
 
 const today = new Date().toISOString().split("T")[0];
 
-const formDatiRichiestaSchema = consulenzaSchema
+const formDatiRichiestaConsulenzaSchema = consulenzaSchema
   .pick({
     appointmentDate: true,
     appointmentTime: true,
@@ -42,25 +42,20 @@ const formDatiRichiestaSchema = consulenzaSchema
     }
   });
 
-type ConsulenzaDatiRichiestaFormSchema = z.infer<
-  typeof formDatiRichiestaSchema
->;
+type FormSchema = z.infer<typeof formDatiRichiestaConsulenzaSchema>;
 
-export const DatiRichiestaForm = () => {
-  const appointmentDateVal = useConsulenzaFormStore(
-    (state) => state.appointmentDate,
-  );
-  const appointmentTimeVal = useConsulenzaFormStore(
-    (state) => state.appointmentTime,
-  );
-  const urgentVal = useConsulenzaFormStore((state) => state.urgent);
-  const clientAgeVal = useConsulenzaFormStore((state) => state.clientAge);
-  const clientTypeVal = useConsulenzaFormStore((state) => state.clientType);
-  const reasonVal = useConsulenzaFormStore((state) => state.reason);
+export const DatiRichiestaConsulenzaForm = () => {
+  const [showAge, setShowAge] = useState(false);
 
   const navigate = useNavigate();
 
-  const [showAge, setShowAge] = useState(false);
+  const appointmentDateVal = useConsulenzaFormStore((s) => s.appointmentDate);
+  const appointmentTimeVal = useConsulenzaFormStore((s) => s.appointmentTime);
+  const urgentVal = useConsulenzaFormStore((s) => s.urgent);
+  const clientAgeVal = useConsulenzaFormStore((s) => s.clientAge);
+  const clientTypeVal = useConsulenzaFormStore((s) => s.clientType);
+  const reasonVal = useConsulenzaFormStore((s) => s.reason);
+  const setData = useConsulenzaFormStore((s) => s.setData);
 
   const {
     register,
@@ -68,8 +63,8 @@ export const DatiRichiestaForm = () => {
     setValue,
     formState: { errors, isSubmitting },
     watch,
-  } = useForm<ConsulenzaDatiRichiestaFormSchema>({
-    resolver: zodResolver(formDatiRichiestaSchema),
+  } = useForm<FormSchema>({
+    resolver: zodResolver(formDatiRichiestaConsulenzaSchema),
     defaultValues: {
       appointmentDate: appointmentDateVal || "",
       appointmentTime: appointmentTimeVal || "",
@@ -81,9 +76,7 @@ export const DatiRichiestaForm = () => {
   });
   const clientType = watch("clientType");
 
-  const setData = useConsulenzaFormStore((state) => state.setData);
-
-  const onSubmit = async (data: ConsulenzaDatiRichiestaFormSchema) => {
+  const onSubmit = async (data: FormSchema) => {
     setData(data);
 
     navigate({

@@ -19,7 +19,7 @@ export const CardDatiPersonali = ({
   phoneNumber,
 }: DatiPersonaliSchema) => {
   return (
-    <div className="rounded-2xl flex flex-col gap-5 bg-white p-5 drop-shadow-lg">
+    <div className="rounded-2xl flex flex-col space-y-5 bg-white p-5 drop-shadow-lg">
       <div className="font-semibold">
         <p>NOME E COGNOME</p>
         <p className="text-heading mt-1.5">{`${firstName} ${lastName}`}</p>

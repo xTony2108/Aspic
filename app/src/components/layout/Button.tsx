@@ -33,7 +33,7 @@ export const Button = ({
           type="submit"
           disabled={isSubmitting}
         >
-          {text}
+          {isSubmitting ? "Caricamento..." : text}
           {arrow && <IoArrowForward size={24} />}
         </button>
       )}

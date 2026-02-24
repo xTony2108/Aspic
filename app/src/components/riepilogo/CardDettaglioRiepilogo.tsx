@@ -35,7 +35,7 @@ export const CardDettaglioRiepilogo = ({
     <div className="rounded-2xl flex flex-col bg-white p-5 drop-shadow-lg space-y-4">
       <div className="flex gap-4">
         <div className="bg-secondary rounded-full w-14 h-14 flex items-center justify-center shrink-0 self-center">
-          <Icon color="#307de8" size={"50%"} />
+          <Icon color="#263780" size={28} />
         </div>
         <div>
           <h3 className="mb-0.5">{title}</h3>
