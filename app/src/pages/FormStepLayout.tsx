@@ -10,6 +10,9 @@ export const FormStepLayout = () => {
   const redirect = pathname.includes("dati-personali")
     ? "../dati-richiesta"
     : "../";
+
+  const isValutazione = pathname.includes("valutazione");
+
   return (
     <>
       <SectionTitle
@@ -21,7 +24,9 @@ export const FormStepLayout = () => {
         <div className="px-5 my-4">
           <div className="flex justify-between mb-3">
             <span className="text-heading font-semibold">
-              Consulenza Psicologica
+              {isValutazione
+                ? "Valutazione Psicodiagnostica"
+                : "Consulenza Psicologica"}
             </span>
             <span className="text-p-small transition-all duration-300 ease-in-out">
               Passaggio {step} di 2

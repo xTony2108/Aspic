@@ -1,17 +1,17 @@
 import type z from "zod";
-import { consulenzaSchema } from "./consulenzaSchema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IoMdHome } from "react-icons/io";
-import { Button } from "../layout/Button";
-import { InfoBox } from "./InfoBox";
-import { useConsulenzaFormStore } from "../../store";
-import { FormInput } from "./FormInput";
+import { Button } from "../../layout/Button";
+import { InfoBox } from "../InfoBox";
+import { useValutazioneFormStore } from "../../../store";
+import { FormInput } from "../FormInput";
 import { IoShieldCheckmarkSharp } from "react-icons/io5";
 import { useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { valutazioneSchema } from "../valutazioneSchema";
 
-const formDatiPersonaliSchema = consulenzaSchema.pick({
+const formDatiPersonaliValutazioneSchema = valutazioneSchema.pick({
   firstName: true,
   lastName: true,
   address: true,
@@ -22,37 +22,33 @@ const formDatiPersonaliSchema = consulenzaSchema.pick({
   email: true,
 });
 
-type ConsulenzaDatiPersonaliSchema = z.infer<typeof formDatiPersonaliSchema>;
+type FormSchema = z.infer<typeof formDatiPersonaliValutazioneSchema>;
 
-export const DatiPersonaliForm = () => {
-  const appointmentDate = useConsulenzaFormStore(
-    (state) => state.appointmentDate,
-  );
-  const appointmentTime = useConsulenzaFormStore(
-    (state) => state.appointmentTime,
-  );
-  const urgent = useConsulenzaFormStore((state) => state.urgent);
-  const clientAge = useConsulenzaFormStore((state) => state.clientAge);
-  const clientType = useConsulenzaFormStore((state) => state.clientType);
-  const reason = useConsulenzaFormStore((state) => state.reason);
-
-  const firstName = useConsulenzaFormStore((state) => state.firstName);
-  const lastName = useConsulenzaFormStore((state) => state.lastName);
-  const address = useConsulenzaFormStore((state) => state.address);
-  const birthday = useConsulenzaFormStore((state) => state.birthday);
-  const birthPlace = useConsulenzaFormStore((state) => state.birthPlace);
-  const fiscalCode = useConsulenzaFormStore((state) => state.fiscalCode);
-  const phoneNumber = useConsulenzaFormStore((state) => state.phoneNumber);
-  const email = useConsulenzaFormStore((state) => state.email);
-
+export const DatiPersonaliValutazioneForm = () => {
   const navigate = useNavigate();
+
+  const appointmentDate = useValutazioneFormStore((s) => s.appointmentDate);
+  const appointmentTime = useValutazioneFormStore((s) => s.appointmentTime);
+  const urgent = useValutazioneFormStore((s) => s.urgent);
+  const clientAge = useValutazioneFormStore((s) => s.clientAge);
+  const clientType = useValutazioneFormStore((s) => s.clientType);
+  const reason = useValutazioneFormStore((s) => s.reason);
+  const firstName = useValutazioneFormStore((s) => s.firstName);
+  const lastName = useValutazioneFormStore((s) => s.lastName);
+  const address = useValutazioneFormStore((s) => s.address);
+  const birthday = useValutazioneFormStore((s) => s.birthday);
+  const birthPlace = useValutazioneFormStore((s) => s.birthPlace);
+  const fiscalCode = useValutazioneFormStore((s) => s.fiscalCode);
+  const phoneNumber = useValutazioneFormStore((s) => s.phoneNumber);
+  const email = useValutazioneFormStore((s) => s.email);
+  const setData = useValutazioneFormStore((s) => s.setData);
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<ConsulenzaDatiPersonaliSchema>({
-    resolver: zodResolver(formDatiPersonaliSchema),
+  } = useForm<FormSchema>({
+    resolver: zodResolver(formDatiPersonaliValutazioneSchema),
     defaultValues: {
       firstName: firstName || "",
       lastName: lastName || "",
@@ -65,11 +61,7 @@ export const DatiPersonaliForm = () => {
     },
   });
 
-  const setData = useConsulenzaFormStore((state) => state.setData);
-
-  const onSubmit = async (data: ConsulenzaDatiPersonaliSchema) => {
-    console.log(data);
-
+  const onSubmit = async (data: FormSchema) => {
     setData({
       appointmentDate,
       appointmentTime,

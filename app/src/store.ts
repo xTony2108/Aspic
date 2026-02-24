@@ -24,3 +24,19 @@ export const useConsulenzaFormStore = create<FormState>()(
     },
   ),
 );
+
+export const useValutazioneFormStore = create<FormState>()(
+  persist(
+    (set) => ({
+      setData: (data) => set(data),
+      clearData: () => {
+        set(initialState);
+        useValutazioneFormStore.persist.clearStorage();
+      },
+    }),
+    {
+      name: "valutazione",
+      storage: createJSONStorage(() => localStorage),
+    },
+  ),
+);
