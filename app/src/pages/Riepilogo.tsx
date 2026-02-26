@@ -13,22 +13,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { FaClipboardUser } from "react-icons/fa6";
 import { createExtendedSchema } from "../features/services/schemas/createExtendedSchema";
+import { useStore } from "zustand";
 
 export const Riepilogo = () => {
   const navigate = useNavigate();
   const { config } = getRouteApi("/servizi/$servizio").useRouteContext();
   const service = config.serviceType;
   const label = config.label;
+  const store = useStore(config.store);
+
   const isValutazione = service === "valutazione";
 
   const extendedSchema = createExtendedSchema(service);
 
   type FormSchema = z.infer<typeof extendedSchema>;
-
-  const consulenzaStore = useConsulenzaFormStore();
-  const valutazioneStore = useValutazioneFormStore();
-
-  const store = isValutazione ? valutazioneStore : consulenzaStore;
 
   const {
     clientType,
@@ -97,7 +95,7 @@ export const Riepilogo = () => {
           <CardDettaglioRiepilogo
             title={label}
             Icon={isValutazione ? FaClipboardUser : RiMentalHealthFill}
-            clientType={clientType ?? null}
+            clientType={clientType ?? ""}
             clientAge={clientAge ?? ""}
             appointmentDate={appointmentDate ?? ""}
             appointmentTime={appointmentTime ?? ""}

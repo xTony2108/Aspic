@@ -7,7 +7,7 @@ type ConsulenzaDatiRiepilogoSchema = {
   clientAge: string;
   appointmentDate: string;
   appointmentTime: string;
-  urgent: string;
+  urgent: boolean;
 };
 
 type CardRiepilogoProps = {
