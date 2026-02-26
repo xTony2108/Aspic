@@ -1,13 +1,17 @@
 import { createRootRoute, createRoute, redirect } from "@tanstack/react-router";
 import { Root } from "./components/root";
 import { Home } from "./pages/Home";
-import { FormDatiRichiesta } from "./pages/FormDatiRichiesta";
-import { FormDatiPersonali } from "./pages/FormDatiPersonali";
-import { Riepilogo } from "./pages/Riepilogo";
-import { LayoutServizio } from "./pages/LayoutServizio";
-import { validServices } from "./costants/validServices";
+import { Servizio } from "./pages/Servizio";
 import { FormStepLayout } from "./pages/FormStepLayout";
 import { NotFound } from "./pages/NotFound";
+import {
+  SERVIZI_CONFIG,
+  validServiceIds,
+  type ServiceId,
+} from "./features/services/services.config";
+import { Informazioni } from "./pages/Informazioni";
+import { DatiPersonali } from "./pages/DatiPersonali";
+import { Riepilogo } from "./pages/Riepilogo";
 
 const rootRoute = createRootRoute({
   component: Root,
@@ -20,7 +24,7 @@ const indexRoute = createRoute({
   component: Home,
 });
 
-export const serviziRootRedirectRoute = createRoute({
+const serviziRootRedirectRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "servizi",
   beforeLoad: async () => {
@@ -28,62 +32,75 @@ export const serviziRootRedirectRoute = createRoute({
   },
 });
 
-export const servizioRoute = createRoute({
+export const servizioRouteLayout = createRoute({
   getParentRoute: () => rootRoute,
   path: "servizi/$servizio",
   beforeLoad: async ({ params }) => {
-    const service = params.servizio;
+    const service = params.servizio as ServiceId;
 
-    if (validServices && !validServices.includes(service)) {
+    if (!validServiceIds.includes(service)) {
       throw redirect({ to: "/" });
     }
 
-    return { service };
+    return {
+      config: SERVIZI_CONFIG[service],
+    };
   },
+  notFoundComponent: NotFound,
 });
 
-const servizioIndexRoute = createRoute({
-  getParentRoute: () => servizioRoute,
+const servizioRoute = createRoute({
+  getParentRoute: () => servizioRouteLayout,
   path: "/",
-  component: LayoutServizio,
+  component: Servizio,
 });
 
-const formLayoutRoute = createRoute({
-  getParentRoute: () => servizioRoute,
-  path: "form",
-  beforeLoad: ({ location }) => {
-    if (location.pathname.endsWith("/form")) {
-      throw redirect({ to: ".." });
-    }
-  },
+const richiestaColloquioRouteLayout = createRoute({
+  getParentRoute: () => servizioRouteLayout,
+  path: "richiesta-colloquio",
   component: FormStepLayout,
+  notFoundComponent: NotFound,
 });
 
-const formDatiRichiestaRoute = createRoute({
-  getParentRoute: () => formLayoutRoute,
-  path: "dati-richiesta",
-  component: FormDatiRichiesta,
+const richiestaColloquioIndexRoute = createRoute({
+  getParentRoute: () => richiestaColloquioRouteLayout,
+  path: "/",
+  beforeLoad: async ({ params }) => {
+    throw redirect({
+      to: "..",
+      params,
+    });
+  },
 });
 
-const formDatiPersonaliRoute = createRoute({
-  getParentRoute: () => formLayoutRoute,
+export const informazioniRoute = createRoute({
+  getParentRoute: () => richiestaColloquioRouteLayout,
+  path: "informazioni",
+  component: Informazioni,
+});
+
+export const datiPersonaliRoute = createRoute({
+  getParentRoute: () => richiestaColloquioRouteLayout,
   path: "dati-personali",
-  component: FormDatiPersonali,
+  component: DatiPersonali,
 });
 
-const formRiepilogoRoute = createRoute({
-  getParentRoute: () => servizioRoute,
-  path: "form/riepilogo",
+export const riepilogoRoute = createRoute({
+  getParentRoute: () => richiestaColloquioRouteLayout,
+  path: "riepilogo",
   component: Riepilogo,
 });
 
 export const routeTree = rootRoute.addChildren([
   indexRoute,
   serviziRootRedirectRoute,
-  servizioRoute,
-  servizioIndexRoute,
-  formLayoutRoute,
-  formDatiRichiestaRoute,
-  formDatiPersonaliRoute,
-  formRiepilogoRoute,
+  servizioRouteLayout.addChildren([
+    servizioRoute,
+    richiestaColloquioRouteLayout.addChildren([
+      richiestaColloquioIndexRoute,
+      informazioniRoute,
+      datiPersonaliRoute,
+      riepilogoRoute,
+    ]),
+  ]),
 ]);

@@ -1,32 +1,19 @@
-import type { UseFormRegister } from "react-hook-form";
-import type z from "zod";
-import { consulenzaSchema } from "./consulenzaSchema";
+import type { Path, UseFormRegister } from "react-hook-form";
 import type { IconType } from "react-icons";
 
-const formDatiRichiestaSchema = consulenzaSchema.pick({
-  appointmentDate: true,
-  appointmentTime: true,
-  urgent: true,
-  clientType: true,
-  clientAge: true,
-  reason: true,
-});
-
-type ConsulenzaDatiRichiestaSchema = z.infer<typeof formDatiRichiestaSchema>;
-
-interface FormCheckboxProps {
-  register: UseFormRegister<ConsulenzaDatiRichiestaSchema>;
-  inputName: keyof ConsulenzaDatiRichiestaSchema;
+interface FormCheckboxProps<T extends Object> {
+  register: UseFormRegister<T>;
+  inputName: Path<T>;
   text: string;
   Icon?: IconType;
 }
 
-export const FormCheckbox = ({
+export const FormCheckbox = <T extends Object>({
   register,
   inputName,
   text,
   Icon,
-}: FormCheckboxProps) => {
+}: FormCheckboxProps<T>) => {
   return (
     <div className="p-3 mt-4 bg-white rounded-xl border border-borderDefault flex items-center font-semibold">
       <label className="flex items-center gap-3 cursor-pointer">

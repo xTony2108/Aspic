@@ -70,7 +70,7 @@ export const ValutazionePsicodiagnostica = () => {
       <div className="sticky bottom-0 bg-bg border-t border-borderDefault p-5">
         <Button
           text="Prossimo Passaggio"
-          link="/servizi/valutazione-psicodiagnostica/form/dati-richiesta"
+          link="/servizi/valutazione-psicodiagnostica/richiesta-colloquio/informazioni"
           arrow={true}
           type="link"
         />

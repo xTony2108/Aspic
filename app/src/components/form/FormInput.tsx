@@ -1,35 +1,20 @@
-import type { UseFormRegister } from "react-hook-form";
-import type z from "zod";
-import { consulenzaSchema } from "./consulenzaSchema";
+import type { Path, UseFormRegister } from "react-hook-form";
 
-const formDatiPersonaliSchema = consulenzaSchema.pick({
-  firstName: true,
-  lastName: true,
-  address: true,
-  birthday: true,
-  birthPlace: true,
-  fiscalCode: true,
-  phoneNumber: true,
-  email: true,
-});
-
-type ConsulenzaDatiPersonaliSchema = z.infer<typeof formDatiPersonaliSchema>;
-
-interface FormInputProps {
-  register: UseFormRegister<ConsulenzaDatiPersonaliSchema>;
-  inputName: keyof ConsulenzaDatiPersonaliSchema;
+interface FormInputProps<T extends Object> {
+  register: UseFormRegister<T>;
+  inputName: Path<T>;
   inputType: string;
   label: string;
   placeholder?: string;
 }
 
-export const FormInput = ({
+export const FormInput = <T extends Object>({
   register,
   inputName,
   inputType,
   label,
   placeholder,
-}: FormInputProps) => {
+}: FormInputProps<T>) => {
   return (
     <label className="block">
       {label}

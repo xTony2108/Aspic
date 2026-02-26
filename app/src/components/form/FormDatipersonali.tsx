@@ -1,31 +1,22 @@
-import type z from "zod";
+import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IoMdHome } from "react-icons/io";
-import { Button } from "../../layout/Button";
-import { InfoBox } from "../InfoBox";
-import { useValutazioneFormStore } from "../../../store";
-import { FormInput } from "../FormInput";
+import { Button } from "../layout/Button";
+import { InfoBox } from "./InfoBox";
+import { useValutazioneFormStore } from "../../store";
+import { FormInput } from "./FormInput";
 import { IoShieldCheckmarkSharp } from "react-icons/io5";
 import { useEffect } from "react";
-import { useNavigate } from "@tanstack/react-router";
-import { valutazioneSchema } from "../valutazioneSchema";
+import { getRouteApi, useNavigate } from "@tanstack/react-router";
+import { createExtendedSchema } from "../../features/services/schemas/createExtendedSchema";
+import { isValidAge } from "../../helpers/isValidAge";
 
-const formDatiPersonaliValutazioneSchema = valutazioneSchema.pick({
-  firstName: true,
-  lastName: true,
-  address: true,
-  birthday: true,
-  birthPlace: true,
-  fiscalCode: true,
-  phoneNumber: true,
-  email: true,
-});
-
-type FormSchema = z.infer<typeof formDatiPersonaliValutazioneSchema>;
-
-export const DatiPersonaliValutazioneForm = () => {
+export const FormDatiPersonali = () => {
   const navigate = useNavigate();
+  const { config } = getRouteApi("/servizi/$servizio").useRouteContext();
+
+  const service = config.serviceType;
 
   const appointmentDate = useValutazioneFormStore((s) => s.appointmentDate);
   const appointmentTime = useValutazioneFormStore((s) => s.appointmentTime);
@@ -42,6 +33,51 @@ export const DatiPersonaliValutazioneForm = () => {
   const phoneNumber = useValutazioneFormStore((s) => s.phoneNumber);
   const email = useValutazioneFormStore((s) => s.email);
   const setData = useValutazioneFormStore((s) => s.setData);
+  const extendedSchema = createExtendedSchema(service);
+
+  const formDatiPersonaliValutazioneSchema = extendedSchema
+    .pick({
+      firstName: true,
+      lastName: true,
+      address: true,
+      birthday: true,
+      birthPlace: true,
+      fiscalCode: true,
+      phoneNumber: true,
+      email: true,
+    })
+    .superRefine((data, ctx) => {
+      const today = new Date();
+      const birth = new Date(data.birthday);
+
+      let calcAge = today.getFullYear() - birth.getFullYear();
+      const monthDiff = today.getMonth() - birth.getMonth();
+      if (
+        monthDiff < 0 ||
+        (monthDiff === 0 && today.getDate() < birth.getDate())
+      ) {
+        calcAge--;
+      }
+
+      if (birth >= today) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["birthday"],
+          message: "La data selezionata non è valida",
+        });
+      }
+
+      if (!isValidAge(calcAge, clientType, clientAge)) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["birthday"],
+          message:
+            "La data selezionata non è coerente con la fascia d'età selezionata",
+        });
+      }
+    });
+
+  type FormSchema = z.infer<typeof formDatiPersonaliValutazioneSchema>;
 
   const {
     register,
@@ -66,15 +102,13 @@ export const DatiPersonaliValutazioneForm = () => {
       appointmentDate,
       appointmentTime,
       urgent,
-      clientAge,
-      clientType,
       reason,
       ...data,
     });
 
     navigate({
-      from: "/servizi/$servizio/form/dati-personali",
-      to: "/servizi/$servizio/form/riepilogo",
+      from: "/servizi/$servizio/richiesta-colloquio/dati-personali",
+      to: "/servizi/$servizio/richiesta-colloquio/riepilogo",
       resetScroll: true,
     });
   };
@@ -87,8 +121,8 @@ export const DatiPersonaliValutazioneForm = () => {
       (clientType == "bambini" && !clientAge)
     ) {
       navigate({
-        from: "/servizi/$servizio/form/dati-personali",
-        to: "/servizi/$servizio/form/dati-richiesta",
+        from: "/servizi/$servizio/richiesta-colloquio/dati-personali",
+        to: "/servizi/$servizio/richiesta-colloquio/informazioni",
         resetScroll: true,
       });
     }
@@ -98,7 +132,7 @@ export const DatiPersonaliValutazioneForm = () => {
     <>
       <form onSubmit={handleSubmit(onSubmit)} className="pt-2">
         <div className="px-4">
-          <p className="text-p-small font-semibold text-base">
+          <p className="font-semibold text-base">
             Completa il profilo con le tue informazioni anagrafiche
           </p>
           <div className="flex mt-3 gap-4">

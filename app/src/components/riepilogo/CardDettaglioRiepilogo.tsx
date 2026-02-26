@@ -1,17 +1,14 @@
 import { IoMdTime } from "react-icons/io";
 import type { IconType } from "react-icons";
-import { consulenzaSchema } from "../form/consulenzaSchema";
-import type z from "zod";
+import { FaMoneyBill } from "react-icons/fa";
 
-const formDatiRiepilogoSchema = consulenzaSchema.pick({
-  clientType: true,
-  clientAge: true,
-  appointmentDate: true,
-  appointmentTime: true,
-  urgent: true,
-});
-
-type ConsulenzaDatiRiepilogoSchema = z.infer<typeof formDatiRiepilogoSchema>;
+type ConsulenzaDatiRiepilogoSchema = {
+  clientType: string;
+  clientAge: string;
+  appointmentDate: string;
+  appointmentTime: string;
+  urgent: string;
+};
 
 type CardRiepilogoProps = {
   title: string;
@@ -58,15 +55,16 @@ export const CardDettaglioRiepilogo = ({
       <div className="flex items-center gap-1">
         <div className="font-semibold text-p-small flex items-center gap-1">
           <IoMdTime />
-          <span>Data e ora:</span>
+          <p>Data e ora:</p>
         </div>
-        <span className="text-heading font-semibold">
+        <p className="text-heading font-semibold">
           {localeData} {appointmentTime}
-        </span>
+        </p>
       </div>
-      <div className="flex justify-between items-center">
-        <span className="font-semibold text-p-small">Prezzo della seduta</span>
-        <span className="font-semibold">€ {price}</span>
+      <div className="flex gap-1 items-center text-p-small">
+        <FaMoneyBill />
+        <p className="font-semibold">Prezzo della seduta:</p>
+        <p className="font-semibold text-heading">€ {price}</p>
       </div>
     </div>
   );
