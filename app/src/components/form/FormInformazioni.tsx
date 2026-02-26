@@ -11,9 +11,9 @@ import { Button } from "../layout/Button";
 import { InfoBox } from "./InfoBox";
 import { BsInfoCircle } from "react-icons/bs";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
-import { useValutazioneFormStore } from "../../store";
 import { FormInput } from "./FormInput";
 import { createExtendedSchema } from "../../features/services/schemas/createExtendedSchema";
+import { useStore } from "zustand";
 
 export const FormInformazioni = () => {
   const [showAge, setShowAge] = useState(false);
@@ -34,20 +34,19 @@ export const FormInformazioni = () => {
     .superRefine((data, ctx) => {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      const appointmentDate = new Date(data.appointmentDate);
 
-      if (today > appointmentDate) {
+      if (!data.appointmentDate) {
         ctx.addIssue({
           code: "custom",
           path: ["appointmentDate"],
-          message: "La data dell'appuntamento selezionata non è valida",
+          message: "Seleziona la data dell'appuntamento",
         });
       }
       if (!data.clientType) {
         ctx.addIssue({
           code: "custom",
           path: ["clientType"],
-          message: "Devi selezionare una tipologia di cliente",
+          message: "Seleziona una tipologia di cliente",
         });
       }
       if (data.clientType == "bambini" && !data.clientAge) {
@@ -63,13 +62,13 @@ export const FormInformazioni = () => {
 
   const navigate = useNavigate();
 
-  const appointmentDateVal = useValutazioneFormStore((s) => s.appointmentDate);
-  const appointmentTimeVal = useValutazioneFormStore((s) => s.appointmentTime);
-  const urgentVal = useValutazioneFormStore((s) => s.urgent);
-  const clientAgeVal = useValutazioneFormStore((s) => s.clientAge);
-  const clientTypeVal = useValutazioneFormStore((s) => s.clientType);
-  const reasonVal = useValutazioneFormStore((s) => s.reason);
-  const setData = useValutazioneFormStore((s) => s.setData);
+  const appointmentDateVal = useStore(config.store, (s) => s.appointmentDate);
+  const appointmentTimeVal = useStore(config.store, (s) => s.appointmentTime);
+  const urgentVal = useStore(config.store, (s) => s.urgent);
+  const clientAgeVal = useStore(config.store, (s) => s.clientAge);
+  const clientTypeVal = useStore(config.store, (s) => s.clientType);
+  const reasonVal = useStore(config.store, (s) => s.reason);
+  const setData = useStore(config.store, (s) => s.setData);
 
   const {
     register,
@@ -123,7 +122,7 @@ export const FormInformazioni = () => {
                 register={register}
               />
               {errors && errors?.appointmentDate?.message && (
-                <span className="text-warn mt-40">
+                <span className="text-warn text-base font-semibold">
                   {errors.appointmentDate.message}
                 </span>
               )}
@@ -137,7 +136,7 @@ export const FormInformazioni = () => {
                 register={register}
               />
               {errors && errors?.appointmentTime?.message && (
-                <span className="text-warn">
+                <span className="text-warn text-base font-semibold">
                   {errors.appointmentTime.message}
                 </span>
               )}
@@ -207,7 +206,7 @@ export const FormInformazioni = () => {
                     text="15 - 18 anni"
                   />
                   {errors && errors?.clientAge?.message && (
-                    <span className="text-warn font-semibold text-sm">
+                    <span className="text-warn font-semibold text-base">
                       {errors.clientAge.message}
                     </span>
                   )}
@@ -232,7 +231,7 @@ export const FormInformazioni = () => {
             />
           )}
           {errors && errors?.clientType?.message && (
-            <span className="text-warn font-semibold text-sm">
+            <span className="text-warn font-semibold text-base">
               {errors.clientType.message}
             </span>
           )}

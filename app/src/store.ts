@@ -1,20 +1,25 @@
 import { create } from "zustand";
-import type { ConsulenzaTypeSchema } from "./components/form/consulenzaSchema";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { createExtendedSchema } from "./features/services/schemas/createExtendedSchema";
+import type z from "zod";
 
-type FormState = Partial<ConsulenzaTypeSchema> & {
-  setData: (data: Partial<ConsulenzaTypeSchema>) => void;
+const extendedConsulenzaSchema = createExtendedSchema("consulenza");
+
+type ConsulenzaSchema = z.infer<typeof extendedConsulenzaSchema>;
+
+export type ConsulenzaState = Partial<ConsulenzaSchema> & {
+  setData: (data: Partial<ConsulenzaSchema>) => void;
   clearData: () => void;
 };
 
-const initialState: Partial<ConsulenzaTypeSchema> = {};
+const initialConsulenzaState: Partial<ConsulenzaState> = {};
 
-export const useConsulenzaFormStore = create<FormState>()(
+export const useConsulenzaFormStore = create<ConsulenzaState>()(
   persist(
     (set) => ({
       setData: (data) => set(data),
       clearData: () => {
-        set(initialState);
+        set(initialConsulenzaState);
         useConsulenzaFormStore.persist.clearStorage();
       },
     }),
@@ -25,12 +30,23 @@ export const useConsulenzaFormStore = create<FormState>()(
   ),
 );
 
-export const useValutazioneFormStore = create<FormState>()(
+const extendedValutazioneSchema = createExtendedSchema("consulenza");
+
+type ValutazioneSchema = z.infer<typeof extendedValutazioneSchema>;
+
+export type ValutazioneState = Partial<ValutazioneSchema> & {
+  setData: (data: Partial<ValutazioneSchema>) => void;
+  clearData: () => void;
+};
+
+const initialValutazioneState: Partial<ValutazioneState> = {};
+
+export const useValutazioneFormStore = create<ValutazioneState>()(
   persist(
     (set) => ({
       setData: (data) => set(data),
       clearData: () => {
-        set(initialState);
+        set(initialValutazioneState);
         useValutazioneFormStore.persist.clearStorage();
       },
     }),

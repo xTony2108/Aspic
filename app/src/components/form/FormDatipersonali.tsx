@@ -4,13 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { IoMdHome } from "react-icons/io";
 import { Button } from "../layout/Button";
 import { InfoBox } from "./InfoBox";
-import { useValutazioneFormStore } from "../../store";
 import { FormInput } from "./FormInput";
 import { IoShieldCheckmarkSharp } from "react-icons/io5";
 import { useEffect } from "react";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import { createExtendedSchema } from "../../features/services/schemas/createExtendedSchema";
 import { isValidAge } from "../../helpers/isValidAge";
+import { useStore } from "zustand";
 
 export const FormDatiPersonali = () => {
   const navigate = useNavigate();
@@ -18,21 +18,23 @@ export const FormDatiPersonali = () => {
 
   const service = config.serviceType;
 
-  const appointmentDate = useValutazioneFormStore((s) => s.appointmentDate);
-  const appointmentTime = useValutazioneFormStore((s) => s.appointmentTime);
-  const urgent = useValutazioneFormStore((s) => s.urgent);
-  const clientAge = useValutazioneFormStore((s) => s.clientAge);
-  const clientType = useValutazioneFormStore((s) => s.clientType);
-  const reason = useValutazioneFormStore((s) => s.reason);
-  const firstName = useValutazioneFormStore((s) => s.firstName);
-  const lastName = useValutazioneFormStore((s) => s.lastName);
-  const address = useValutazioneFormStore((s) => s.address);
-  const birthday = useValutazioneFormStore((s) => s.birthday);
-  const birthPlace = useValutazioneFormStore((s) => s.birthPlace);
-  const fiscalCode = useValutazioneFormStore((s) => s.fiscalCode);
-  const phoneNumber = useValutazioneFormStore((s) => s.phoneNumber);
-  const email = useValutazioneFormStore((s) => s.email);
-  const setData = useValutazioneFormStore((s) => s.setData);
+  const appointmentDate = useStore(config.store, (s) => s.appointmentDate);
+  const appointmentTime = useStore(config.store, (s) => s.appointmentTime);
+
+  const urgent = useStore(config.store, (s) => s.urgent);
+  const clientAge = useStore(config.store, (s) => s.clientAge);
+  const clientType = useStore(config.store, (s) => s.clientType);
+  const reason = useStore(config.store, (s) => s.reason);
+  const firstName = useStore(config.store, (s) => s.firstName);
+  const lastName = useStore(config.store, (s) => s.lastName);
+  const address = useStore(config.store, (s) => s.address);
+  const birthday = useStore(config.store, (s) => s.birthday);
+  const birthPlace = useStore(config.store, (s) => s.birthPlace);
+  const fiscalCode = useStore(config.store, (s) => s.fiscalCode);
+  const phoneNumber = useStore(config.store, (s) => s.phoneNumber);
+  const email = useStore(config.store, (s) => s.email);
+  const setData = useStore(config.store, (s) => s.setData);
+
   const extendedSchema = createExtendedSchema(service);
 
   const formDatiPersonaliValutazioneSchema = extendedSchema
@@ -59,6 +61,14 @@ export const FormDatiPersonali = () => {
         calcAge--;
       }
 
+      if (!data.birthday) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["birthday"],
+          message: "Seleziona una data di nascita",
+        });
+      }
+
       if (birth >= today) {
         ctx.addIssue({
           code: "custom",
@@ -71,8 +81,7 @@ export const FormDatiPersonali = () => {
         ctx.addIssue({
           code: "custom",
           path: ["birthday"],
-          message:
-            "La data selezionata non è coerente con la fascia d'età selezionata",
+          message: `La data selezionata non è coerente con la fascia d'età selezionata (${clientAge && clientAge} anni)`,
         });
       }
     });
@@ -145,7 +154,7 @@ export const FormDatiPersonali = () => {
                 placeholder="Es. Mario"
               />
               {errors && errors?.firstName?.message && (
-                <span className="text-warn mt-40">
+                <span className="font-semibold text-warn text-base">
                   {errors.firstName.message}
                 </span>
               )}
@@ -159,7 +168,9 @@ export const FormDatiPersonali = () => {
                 placeholder="Es. Rossi"
               />
               {errors && errors?.lastName?.message && (
-                <span className="text-warn">{errors.lastName.message}</span>
+                <span className="font-semibold text-warn text-base">
+                  {errors.lastName.message}
+                </span>
               )}
             </div>
           </div>
@@ -179,7 +190,9 @@ export const FormDatiPersonali = () => {
               </div>
             </label>
             {errors && errors?.address?.message && (
-              <span className="text-warn">{errors.address.message}</span>
+              <span className="font-semibold text-warn text-base">
+                {errors.address.message}
+              </span>
             )}
           </div>
         </div>
@@ -192,7 +205,9 @@ export const FormDatiPersonali = () => {
               label="Data di nascita"
             />
             {errors && errors?.birthday?.message && (
-              <span className="text-warn mt-40">{errors.birthday.message}</span>
+              <span className="font-semibold text-warn text-base">
+                {errors.birthday.message}
+              </span>
             )}
           </div>
 
@@ -205,7 +220,9 @@ export const FormDatiPersonali = () => {
               placeholder="Città (Prov)"
             />
             {errors && errors?.birthPlace?.message && (
-              <span className="text-warn">{errors.birthPlace.message}</span>
+              <span className="font-semibold text-warn text-base">
+                {errors.birthPlace.message}
+              </span>
             )}
           </div>
         </div>
@@ -218,7 +235,9 @@ export const FormDatiPersonali = () => {
             placeholder="Codice fiscale"
           />
           {errors && errors?.fiscalCode?.message && (
-            <span className="text-warn mt-40">{errors.fiscalCode.message}</span>
+            <span className="font-semibold text-warn text-base">
+              {errors.fiscalCode.message}
+            </span>
           )}
         </div>
         <div className="mt-3 px-4 text-heading text-sm font-semibold flex-1">
@@ -229,7 +248,7 @@ export const FormDatiPersonali = () => {
             label="Numero di telefono"
           />
           {errors && errors?.phoneNumber?.message && (
-            <span className="text-warn mt-40">
+            <span className="font-semibold text-warn text-base">
               {errors.phoneNumber.message}
             </span>
           )}
@@ -242,7 +261,9 @@ export const FormDatiPersonali = () => {
             label="Email"
           />
           {errors && errors?.email?.message && (
-            <span className="text-warn mt-40">{errors.email.message}</span>
+            <span className="font-semibold text-warn text-base">
+              {errors.email.message}
+            </span>
           )}
         </div>
         <div className="px-4 mt-8">

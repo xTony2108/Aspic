@@ -1,7 +1,7 @@
 export const isValidAge = (
   calcAge: number,
-  clientType: string | null,
-  clientAge: string,
+  clientType: "bambini" | "adulti" | "anziani" | null | undefined,
+  clientAge?: string | undefined,
 ) => {
   if (!clientType) return true;
 
