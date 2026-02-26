@@ -24,17 +24,17 @@ export const Button = ({
           to={link}
         >
           {text}
-          {arrow && <IoArrowForward size={24} />}
+          {arrow && <IoArrowForward size={21} />}
         </Link>
       )}
       {type == "submit" && (
         <button
-          className="bg-primary text-white font-bold py-4 text-center rounded-xl active:translate-y-0.5 transition-all flex items-center justify-center gap-2 w-full cursor-pointer disabled:opacity-40"
+          className=" bg-primary text-white font-bold py-4 text-center rounded-xl active:translate-y-0.5 transition-all flex items-center justify-center gap-2 w-full cursor-pointer disabled:opacity-40"
           type="submit"
           disabled={isSubmitting}
         >
           {isSubmitting ? "Caricamento..." : text}
-          {arrow && <IoArrowForward size={24} />}
+          {arrow && <IoArrowForward size={21} />}
         </button>
       )}
     </>

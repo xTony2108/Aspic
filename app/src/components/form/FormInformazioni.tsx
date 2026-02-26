@@ -1,61 +1,75 @@
-import type z from "zod";
-import { consulenzaSchema } from "../consulenzaSchema";
+import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { IoWarningOutline } from "react-icons/io5";
 import { FaExclamation } from "react-icons/fa6";
-import { FormRadioWithDot } from "../FormRadioWithDot";
-import { FormRadioNoDot } from "../FormRadioNoDot";
-import { FormCheckbox } from "../FormCheckbox";
-import { Button } from "../../layout/Button";
-import { InfoBox } from "../InfoBox";
+import { FormRadioWithDot } from "./FormRadioWithDot";
+import { FormRadioNoDot } from "./FormRadioNoDot";
+import { FormCheckbox } from "./FormCheckbox";
+import { Button } from "../layout/Button";
+import { InfoBox } from "./InfoBox";
 import { BsInfoCircle } from "react-icons/bs";
-import { useNavigate } from "@tanstack/react-router";
-import { useConsulenzaFormStore } from "../../../store";
+import { getRouteApi, useNavigate } from "@tanstack/react-router";
+import { useValutazioneFormStore } from "../../store";
+import { FormInput } from "./FormInput";
+import { createExtendedSchema } from "../../features/services/schemas/createExtendedSchema";
 
-const today = new Date().toISOString().split("T")[0];
-
-const formDatiRichiestaConsulenzaSchema = consulenzaSchema
-  .pick({
-    appointmentDate: true,
-    appointmentTime: true,
-    urgent: true,
-    clientType: true,
-    clientAge: true,
-    reason: true,
-  })
-  .superRefine((data, ctx) => {
-    if (!data.clientType) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["clientType"],
-        message: "Devi selezionare una tipologia di cliente",
-      });
-    }
-    if (data.clientType == "bambini" && !data.clientAge) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["clientAge"],
-        message: "Seleziona l'età del cliente",
-      });
-    }
-  });
-
-type FormSchema = z.infer<typeof formDatiRichiestaConsulenzaSchema>;
-
-export const DatiRichiestaConsulenzaForm = () => {
+export const FormInformazioni = () => {
   const [showAge, setShowAge] = useState(false);
+  const { config } = getRouteApi("/servizi/$servizio").useRouteContext();
+  const service = config.serviceType;
+
+  const extendedSchema = createExtendedSchema(service);
+
+  const refinedSchema = extendedSchema
+    .pick({
+      appointmentDate: true,
+      appointmentTime: true,
+      urgent: true,
+      clientType: true,
+      clientAge: true,
+      reason: true,
+    })
+    .superRefine((data, ctx) => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const appointmentDate = new Date(data.appointmentDate);
+
+      if (today > appointmentDate) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["appointmentDate"],
+          message: "La data dell'appuntamento selezionata non è valida",
+        });
+      }
+      if (!data.clientType) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["clientType"],
+          message: "Devi selezionare una tipologia di cliente",
+        });
+      }
+      if (data.clientType == "bambini" && !data.clientAge) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["clientAge"],
+          message: "Seleziona l'età del cliente",
+        });
+      }
+    });
+
+  type FormSchema = z.infer<typeof refinedSchema>;
 
   const navigate = useNavigate();
 
-  const appointmentDateVal = useConsulenzaFormStore((s) => s.appointmentDate);
-  const appointmentTimeVal = useConsulenzaFormStore((s) => s.appointmentTime);
-  const urgentVal = useConsulenzaFormStore((s) => s.urgent);
-  const clientAgeVal = useConsulenzaFormStore((s) => s.clientAge);
-  const clientTypeVal = useConsulenzaFormStore((s) => s.clientType);
-  const reasonVal = useConsulenzaFormStore((s) => s.reason);
-  const setData = useConsulenzaFormStore((s) => s.setData);
+  const appointmentDateVal = useValutazioneFormStore((s) => s.appointmentDate);
+  const appointmentTimeVal = useValutazioneFormStore((s) => s.appointmentTime);
+  const urgentVal = useValutazioneFormStore((s) => s.urgent);
+  const clientAgeVal = useValutazioneFormStore((s) => s.clientAge);
+  const clientTypeVal = useValutazioneFormStore((s) => s.clientType);
+  const reasonVal = useValutazioneFormStore((s) => s.reason);
+  const setData = useValutazioneFormStore((s) => s.setData);
 
   const {
     register,
@@ -64,7 +78,7 @@ export const DatiRichiestaConsulenzaForm = () => {
     formState: { errors, isSubmitting },
     watch,
   } = useForm<FormSchema>({
-    resolver: zodResolver(formDatiRichiestaConsulenzaSchema),
+    resolver: zodResolver(refinedSchema),
     defaultValues: {
       appointmentDate: appointmentDateVal || "",
       appointmentTime: appointmentTimeVal || "",
@@ -80,8 +94,8 @@ export const DatiRichiestaConsulenzaForm = () => {
     setData(data);
 
     navigate({
-      from: "/servizi/$servizio/form/dati-richiesta",
-      to: "/servizi/$servizio/form/dati-personali",
+      from: "/servizi/$servizio/richiesta-colloquio/informazioni",
+      to: "/servizi/$servizio/richiesta-colloquio/dati-personali",
       resetScroll: false,
     });
   };
@@ -99,18 +113,15 @@ export const DatiRichiestaConsulenzaForm = () => {
     <>
       <form onSubmit={handleSubmit(onSubmit)} className="pt-2">
         <div className="px-4">
-          <p className="text-p-small font-semibold">Data e ora preferite</p>
+          <p className="text-base font-semibold">Data e ora preferite</p>
           <div className="flex mt-3 gap-4">
             <div className="text-heading text-sm font-semibold flex-1">
-              <label className="block">
-                Seleziona Data
-                <input
-                  {...register("appointmentDate")}
-                  min={today}
-                  type="date"
-                  className="bg-white border border-borderDefault py-3.5 px-4 rounded-xl mt-1.5 w-full appearance-none"
-                />
-              </label>
+              <FormInput
+                inputName="appointmentDate"
+                inputType="date"
+                label="Seleziona Data"
+                register={register}
+              />
               {errors && errors?.appointmentDate?.message && (
                 <span className="text-warn mt-40">
                   {errors.appointmentDate.message}
@@ -119,14 +130,12 @@ export const DatiRichiestaConsulenzaForm = () => {
             </div>
 
             <div className="text-heading text-sm font-semibold flex-1">
-              <label className="block">
-                Seleziona Ora
-                <input
-                  {...register("appointmentTime")}
-                  type="time"
-                  className="bg-white border border-borderDefault py-3.5 px-4 rounded-xl mt-1.5 w-full appearance-none"
-                />
-              </label>
+              <FormInput
+                inputName="appointmentTime"
+                inputType="time"
+                label="Seleziona Ora"
+                register={register}
+              />
               {errors && errors?.appointmentTime?.message && (
                 <span className="text-warn">
                   {errors.appointmentTime.message}
@@ -213,13 +222,15 @@ export const DatiRichiestaConsulenzaForm = () => {
             text1="Adulti"
             text2="Dai 18 anni in su"
           />
-          <FormRadioWithDot
-            inputName="clientType"
-            register={register}
-            value="anziani"
-            text1="Anziani"
-            text2="Psicologia geriatrica"
-          />
+          {service === "consulenza" && (
+            <FormRadioWithDot
+              inputName="clientType"
+              register={register}
+              value="anziani"
+              text1="Anziani"
+              text2="Psicologia geriatrica"
+            />
+          )}
           {errors && errors?.clientType?.message && (
             <span className="text-warn font-semibold text-sm">
               {errors.clientType.message}

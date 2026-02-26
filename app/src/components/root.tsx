@@ -3,9 +3,9 @@ import { Header } from "./layout/Header";
 
 export const Root = () => {
   return (
-    <div className="min-h-dvh">
+    <div className="min-h-dvh flex flex-col">
       <Header />
-      <main>
+      <main className="flex-1 flex flex-col w-full">
         <Outlet />
       </main>
     </div>

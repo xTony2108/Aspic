@@ -1,33 +1,20 @@
-import type { UseFormRegister } from "react-hook-form";
-import type z from "zod";
-import { consulenzaSchema } from "./consulenzaSchema";
+import type { Path, UseFormRegister } from "react-hook-form";
 
-const formStep1Schema = consulenzaSchema.pick({
-  appointmentDate: true,
-  appointmentTime: true,
-  urgent: true,
-  clientType: true,
-  clientAge: true,
-  reason: true,
-});
-
-type ConsulenzaStep1FormSchema = z.infer<typeof formStep1Schema>;
-
-interface FormRadioWithDotProps {
-  register: UseFormRegister<ConsulenzaStep1FormSchema>;
-  inputName: keyof ConsulenzaStep1FormSchema;
+interface FormRadioWithDotProps<T extends Object> {
+  register: UseFormRegister<T>;
+  inputName: Path<T>;
   value: string;
   text1: string;
   text2: string;
 }
 
-export const FormRadioWithDot = ({
+export const FormRadioWithDot = <T extends Object>({
   register,
   inputName,
   text1,
   text2,
   value,
-}: FormRadioWithDotProps) => {
+}: FormRadioWithDotProps<T>) => {
   return (
     <label className="transition-all duration-300 ease-in-out flex items-center gap-4 p-4 bg-white rounded-xl border border-borderDefault drop-shadow-xs has-checked:bg-secondary has-checked:border-highlight cursor-pointer">
       <input

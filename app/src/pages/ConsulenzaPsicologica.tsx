@@ -1,9 +1,11 @@
 import { SectionTitle } from "../components/layout/SectionTitle";
 import { RiMentalHealthFill } from "react-icons/ri";
-import { Button } from "../components/layout/Button";
 import { SessionDuration } from "../components/layout/SessionDuration";
+import { IoArrowForward } from "react-icons/io5";
+import { Link, useParams } from "@tanstack/react-router";
 
 export const ConsulenzaPsicologica = () => {
+  const { servizio } = useParams({ from: "/servizi/$servizio" });
   return (
     <>
       <SectionTitle
@@ -28,12 +30,14 @@ export const ConsulenzaPsicologica = () => {
         </div>
         <SessionDuration time="50 minuti" />
         <div className="sticky bottom-0 bg-bg border-t border-borderDefault p-5">
-          <Button
-            text="Prossimo Passaggio"
-            link="/servizi/consulenza-psicologica/form/dati-richiesta"
-            arrow={true}
-            type="link"
-          />
+          <Link
+            className="bg-primary text-white font-bold py-4 text-center rounded-xl active:translate-y-0.5 transition-all flex items-center justify-center gap-2 w-full"
+            to="/servizi/$servizio/richiesta-colloquio/informazioni"
+            params={{ servizio: servizio }}
+          >
+            <IoArrowForward size={24} />
+            Prossimo Passaggio
+          </Link>
         </div>
       </section>
     </>
