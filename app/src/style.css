@@ -1,25 +1,47 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #ededed;
-  --color-primary: #263780;
-  --color-secondary: #0056d21a;
-  --color-tertiary: #f0f7ff;
-  --color-heading: #0e131b;
-  --color-p-small: #6b7280;
+  --color-bg: hsl(0 0% 97%);
+  --light-grey: hsl(0, 0%, 87.9%);
+  --color-primary: hsl(229 54.2% 32.5%);
+  --color-blue-dark: hsl(229, 30%, 14%);
+  --color-blue-light: hsl(229, 35%, 82%);
+  --color-blue-mid: hsl(229, 40%, 55%);
+  --color-white-rgba: rgba(255, 255, 255, 0.8);
+  --color-white-rgba-2: rgba(255, 255, 255, 0.6);
+  --color-cream: hsl(0, 0%, 93%);
+  --color-text: hsl(229, 30%, 18%);
+  --color-text-muted: hsl(0, 0%, 45%);
   --color-warnBg: #fef2f2;
   --color-progressBar: #d0d9e7;
   --color-warn: #b91c1c;
   --color-warnBorder: #fecaca;
-  --color-highlight: #0056d2;
-  --color-borderDefault: #e2e8f0;
-  --font-inter: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --color-highlight: hsl(0 0% 97.9%);
+  --color-border: hsl(0 0% 87.9%);
+  --color-borderCard: hsl(0 0% 92.9%);
+  --font-dm: "DM Sans", sans-serif;
+  --font-garamond: "Cormorant Garamond", serif;
 }
 
 @layer base {
-  #root {
+  body {
     background-color: var(--color-bg);
-    font-family: var(--font-inter);
+    font-family: var(--font-dm);
+    position: relative;
+  }
+
+  #root {
+    position: relative;
+  }
+
+  #root::after {
+    content: "";
+    position: fixed;
+    pointer-events: none;
+    z-index: 40;
+    background-image: url("../src/assets/bg.svg");
+    inset: 0;
+    opacity: 0.3;
   }
 
   input,
@@ -29,7 +51,7 @@
 
   input:focus-within,
   textarea:focus-within {
-    outline: 1px solid #263780;
+    outline: 1px solid var(--color-primary);
   }
 
   input:-webkit-autofill,
@@ -40,9 +62,7 @@
   }
 
   h1 {
-    color: var(--color-heading);
-    font-size: var(--text-2xl);
-    font-weight: var(--font-weight-bold);
+    font-size: clamp(2.4rem, 9vw, 4.8rem);
   }
 
   h2,
@@ -50,41 +70,24 @@
   h4,
   h5,
   h6 {
+    font-style: var(--font-garamond);
     color: var(--color-heading);
-    font-weight: var(--font-weight-bold);
-    font-size: var(--text-lg);
+    font-weight: var(--font-weight-light);
+    font-size: clamp(1.9rem, 5vw, 2.8rem);
   }
   p {
-    color: var(--color-p-small);
-    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    font-size: var(--text-base);
   }
 }
 
 @layer components {
-  main {
-    @apply max-w-7xl mx-auto
-           sm:max-w-2xl
-           md:max-w-3xl
-           lg:max-w-4xl
-           xl:max-w-5xl
-           2xl:max-w-7xl;
+  main section {
+    @apply px-6 py-16 md:px-10 md:py-16 lg:px-16 lg:py-28;
   }
-
-  main h1 {
-    @apply sm:text-4xl md:text-5xl font-bold tracking-tight;
-  }
-
-  main h2 {
-    @apply sm:text-3xl md:text-4xl font-bold;
-  }
-
-  main h3 {
-    @apply sm:text-2xl md:text-3xl font-bold;
-  }
-
   main span,
   main p {
-    @apply sm:text-base md:text-lg leading-relaxed;
+    @apply text-base;
   }
 
   main ul {
@@ -92,6 +95,79 @@
   }
 
   main label {
-    @apply block text-sm md:text-base font-medium;
+    @apply block text-base font-medium;
+  }
+
+  .blob {
+    width: 400px;
+    height: 500px;
+    right: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    position: absolute;
+    animation: morphBlob 8s ease-in-out infinite;
+    background: linear-gradient(
+      135deg,
+      hsl(229, 40%, 82%) 0%,
+      hsl(0, 0%, 87.9%) 100%
+    );
+  }
+
+  .fadeIn {
+    animation: fadeIn 1.2s 0.2s ease both;
+  }
+
+  .floatAnimation {
+    animation: float 4s ease-in-out infinite;
+    animation-delay: 2s;
+  }
+
+  .fadeUp {
+    animation: fadeUp 0.8s 0.5s ease both;
+  }
+}
+
+@keyframes morphBlob {
+  0%,
+  100% {
+    border-radius: 60% 40% 55% 45% / 45% 55% 45% 55%;
+  }
+  33% {
+    border-radius: 45% 55% 40% 60% / 55% 45% 60% 40%;
+  }
+
+  66% {
+    border-radius: 55% 45% 60% 40% / 40% 60% 45% 55%;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: none;
   }
 }

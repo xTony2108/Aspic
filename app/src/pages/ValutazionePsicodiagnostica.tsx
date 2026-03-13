@@ -1,79 +1,62 @@
 import { SectionTitle } from "../components/layout/SectionTitle";
-import { Button } from "../components/layout/Button";
-import { ServiceCard } from "../components/home/ServiceCard";
 import { LuMessagesSquare } from "react-icons/lu";
 import { FaRegLightbulb } from "react-icons/fa";
 import { MdChecklistRtl } from "react-icons/md";
-import { IoDocumentTextOutline } from "react-icons/io5";
+import { IoArrowForward, IoDocumentTextOutline } from "react-icons/io5";
 import { MdOutlineAccessTime } from "react-icons/md";
+import { Link, useParams } from "@tanstack/react-router";
 
 export const ValutazionePsicodiagnostica = () => {
+  const { servizio } = useParams({ from: "/servizi/$servizio" });
+
   return (
     <>
       <SectionTitle
-        text="Dettaglio Consulenza"
+        text="Dettagli Servizio"
         backArrow={true}
         backArrowPath="../"
       />
-      <div className="px-5 my-4">
-        <h2 className="mb-4">Valutazione Psicodiagnostica</h2>
-        <p className="text-base">
-          Un percorso strutturato volto a definire il funzionamento cognitivo
-          attraverso la valutazione clinica e l'utilizzo di strumenti
-          standardizzati:
-        </p>
-        <ul className="text-p-small list-disc pl-5 mt-2">
-          <li>Colloqui clinico</li>
-          <li>Valutazione del funzionamento cognitivo</li>
-          <li>Valutazione delle capacità adattive</li>
-          <li>Relazione/Certificazione</li>
-        </ul>
-      </div>
-      <div className="px-5 mb-6">
-        <h2 className="text-heading my-4">Cosa comprende il percorso</h2>
-        <div className="flex flex-col space-y-6 lg:space-y-10">
-          <ServiceCard
-            title="Colloquio clinico"
-            description="Inquadramento iniziale e raccolta anamnestica"
-            fullCard={false}
-            Icon={LuMessagesSquare}
-          />
-          <ServiceCard
-            title="Scale Wechsler"
-            description="Valutazione del quoziente intellettivo (QI)"
-            fullCard={false}
-            Icon={FaRegLightbulb}
-          />
-          <ServiceCard
-            title="Capacità adattive"
-            description="Analisi del funzionamento nel contesto quotidiano"
-            fullCard={false}
-            Icon={MdChecklistRtl}
-          />
-          <ServiceCard
-            title="Relazione certificativa"
-            description="Documentazione clinica e sintesi dei risultati"
-            fullCard={false}
-            Icon={IoDocumentTextOutline}
-          />
+      <section className="px-5 lg:px-0 mb-24">
+        <div className="mb-4">
+          <h2 className="mb-4">Valutazione Psicodiagnostica</h2>
+          <p>
+            La valutazione sarà eseguita secondo le linee guida internazionali
+            con utilizzo di strumenti di ultima generazione evidence-based "Le
+            prestazioni di consulenza sono affidate esclusivamente a figure
+            professionali in possesso del titolo di Psicologo Psicoterapeuta con
+            comprovata competenza nell'ambito della psicodiagnostica clinica e
+            del management terapeutico. L'iter valutativo si avvale di
+            metodologie evidence-based per garantire l'accuratezza del profilo
+            diagnostico e la coerenza del progetto d'intervento grazie anche
+            all'utilizzo anche di batterie di test standardizzate. La competenza
+            clinica certificata assicura una diagnosi differenziale rigorosa e
+            la formulazione di un piano di trattamento orientato all'efficacia.
+            Un percorso strutturato volto a definire il funzionamento cognitivo
+            attraverso la valutazione clinica e l'utilizzo di strumenti
+            standardizzati.
+          </p>
         </div>
-      </div>
-      <div className="px-5 mb-6">
-        <h2 className="text-heading my-4">Informazioni</h2>
-        <ServiceCard
-          title="Durata sessione"
-          description="60-90 minuti"
-          fullCard={false}
-          Icon={MdOutlineAccessTime}
-        />
-      </div>
-      <div className="sticky bottom-0 bg-bg border-t border-borderDefault p-5">
-        <Button
-          text="Prossimo Passaggio"
-          link="/servizi/valutazione-psicodiagnostica/richiesta-colloquio/informazioni"
-          arrow={true}
-          type="link"
-        />
+        <div className="mb-6">
+          <h3 className="text-heading my-6 lg:my-10">
+            Cosa comprende il percorso
+          </h3>
+          <div className="flex flex-col space-y-6 lg:space-y-10"></div>
+        </div>
+        <div className="mb-6">
+          <h3 className="text-heading my-6 lg:my-10">Informazioni</h3>
+        </div>
+      </section>
+      <div className="fixed right-0 left-0 bottom-0 bg-bg border-t border-borderDefault py-5">
+        <div className="max-w-7xl mx-auto sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl 2xl:max-w-7xl px-5 lg:px-0">
+          <Link
+            className="leading-tight bg-primary text-white font-bold py-4 text-center rounded-xl active:translate-y-0.5 transition-all flex items-center justify-center gap-2 w-full"
+            to="/servizi/$servizio/richiesta-colloquio/informazioni"
+            params={{ servizio: servizio }}
+          >
+            Prossimo Passaggio
+            <IoArrowForward size={19} />
+          </Link>
+        </div>
       </div>
     </>
   );

@@ -8,15 +8,13 @@ import { FormInput } from "./FormInput";
 import { IoShieldCheckmarkSharp } from "react-icons/io5";
 import { useEffect } from "react";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
-import { createExtendedSchema } from "../../features/services/schemas/createExtendedSchema";
 import { isValidAge } from "../../helpers/isValidAge";
 import { useStore } from "zustand";
+import { baseSchema } from "../../features/services/schemas/schemas";
 
 export const FormDatiPersonali = () => {
   const navigate = useNavigate();
   const { config } = getRouteApi("/servizi/$servizio").useRouteContext();
-
-  const service = config.serviceType;
 
   const appointmentDate = useStore(config.store, (s) => s.appointmentDate);
   const appointmentTime = useStore(config.store, (s) => s.appointmentTime);
@@ -35,9 +33,7 @@ export const FormDatiPersonali = () => {
   const email = useStore(config.store, (s) => s.email);
   const setData = useStore(config.store, (s) => s.setData);
 
-  const extendedSchema = createExtendedSchema(service);
-
-  const formDatiPersonaliValutazioneSchema = extendedSchema
+  const formDatiPersonaliValutazioneSchema = baseSchema
     .pick({
       firstName: true,
       lastName: true,
@@ -81,7 +77,7 @@ export const FormDatiPersonali = () => {
         ctx.addIssue({
           code: "custom",
           path: ["birthday"],
-          message: `La data selezionata non è coerente con la fascia d'età selezionata (${clientAge && clientAge} anni)`,
+          message: `La data selezionata non è coerente con la fascia d'età selezionata${clientAge && " (" + clientAge + " anni)"}`,
         });
       }
     });
@@ -139,12 +135,10 @@ export const FormDatiPersonali = () => {
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="pt-2">
-        <div className="px-4">
-          <p className="font-semibold text-base">
-            Completa il profilo con le tue informazioni anagrafiche
-          </p>
-          <div className="flex mt-3 gap-4">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="space-y-3">
+          <h2>Informazioni anagrafiche</h2>
+          <div className="flex gap-4">
             <div className="text-heading text-sm font-semibold flex-1">
               <FormInput
                 inputType="text"
@@ -154,7 +148,7 @@ export const FormDatiPersonali = () => {
                 placeholder="Es. Mario"
               />
               {errors && errors?.firstName?.message && (
-                <span className="font-semibold text-warn text-base">
+                <span className="font-semibold text-warn">
                   {errors.firstName.message}
                 </span>
               )}
@@ -168,13 +162,13 @@ export const FormDatiPersonali = () => {
                 placeholder="Es. Rossi"
               />
               {errors && errors?.lastName?.message && (
-                <span className="font-semibold text-warn text-base">
+                <span className="font-semibold text-warn">
                   {errors.lastName.message}
                 </span>
               )}
             </div>
           </div>
-          <div className="text-heading text-sm font-semibold flex-1 mt-3">
+          <div className="text-heading text-sm font-semibold flex-1">
             <label className="block">
               Indirizzo di residenza
               <div className="flex items-center bg-white border border-borderDefault rounded-xl mt-1.5 w-full appearance-none focus-within:outline-1 outline-primary">
@@ -190,83 +184,83 @@ export const FormDatiPersonali = () => {
               </div>
             </label>
             {errors && errors?.address?.message && (
-              <span className="font-semibold text-warn text-base">
+              <span className="font-semibold text-warn">
                 {errors.address.message}
               </span>
             )}
           </div>
-        </div>
-        <div className="flex mt-3 gap-4 px-4">
-          <div className="text-heading text-sm font-semibold flex-1">
-            <FormInput
-              inputType="date"
-              inputName="birthday"
-              register={register}
-              label="Data di nascita"
-            />
-            {errors && errors?.birthday?.message && (
-              <span className="font-semibold text-warn text-base">
-                {errors.birthday.message}
-              </span>
-            )}
-          </div>
+          <div className="flex gap-4">
+            <div className="text-heading text-sm font-semibold flex-1">
+              <FormInput
+                inputType="date"
+                inputName="birthday"
+                register={register}
+                label="Data di nascita"
+              />
+              {errors && errors?.birthday?.message && (
+                <span className="font-semibold text-warn">
+                  {errors.birthday.message}
+                </span>
+              )}
+            </div>
 
+            <div className="text-heading text-sm font-semibold flex-1">
+              <FormInput
+                inputType="text"
+                inputName="birthPlace"
+                register={register}
+                label="Luogo di nascita"
+                placeholder="Città (Prov)"
+              />
+              {errors && errors?.birthPlace?.message && (
+                <span className="font-semibold text-warn">
+                  {errors.birthPlace.message}
+                </span>
+              )}
+            </div>
+          </div>
           <div className="text-heading text-sm font-semibold flex-1">
             <FormInput
               inputType="text"
-              inputName="birthPlace"
+              inputName="fiscalCode"
               register={register}
-              label="Luogo di nascita"
-              placeholder="Città (Prov)"
+              label="Codice Fiscale"
+              placeholder="Codice fiscale"
             />
-            {errors && errors?.birthPlace?.message && (
-              <span className="font-semibold text-warn text-base">
-                {errors.birthPlace.message}
+            {errors && errors?.fiscalCode?.message && (
+              <span className="font-semibold text-warn">
+                {errors.fiscalCode.message}
+              </span>
+            )}
+          </div>
+          <div className="text-heading text-sm font-semibold flex-1">
+            <FormInput
+              inputType="tel"
+              inputName="phoneNumber"
+              register={register}
+              label="Numero di telefono"
+            />
+            {errors && errors?.phoneNumber?.message && (
+              <span className="font-semibold text-warn">
+                {errors.phoneNumber.message}
+              </span>
+            )}
+          </div>
+          <div className="text-heading text-sm font-semibold flex-1">
+            <FormInput
+              inputType="email"
+              inputName="email"
+              register={register}
+              label="Email"
+            />
+            {errors && errors?.email?.message && (
+              <span className="font-semibold text-warn">
+                {errors.email.message}
               </span>
             )}
           </div>
         </div>
-        <div className="mt-3 px-4 text-heading text-sm font-semibold flex-1">
-          <FormInput
-            inputType="text"
-            inputName="fiscalCode"
-            register={register}
-            label="Codice Fiscale"
-            placeholder="Codice fiscale"
-          />
-          {errors && errors?.fiscalCode?.message && (
-            <span className="font-semibold text-warn text-base">
-              {errors.fiscalCode.message}
-            </span>
-          )}
-        </div>
-        <div className="mt-3 px-4 text-heading text-sm font-semibold flex-1">
-          <FormInput
-            inputType="tel"
-            inputName="phoneNumber"
-            register={register}
-            label="Numero di telefono"
-          />
-          {errors && errors?.phoneNumber?.message && (
-            <span className="font-semibold text-warn text-base">
-              {errors.phoneNumber.message}
-            </span>
-          )}
-        </div>
-        <div className="mt-3 px-4 text-heading text-sm font-semibold flex-1">
-          <FormInput
-            inputType="email"
-            inputName="email"
-            register={register}
-            label="Email"
-          />
-          {errors && errors?.email?.message && (
-            <span className="font-semibold text-warn text-base">
-              {errors.email.message}
-            </span>
-          )}
-        </div>
-        <div className="px-4 mt-8">
+        <div className="mt-8">
           <InfoBox
             type="info"
             Icon={IoShieldCheckmarkSharp}
@@ -275,11 +269,10 @@ export const FormDatiPersonali = () => {
             dell'appuntamento."
           />
         </div>
-        <div className="sticky bottom-0 bg-bg border-t border-borderDefault p-5">
+        <div className="sticky bottom-0 bg-bg border-t border-borderDefault py-5">
           <Button
             text="Prossimo Passaggio"
             arrow={true}
-            type="submit"
             isSubmitting={isSubmitting}
           />
         </div>

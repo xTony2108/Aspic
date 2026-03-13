@@ -4,7 +4,7 @@ export const ContactUs = () => {
   return (
     <>
       <p>Hai dubbi sul servizio più adatto?</p>
-      <Link to="/" className="text-primary font-semibold underline text-sm">
+      <Link to="/" className="text-primary font-semibold underline">
         Contattaci per una consulenza
       </Link>
     </>

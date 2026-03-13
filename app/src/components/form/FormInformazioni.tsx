@@ -12,17 +12,14 @@ import { InfoBox } from "./InfoBox";
 import { BsInfoCircle } from "react-icons/bs";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import { FormInput } from "./FormInput";
-import { createExtendedSchema } from "../../features/services/schemas/createExtendedSchema";
 import { useStore } from "zustand";
+import { baseSchema } from "../../features/services/schemas/schemas";
 
 export const FormInformazioni = () => {
   const [showAge, setShowAge] = useState(false);
   const { config } = getRouteApi("/servizi/$servizio").useRouteContext();
-  const service = config.serviceType;
 
-  const extendedSchema = createExtendedSchema(service);
-
-  const refinedSchema = extendedSchema
+  const refinedSchema = baseSchema
     .pick({
       appointmentDate: true,
       appointmentTime: true,
@@ -110,10 +107,10 @@ export const FormInformazioni = () => {
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="pt-2">
-        <div className="px-4">
-          <p className="text-base font-semibold">Data e ora preferite</p>
-          <div className="flex mt-3 gap-4">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="space-y-3">
+          <h2>Informazioni richiesta</h2>
+          <div className="flex gap-4">
             <div className="text-heading text-sm font-semibold flex-1">
               <FormInput
                 inputName="appointmentDate"
@@ -150,10 +147,8 @@ export const FormInformazioni = () => {
           />
         </div>
 
-        <div className="flex flex-col gap-3 mt-6 px-4">
-          <p className="text-p-small font-semibold pt-3 ">
-            Seleziona il tipo di cliente:
-          </p>
+        <div className="flex flex-col gap-3 mt-6">
+          <p>Seleziona il tipo di cliente:</p>
           <FormRadioWithDot
             inputName="clientType"
             register={register}
@@ -221,15 +216,13 @@ export const FormInformazioni = () => {
             text1="Adulti"
             text2="Dai 18 anni in su"
           />
-          {service === "consulenza" && (
-            <FormRadioWithDot
-              inputName="clientType"
-              register={register}
-              value="anziani"
-              text1="Anziani"
-              text2="Psicologia geriatrica"
-            />
-          )}
+          <FormRadioWithDot
+            inputName="clientType"
+            register={register}
+            value="anziani"
+            text1="Anziani"
+            text2="Psicologia geriatrica"
+          />
           {errors && errors?.clientType?.message && (
             <span className="text-warn font-semibold text-base">
               {errors.clientType.message}
@@ -237,17 +230,15 @@ export const FormInformazioni = () => {
           )}
         </div>
 
-        <div className="mt-6 px-4">
-          <p className="text-p-small font-semibold mb-3">
-            Motivi della richiesta (facoltativo)
-          </p>
+        <div className="mt-6 space-y-3">
+          <p>Motivi della richiesta (facoltativo)</p>
           <textarea
             {...register("reason")}
             className="h-28 bg-white w-full rounded-xl p-4 border border-borderDefault"
             placeholder="Descrivi brevemente il motivo del contatto..."
           />
         </div>
-        <div className="px-4 mt-8">
+        <div className="mt-8">
           <InfoBox
             type="info"
             Icon={BsInfoCircle}
@@ -256,11 +247,10 @@ export const FormInformazioni = () => {
             necessità."
           />
         </div>
-        <div className="sticky bottom-0 bg-bg border-t border-borderDefault p-5">
+        <div className="sticky bottom-0 bg-bg border-t border-borderDefault py-5">
           <Button
             text="Prossimo Passaggio"
             arrow={true}
-            type="submit"
             isSubmitting={isSubmitting}
           />
         </div>

@@ -9,11 +9,11 @@ interface InfoBoxProps {
 export const InfoBox = ({ Icon, text, type }: InfoBoxProps) => {
   return (
     <div
-      className={`mb-4 rounded-xl flex items-center gap-3 ${type == "warn" ? "bg-warnBg border border-warnBorder text-warn p-3" : "bg-secondary border border-highlight text-highlight p-4"}`}
+      className={`rounded-xl flex items-center gap-3 ${type == "warn" ? "bg-warnBg border border-warnBorder text-warn p-3" : "bg-secondary border border-highlight text-highlight p-4"}`}
     >
-      <Icon size={20} className="shrink-0 self-start" />
+      <Icon size={20} className="shrink-0 self-start mt-0.5" />
       <p
-        className={`font-semibold leading-6 ${type == "warn" ? "text-warn " : "text-highlight"}`}
+        className={`leading-tight font-semibold ${type == "warn" ? "text-warn " : "text-highlight"}`}
       >
         {text}
       </p>

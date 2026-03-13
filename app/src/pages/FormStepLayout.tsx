@@ -50,8 +50,8 @@ export const FormStepLayout = () => {
   return (
     <>
       <SectionTitle text={text} backArrow={true} backArrowPath={backPath} />
-      <section>
-        <div className="px-5 my-4">
+      <section className="px-5 lg:px-0">
+        <div className="mb-6">
           <div className="flex justify-between mb-3">
             <span className="text-heading font-semibold">{label}</span>
             <span className="text-p-small transition-all duration-300 ease-in-out">
