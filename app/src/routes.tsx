@@ -27,9 +27,6 @@ const indexRoute = createRoute({
 const serviziRootRedirectRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "servizi",
-  beforeLoad: async () => {
-    throw redirect({ to: "/" });
-  },
 });
 
 export const servizioRouteLayout = createRoute({

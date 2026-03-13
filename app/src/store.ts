@@ -1,14 +1,12 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { createExtendedSchema } from "./features/services/schemas/createExtendedSchema";
 import type z from "zod";
+import type { baseSchema } from "./features/services/schemas/schemas";
 
-const extendedConsulenzaSchema = createExtendedSchema("consulenza");
+type FormSchema = z.infer<typeof baseSchema>;
 
-type ConsulenzaSchema = z.infer<typeof extendedConsulenzaSchema>;
-
-export type ConsulenzaState = Partial<ConsulenzaSchema> & {
-  setData: (data: Partial<ConsulenzaSchema>) => void;
+export type ConsulenzaState = Partial<FormSchema> & {
+  setData: (data: Partial<FormSchema>) => void;
   clearData: () => void;
 };
 
@@ -30,12 +28,8 @@ export const useConsulenzaFormStore = create<ConsulenzaState>()(
   ),
 );
 
-const extendedValutazioneSchema = createExtendedSchema("consulenza");
-
-type ValutazioneSchema = z.infer<typeof extendedValutazioneSchema>;
-
-export type ValutazioneState = Partial<ValutazioneSchema> & {
-  setData: (data: Partial<ValutazioneSchema>) => void;
+export type ValutazioneState = Partial<FormSchema> & {
+  setData: (data: Partial<FormSchema>) => void;
   clearData: () => void;
 };
 

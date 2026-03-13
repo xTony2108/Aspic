@@ -5,6 +5,7 @@ export const baseSchema = z.object({
   appointmentTime: z.string().nonempty({ error: "Inserisci un orario" }),
   urgent: z.boolean(),
   clientAge: z.string(),
+  clientType: z.enum(["bambini", "adulti", "anziani"]).nullable(),
   reason: z.string(),
   firstName: z.string().min(2, { error: "Inserisci un nome valido" }),
   lastName: z.string().min(2, { error: "Inserisci un cognome valido" }),

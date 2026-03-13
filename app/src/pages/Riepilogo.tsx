@@ -12,8 +12,10 @@ import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { FaClipboardUser } from "react-icons/fa6";
-import { createExtendedSchema } from "../features/services/schemas/createExtendedSchema";
 import { useStore } from "zustand";
+import { baseSchema } from "../features/services/schemas/schemas";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 export const Riepilogo = () => {
   const navigate = useNavigate();
@@ -24,9 +26,7 @@ export const Riepilogo = () => {
 
   const isValutazione = service === "valutazione";
 
-  const extendedSchema = createExtendedSchema(service);
-
-  type FormSchema = z.infer<typeof extendedSchema>;
+  type FormSchema = z.infer<typeof baseSchema>;
 
   const {
     clientType,
@@ -48,13 +48,19 @@ export const Riepilogo = () => {
     handleSubmit,
     formState: { isSubmitting },
   } = useForm<FormSchema>({
-    resolver: zodResolver(extendedSchema),
+    resolver: zodResolver(baseSchema),
     defaultValues: store,
   });
 
-  const onSubmit = async (data: FormSchema) => {
+  // const { mutate, error, failureReason } = useMutation({
+  //   mutationKey: ["appointments"],
+  //   mutationFn: (data) => axios.post("/api/appointments/consulenza", data),
+  // });
+
+  const onSubmit = (data: FormSchema) => {
     console.log(data);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    // mutate(data);
   };
 
   const hasHydrated = isValutazione
@@ -85,13 +91,9 @@ export const Riepilogo = () => {
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="pt-2">
-        <div className="px-5 mb-4">
-          <p className="text-base font-semibold">
-            Verifica i dati della tua richiesta prima di inviarla
-          </p>
-        </div>
-        <div className="px-5 py-4">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="space-y-12">
+          <h2>Verifica i dati della tua richiesta prima di inviarla</h2>
           <CardDettaglioRiepilogo
             title={label}
             Icon={isValutazione ? FaClipboardUser : RiMentalHealthFill}
@@ -102,10 +104,8 @@ export const Riepilogo = () => {
             urgent={urgent ?? false}
             price={isValutazione ? "120,00" : "80,00"}
           />
-        </div>
 
-        <div className="px-5 py-4">
-          <p className="font-semibold text-base py-4">I tuoi dati</p>
+          <h3>I tuoi dati</h3>
           <CardDatiPersonali
             firstName={firstName ?? ""}
             lastName={lastName ?? ""}
@@ -113,9 +113,7 @@ export const Riepilogo = () => {
             email={email ?? ""}
             phoneNumber={phoneNumber ?? ""}
           />
-        </div>
 
-        <div className="px-5 py-4">
           <InfoBox
             Icon={BsInfoCircle}
             text="La richiesta non prevede il
@@ -126,16 +124,10 @@ export const Riepilogo = () => {
             pagamento."
             type="info"
           />
-        </div>
-        <div className="px-4 mb-4">
-          <Button
-            type="submit"
-            isSubmitting={isSubmitting}
-            text="Invia Richiesta"
-          />
-        </div>
-        <div className="text-center pb-4 px-4">
-          <CheckPrivacy />
+          <Button isSubmitting={isSubmitting} text="Invia Richiesta" />
+          <div className="text-center pb-4">
+            <CheckPrivacy />
+          </div>
         </div>
       </form>
     </>
