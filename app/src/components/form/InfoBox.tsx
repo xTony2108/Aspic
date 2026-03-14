@@ -2,7 +2,7 @@ import type { IconType } from "react-icons";
 
 interface InfoBoxProps {
   Icon: IconType;
-  text: string;
+  text: React.ReactElement;
   type: "warn" | "info";
 }
 
@@ -13,7 +13,7 @@ export const InfoBox = ({ Icon, text, type }: InfoBoxProps) => {
     >
       <Icon size={20} className="shrink-0 self-start mt-0.5" />
       <p
-        className={`leading-tight font-semibold ${type == "warn" ? "text-warn " : "text-highlight"}`}
+        className={`text-sm font-light ${type == "warn" ? "text-warn " : "text-highlight"}`}
       >
         {text}
       </p>

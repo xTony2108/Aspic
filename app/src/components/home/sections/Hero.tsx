@@ -1,6 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { FloatCard } from "../FloatCard";
 import { StatCard } from "../StatCard";
+import { FaArrowRight } from "react-icons/fa";
+import { FaArrowDown } from "react-icons/fa";
 
 export const Hero = () => {
   const scrollToSection = (id: string) => {
@@ -11,9 +13,9 @@ export const Hero = () => {
     }
   };
   return (
-    <section className="relative min-h-screen flex px-0 pb-0">
+    <section className="relative min-h-[calc(100svh-72px)] flex p-0">
       <div className="relative flex flex-col lg:grid lg:grid-cols-2 grow">
-        <div className="flex flex-col justify-center px-10 pt-16 pb-12 lg:px-16 lg:py-24 flex-1 row-start-1 fadeUp">
+        <div className="flex flex-col justify-center px-10 pt-16 pb-12 lg:px-10 xl:px-16 lg:py-24 flex-1 row-start-1 fadeUp">
           <span className="before:content-[''] before:w-5 before:h-px before:bg-primary inline-flex items-center gap-2 text-xs font-medium tracking-[.18em] text-primary mb-5 uppercase">
             Psicologia • Benessere • Crescita
           </span>
@@ -31,35 +33,18 @@ export const Hero = () => {
           </p>
           <div className="flex flex-col gap-3 lg:flex-row">
             <Link
-              to="/servizi"
+              to="/prenota/servizio"
               className="bg-primary text-white py-4 px-6 inline-flex items-center justify-center rounded-4xl -tracking-tight font-medium cursor-pointer gap-2 hover:bg-text hover:-translate-y-0.5 hover:drop-shadow-2xl hover:drop-shadow-[rgba(36,57,120,0.25)] transition-all duration-300 ease-in select-none"
-              href="#contatti"
             >
               Prenota una consulenza
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path
-                  d="M1 7h12M7 1l6 6-6 6"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <FaArrowRight size={14} />
             </Link>
             <button
               onClick={() => scrollToSection("chi-siamo")}
               className="flex items-center gap-2 text-text-muted text-sm font-normal self-center cursor-pointer"
             >
               Scopri di più
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path
-                  d="M7 1v12M1 7l6 6 6-6"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <FaArrowDown size={14} />
             </button>
           </div>
         </div>
