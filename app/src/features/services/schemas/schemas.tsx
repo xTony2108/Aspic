@@ -2,19 +2,37 @@ import { z } from "zod";
 
 export const baseSchema = z.object({
   service: z
-    .enum(["consulenza-psicologica", "valutazione-psicodiagnostica"])
+    .enum(["consulenza-psicologica", "valutazione-psicodiagnostica"], {
+      error: "Seleziona il servizio",
+    })
     .nullable(),
   appointmentDate: z.string({ error: "Seleziona una data valida" }),
-  appointmentTime: z.string().nonempty({ error: "Seleziona un orario" }),
-  urgent: z.boolean(),
-  clientAge: z.string(),
-  clientType: z.enum(["bambini", "adulti", "anziani"]).nullable(),
-  reason: z.string(),
-  firstName: z.string().min(2, { error: "Inserisci un nome valido" }),
-  lastName: z.string().min(2, { error: "Inserisci un cognome valido" }),
-  address: z.string().min(5, { error: "Inserisci un indirizzo valido" }),
+  appointmentTime: z.string({ error: "Seleziona un orario" }),
+  urgent: z.boolean({
+    error: "Richiesta urgente è di un formato non valido",
+  }),
+  clientAge: z.string({
+    error: "La fascia d'età del cliente è di un formato non valido",
+  }),
+  clientType: z.enum(["bambini", "adulti", "anziani"], {
+    error: "Seleziona un tipo di paziente",
+  }),
+  reason: z.string({
+    error: "Motivo della richiesta è di un formato non valido",
+  }),
+  firstName: z
+    .string({ error: "Inserisci un nome valido" })
+    .min(2, { error: "Inserisci un nome valido" }),
+  lastName: z
+    .string({ error: "Inserisci un cognome valido" })
+    .min(2, { error: "Inserisci un cognome valido" }),
+  address: z
+    .string({ error: "Inserisci un indirizzo valido" })
+    .min(5, { error: "Inserisci un indirizzo valido" }),
   birthday: z.string({ error: "Inserisci la data di nascita" }),
-  birthPlace: z.string().min(2, { error: "Inserisci una città valida" }),
+  birthPlace: z
+    .string({ error: "Inserisci un città valida" })
+    .min(2, { error: "Inserisci una città valida" }),
   fiscalCode: z
     .string({
       error: "Inserisci un codice fiscale",
@@ -31,7 +49,9 @@ export const baseSchema = z.object({
       "Codice fiscale non valido",
     ),
   email: z.email({ error: "Inserisci un indirizzo email valido" }),
-  phoneNumber: z.string().regex(/^3\d{9}$/, "Numero di cellulare non valido"),
+  phoneNumber: z
+    .string({ error: "Inserisci un numero di cellulare valido" })
+    .regex(/^3\d{9}$/, "Numero di cellulare non valido"),
   privacyAccepted: z.literal(true, {
     error: "Devi accettare il trattamento dei dati per procedere",
   }),
