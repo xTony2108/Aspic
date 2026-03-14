@@ -1,12 +1,12 @@
 import express from "express";
-import requestsRoute from "./requests/requests";
+import bookingsRoute from "./bookings/bookings";
 
 const router = express.Router();
 
 /**
- * @path /api/requests
+ * @path /api/bookings
  */
 
-router.use("/requests", requestsRoute);
+router.use("/bookings", bookingsRoute);
 
 export default router;

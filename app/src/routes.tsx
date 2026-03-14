@@ -7,6 +7,7 @@ import { FormStepLayout } from "./pages/FormStepLayout";
 import { Appuntamento } from "./pages/Appuntamento";
 import { DatiPersonali } from "./pages/DatiPersonali";
 import { Riepilogo } from "./pages/Riepilogo";
+import { Successo } from "./pages/Successo";
 
 const rootRoute = createRootRoute({
   component: Root,
@@ -53,6 +54,12 @@ export const riepilogoRoute = createRoute({
   component: Riepilogo,
 });
 
+export const successoRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "prenota/successo",
+  component: Successo,
+});
+
 export const routeTree = rootRoute.addChildren([
   indexRoute,
   prenotaRedirectRoute.addChildren([
@@ -61,4 +68,5 @@ export const routeTree = rootRoute.addChildren([
     datiPersonaliRoute,
     riepilogoRoute,
   ]),
+  successoRoute,
 ]);

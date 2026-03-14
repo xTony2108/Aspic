@@ -3,20 +3,13 @@ import type { IconType } from "react-icons";
 interface InfoBoxProps {
   Icon: IconType;
   text: React.ReactElement;
-  type: "warn" | "info";
 }
 
-export const InfoBox = ({ Icon, text, type }: InfoBoxProps) => {
+export const InfoBox = ({ Icon, text }: InfoBoxProps) => {
   return (
-    <div
-      className={`rounded-xl flex items-center gap-3 ${type == "warn" ? "bg-warnBg border border-warnBorder text-warn p-3" : "bg-secondary border border-highlight text-highlight p-4"}`}
-    >
-      <Icon size={20} className="shrink-0 self-start mt-0.5" />
-      <p
-        className={`text-sm font-light ${type == "warn" ? "text-warn " : "text-highlight"}`}
-      >
-        {text}
-      </p>
+    <div className="bg-warnBg border border-warn rounded-xl p-4 mb-6 flex gap-3 items-start">
+      <Icon className="text-warn shrink-0 mt-0.5" />
+      <p className="text-sm font-light text-warn">{text}</p>
     </div>
   );
 };

@@ -146,7 +146,7 @@ export const Appuntamento = () => {
             </div>
 
             <div className="flex flex-col gap-2">
-              <span className="block text-sm font-medium text-text tracking-wide">
+              <span className="block text-[.8rem] font-medium text-text tracking-wide">
                 Tipo di paziente
                 <span className="text-primary ml-0.5 text-xs"> *</span>
               </span>
@@ -170,7 +170,10 @@ export const Appuntamento = () => {
                   text="Anziani"
                 />
               </div>
-
+              <ErrorSpan
+                errors={methods.formState.errors}
+                inputName="clientType"
+              />
               {showAge && (
                 <>
                   <div
@@ -208,7 +211,6 @@ export const Appuntamento = () => {
                     inputName="clientAge"
                   />
                   <InfoBox
-                    type="warn"
                     Icon={IoWarningOutline}
                     text={
                       <>

@@ -5,7 +5,7 @@ import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { baseSchema } from "../features/services/schemas/schemas";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { BackButton } from "../components/form/BackButton";
 import { NextButton } from "../components/form/NextButton";
@@ -15,6 +15,8 @@ import { getServiceLabel } from "../features/services/services.config";
 import { getClientTypeLabel } from "../helpers/getClientTypeLabel";
 import { IoIosCheckmark } from "react-icons/io";
 import { ErrorSpan } from "../components/form/ErrorSpan";
+import { IoWarningOutline } from "react-icons/io5";
+import { InfoBox } from "../components/form/InfoBox";
 
 export const Riepilogo = () => {
   const navigate = useNavigate();
@@ -38,9 +40,12 @@ export const Riepilogo = () => {
   const urgent = useServizioFormStore((s) => s.urgent);
   const reason = useServizioFormStore((s) => s.reason);
   const privacyAccepted = useServizioFormStore((s) => s.privacyAccepted);
+
+  const clearData = useServizioFormStore((s) => s.clearData);
   const {
     handleSubmit,
     register,
+    setError,
     formState: { isSubmitting, errors },
   } = useForm<FormSchema>({
     resolver: zodResolver(baseSchema),
@@ -64,15 +69,72 @@ export const Riepilogo = () => {
     },
   });
 
-  // const { mutate, error, failureReason } = useMutation({
-  //   mutationKey: ["appointments"],
-  //   mutationFn: (data) => axios.post("/api/appointments/consulenza", data),
-  // });
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["appointments"],
+    mutationFn: (data: FormSchema) => axios.post("/api/bookings", data),
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        const fieldErrors = error.response?.data?.errors?.fieldErrors;
+        const message = error.response?.data?.message;
+
+        if (fieldErrors) {
+          Object.entries(fieldErrors).forEach(([field, messages]) => {
+            setError(field as keyof FormSchema, {
+              message: (messages as string[])[0],
+            });
+          });
+
+          const step1Fields = ["service"];
+
+          const step2Fields = [
+            "appointmentDate",
+            "appointmentTime",
+            "clientType",
+            "clientAge",
+            "urgent",
+            "reason",
+          ];
+          const step3Fields = [
+            "firstName",
+            "lastName",
+            "birthday",
+            "birthPlace",
+            "fiscalCode",
+            "email",
+            "phoneNumber",
+            "address",
+          ];
+
+          if (step1Fields.some((f) => fieldErrors[f])) {
+            navigate({ from: "/prenota/riepilogo", to: "/prenota/servizio" });
+          } else if (step2Fields.some((f) => fieldErrors[f])) {
+            navigate({
+              from: "/prenota/riepilogo",
+              to: "/prenota/appuntamento",
+            });
+          } else if (step3Fields.some((f) => fieldErrors[f])) {
+            navigate({ from: "/prenota/riepilogo", to: "/prenota/dati" });
+          }
+        }
+
+        if (message) {
+          setError("root.serverError", { message });
+        }
+      }
+    },
+    onSuccess: () => {
+      navigate({
+        from: "/prenota/riepilogo",
+        to: "/prenota/successo",
+        resetScroll: true,
+      });
+
+      clearData();
+    },
+  });
 
   const onSubmit = (data: FormSchema) => {
-    console.log(data);
-
-    // mutate(data);
+    mutate(data);
   };
 
   const hasHydrated = useServizioFormStore.persist.hasHydrated();
@@ -116,6 +178,12 @@ export const Riepilogo = () => {
         transition={{ duration: 0.4, ease: "backOut" }}
         viewport={{ once: true }}
       >
+        {errors.root?.serverError && (
+          <InfoBox
+            Icon={IoWarningOutline}
+            text={<>{errors.root.serverError.message}</>}
+          />
+        )}
         <div className="bg-white border border-border rounded-2xl mb-6">
           <div className="px-5 py-6 border-b border-border">
             <span className="uppercase font-medium text-primary mb-3.5 text-xs tracking-widest block">
@@ -203,7 +271,12 @@ export const Riepilogo = () => {
               })
             }
           />
-          <NextButton text="Invia richiesta" />
+          <NextButton
+            text={
+              isPending || isSubmitting ? "Caricamento..." : "Invia richiesta"
+            }
+            disabled={isPending || isSubmitting}
+          />
         </div>
       </motion.form>
     </>
