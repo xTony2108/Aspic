@@ -12,15 +12,15 @@
   --color-cream: hsl(0, 0%, 93%);
   --color-text: hsl(229, 30%, 18%);
   --color-text-muted: hsl(0, 0%, 45%);
-  --color-warnBg: #fef2f2;
-  --color-progressBar: #d0d9e7;
-  --color-warn: #b91c1c;
-  --color-warnBorder: #fecaca;
+  --color-warnBg: hsl(0, 72%, 98%);
+  --color-warn: hsl(0, 72%, 40%);
+  --color-warnBorder: hsl(0, 72%, 51%);
   --color-highlight: hsl(0 0% 97.9%);
   --color-border: hsl(0 0% 87.9%);
   --color-borderCard: hsl(0 0% 92.9%);
   --font-dm: "DM Sans", sans-serif;
   --font-garamond: "Cormorant Garamond", serif;
+  --text-form: 0.9rem;
 }
 
 @layer base {
@@ -52,6 +52,7 @@
   input:focus-within,
   textarea:focus-within {
     outline: 1px solid var(--color-primary);
+    box-shadow: 0 0 0 4px var(--color-blue-light);
   }
 
   input:-webkit-autofill,
@@ -95,7 +96,7 @@
   }
 
   main label {
-    @apply block text-base font-medium;
+    @apply block text-[.8rem] font-medium text-text tracking-wide;
   }
 
   .blob {

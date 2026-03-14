@@ -5,47 +5,24 @@ import type { baseSchema } from "./features/services/schemas/schemas";
 
 type FormSchema = z.infer<typeof baseSchema>;
 
-export type ConsulenzaState = Partial<FormSchema> & {
+export type ServizioState = Partial<FormSchema> & {
   setData: (data: Partial<FormSchema>) => void;
   clearData: () => void;
 };
 
-const initialConsulenzaState: Partial<ConsulenzaState> = {};
+const initialServizioState: Partial<ServizioState> = {};
 
-export const useConsulenzaFormStore = create<ConsulenzaState>()(
+export const useServizioFormStore = create<ServizioState>()(
   persist(
     (set) => ({
       setData: (data) => set(data),
       clearData: () => {
-        set(initialConsulenzaState);
-        useConsulenzaFormStore.persist.clearStorage();
+        set(initialServizioState);
+        useServizioFormStore.persist.clearStorage();
       },
     }),
     {
-      name: "consulenza",
-      storage: createJSONStorage(() => localStorage),
-    },
-  ),
-);
-
-export type ValutazioneState = Partial<FormSchema> & {
-  setData: (data: Partial<FormSchema>) => void;
-  clearData: () => void;
-};
-
-const initialValutazioneState: Partial<ValutazioneState> = {};
-
-export const useValutazioneFormStore = create<ValutazioneState>()(
-  persist(
-    (set) => ({
-      setData: (data) => set(data),
-      clearData: () => {
-        set(initialValutazioneState);
-        useValutazioneFormStore.persist.clearStorage();
-      },
-    }),
-    {
-      name: "valutazione",
+      name: "servizio",
       storage: createJSONStorage(() => localStorage),
     },
   ),

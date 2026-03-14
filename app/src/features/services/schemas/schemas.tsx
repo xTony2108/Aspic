@@ -1,8 +1,11 @@
 import { z } from "zod";
 
 export const baseSchema = z.object({
-  appointmentDate: z.string({ error: "Inserisci la data dell'appuntamento" }),
-  appointmentTime: z.string().nonempty({ error: "Inserisci un orario" }),
+  service: z
+    .enum(["consulenza-psicologica", "valutazione-psicodiagnostica"])
+    .nullable(),
+  appointmentDate: z.string({ error: "Seleziona una data valida" }),
+  appointmentTime: z.string().nonempty({ error: "Seleziona un orario" }),
   urgent: z.boolean(),
   clientAge: z.string(),
   clientType: z.enum(["bambini", "adulti", "anziani"]).nullable(),
@@ -29,6 +32,9 @@ export const baseSchema = z.object({
     ),
   email: z.email({ error: "Inserisci un indirizzo email valido" }),
   phoneNumber: z.string().regex(/^3\d{9}$/, "Numero di cellulare non valido"),
+  privacyAccepted: z.literal(true, {
+    error: "Devi accettare il trattamento dei dati per procedere",
+  }),
 });
 
 export type BaseTypeSchema = z.infer<typeof baseSchema>;

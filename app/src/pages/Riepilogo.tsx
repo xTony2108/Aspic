@@ -1,55 +1,67 @@
-import { CardDettaglioRiepilogo } from "../components/riepilogo/CardDettaglioRiepilogo";
-import { RiMentalHealthFill } from "react-icons/ri";
-import { useConsulenzaFormStore, useValutazioneFormStore } from "../store";
+import { useServizioFormStore } from "../store";
 import { useEffect } from "react";
-import { getRouteApi, useNavigate } from "@tanstack/react-router";
-import { CardDatiPersonali } from "../components/riepilogo/CardDatiPersonali";
-import { InfoBox } from "../components/form/InfoBox";
-import { BsInfoCircle } from "react-icons/bs";
-import { CheckPrivacy } from "../components/form/CheckPrivacy";
-import { Button } from "../components/layout/Button";
+import { useNavigate } from "@tanstack/react-router";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { FaClipboardUser } from "react-icons/fa6";
-import { useStore } from "zustand";
 import { baseSchema } from "../features/services/schemas/schemas";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { BackButton } from "../components/form/BackButton";
+import { NextButton } from "../components/form/NextButton";
+import { RiepilogoRow } from "../components/form/RiepilogoRow";
+import { motion } from "motion/react";
+import { getServiceLabel } from "../features/services/services.config";
+import { getClientTypeLabel } from "../helpers/getClientTypeLabel";
+import { IoIosCheckmark } from "react-icons/io";
+import { ErrorSpan } from "../components/form/ErrorSpan";
 
 export const Riepilogo = () => {
   const navigate = useNavigate();
-  const { config } = getRouteApi("/servizi/$servizio").useRouteContext();
-  const service = config.serviceType;
-  const label = config.label;
-  const store = useStore(config.store);
-
-  const isValutazione = service === "valutazione";
 
   type FormSchema = z.infer<typeof baseSchema>;
 
-  const {
-    clientType,
-    clientAge,
-    appointmentDate,
-    appointmentTime,
-    firstName,
-    lastName,
-    address,
-    birthday,
-    birthPlace,
-    fiscalCode,
-    phoneNumber,
-    email,
-    urgent,
-  } = store;
+  const service = useServizioFormStore((s) => s.service);
 
+  const clientType = useServizioFormStore((s) => s.clientType);
+  const clientAge = useServizioFormStore((s) => s.clientAge);
+  const appointmentDate = useServizioFormStore((s) => s.appointmentDate);
+  const appointmentTime = useServizioFormStore((s) => s.appointmentTime);
+  const firstName = useServizioFormStore((s) => s.firstName);
+  const lastName = useServizioFormStore((s) => s.lastName);
+  const address = useServizioFormStore((s) => s.address);
+  const birthday = useServizioFormStore((s) => s.birthday);
+  const birthPlace = useServizioFormStore((s) => s.birthPlace);
+  const fiscalCode = useServizioFormStore((s) => s.fiscalCode);
+  const phoneNumber = useServizioFormStore((s) => s.phoneNumber);
+  const email = useServizioFormStore((s) => s.email);
+  const urgent = useServizioFormStore((s) => s.urgent);
+  const reason = useServizioFormStore((s) => s.reason);
+  const privacyAccepted = useServizioFormStore((s) => s.privacyAccepted);
   const {
     handleSubmit,
-    formState: { isSubmitting },
+    register,
+    formState: { isSubmitting, errors },
   } = useForm<FormSchema>({
     resolver: zodResolver(baseSchema),
-    defaultValues: store,
+    defaultValues: {
+      service,
+      reason,
+      clientType,
+      clientAge,
+      appointmentDate,
+      appointmentTime,
+      firstName,
+      lastName,
+      address,
+      birthday,
+      birthPlace,
+      fiscalCode,
+      phoneNumber,
+      email,
+      urgent,
+      privacyAccepted,
+    },
   });
 
   // const { mutate, error, failureReason } = useMutation({
@@ -63,15 +75,15 @@ export const Riepilogo = () => {
     // mutate(data);
   };
 
-  const hasHydrated = isValutazione
-    ? useValutazioneFormStore.persist.hasHydrated()
-    : useConsulenzaFormStore.persist.hasHydrated();
+  const hasHydrated = useServizioFormStore.persist.hasHydrated();
 
-  const dataValid =
+  const appuntamentoValid =
     appointmentDate &&
     appointmentTime &&
     clientType &&
-    (clientType !== "bambini" || clientAge) &&
+    (clientType !== "bambini" || clientAge);
+
+  const datiValid =
     firstName &&
     lastName &&
     address &&
@@ -84,52 +96,116 @@ export const Riepilogo = () => {
   useEffect(() => {
     if (!hasHydrated) return;
 
-    if (!dataValid) {
-      navigate({ to: ".." });
+    if (!service) navigate({ to: "/prenota/servizio" });
+
+    if (!appuntamentoValid) {
+      navigate({ to: "/prenota/appuntamento" });
     }
-  }, [hasHydrated, dataValid]);
+
+    if (!datiValid) {
+      navigate({ to: "/prenota/dati" });
+    }
+  }, [hasHydrated, service, appuntamentoValid, datiValid]);
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="space-y-12">
-          <h2>Verifica i dati della tua richiesta prima di inviarla</h2>
-          <CardDettaglioRiepilogo
-            title={label}
-            Icon={isValutazione ? FaClipboardUser : RiMentalHealthFill}
-            clientType={clientType ?? ""}
-            clientAge={clientAge ?? ""}
-            appointmentDate={appointmentDate ?? ""}
-            appointmentTime={appointmentTime ?? ""}
-            urgent={urgent ?? false}
-            price={isValutazione ? "120,00" : "80,00"}
-          />
+      <motion.form
+        onSubmit={handleSubmit(onSubmit)}
+        initial={{ opacity: 0, scale: 0.92 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4, ease: "backOut" }}
+        viewport={{ once: true }}
+      >
+        <div className="bg-white border border-border rounded-2xl mb-6">
+          <div className="px-5 py-6 border-b border-border">
+            <span className="uppercase font-medium text-primary mb-3.5 text-xs tracking-widest block">
+              Servizio richiesto
+            </span>
+            <span className="font-garamond font-semibold text-lg text-text block">
+              {getServiceLabel(service!)}
+            </span>
+          </div>
+          <div className="px-5 py-6 border-b border-border">
+            <span className="uppercase font-medium text-primary mb-3.5 text-xs tracking-widest block">
+              Appuntamento
+            </span>
+            <dl>
+              <RiepilogoRow
+                label="Data"
+                value={new Date(appointmentDate!).toLocaleDateString()}
+              />
+              <RiepilogoRow label="Ora" value={appointmentTime!} />
+              <RiepilogoRow
+                label="Tipo paziente"
+                value={getClientTypeLabel(clientType!)}
+              />
+              {clientAge && (
+                <RiepilogoRow label="Fascia d'età" value={clientAge!} />
+              )}
 
-          <h3>I tuoi dati</h3>
-          <CardDatiPersonali
-            firstName={firstName ?? ""}
-            lastName={lastName ?? ""}
-            fiscalCode={fiscalCode ?? ""}
-            email={email ?? ""}
-            phoneNumber={phoneNumber ?? ""}
-          />
-
-          <InfoBox
-            Icon={BsInfoCircle}
-            text="La richiesta non prevede il
-            pagamento immediato. Una volta
-            confermato l'appuntamento,
-            riceverai via mail tutti i dettagli e un
-            link sicuro per procedere con il
-            pagamento."
-            type="info"
-          />
-          <Button isSubmitting={isSubmitting} text="Invia Richiesta" />
-          <div className="text-center pb-4">
-            <CheckPrivacy />
+              {reason && <RiepilogoRow label="Note" value={reason!} />}
+              {urgent && (
+                <div className="bg-warnBg border border-warnBorder text-warn rounded-full text-xs font-medium mt-2 px-3 py-1 w-fit">
+                  ⚡ Richiesta urgente
+                </div>
+              )}
+            </dl>
+          </div>
+          <div className="px-5 py-6">
+            <span className="uppercase font-light text-primary mb-3.5 text-xs tracking-widest block">
+              Dati Personali
+            </span>
+            <dl>
+              <RiepilogoRow
+                label="Nome e cognome"
+                value={`${firstName} ${lastName}`}
+              />
+              <RiepilogoRow
+                label="Data di nascita"
+                value={new Date(birthday!).toLocaleDateString()}
+              />
+              <RiepilogoRow label="Luogo di nascita" value={birthPlace!} />
+              <RiepilogoRow label="Codice fiscale" value={fiscalCode!} />
+              <RiepilogoRow label="Email" value={email!} />
+              <RiepilogoRow label="Telefono" value={phoneNumber!} />
+              <RiepilogoRow label="Indirizzo" value={address!} />
+            </dl>
           </div>
         </div>
-      </form>
+        <div className="py-4 px-5 bg-cream rounded-xl flex flex-col gap-3.5 mb-6">
+          <label className="flex gap-3.5 cursor-pointer items-start">
+            <div className="relative shrink-0 mt-0.5">
+              <input
+                {...register("privacyAccepted")}
+                type="checkbox"
+                className="peer appearance-none w-5 h-5 rounded-md border-2 border-border bg-white cursor-pointer transition-colors duration-200 checked:bg-primary checked:border-primary"
+              />
+              <IoIosCheckmark className="absolute inset-0 w-5 h-5 pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity duration-200 text-white" />
+            </div>
+            <p className="text-sm font-light">
+              Ho letto e accetto il{" "}
+              <a className="text-primary underline" href="/privacy">
+                trattamento dei dati personali
+              </a>{" "}
+              ai sensi del GDPR (Regolamento UE 2016/679). I dati forniti
+              saranno utilizzati esclusivamente per la gestione della
+              prenotazione.
+            </p>
+          </label>
+          <ErrorSpan errors={errors} inputName="privacyAccepted" />
+        </div>
+        <div className="flex justify-between">
+          <BackButton
+            onClickFn={() =>
+              navigate({
+                from: "/prenota/riepilogo",
+                to: "/prenota/dati",
+              })
+            }
+          />
+          <NextButton text="Invia richiesta" />
+        </div>
+      </motion.form>
     </>
   );
 };

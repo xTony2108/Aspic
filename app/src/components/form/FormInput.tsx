@@ -6,6 +6,7 @@ interface FormInputProps<T extends Object> {
   inputType: string;
   label: string;
   placeholder?: string;
+  required: boolean;
 }
 
 export const FormInput = <T extends Object>({
@@ -14,15 +15,21 @@ export const FormInput = <T extends Object>({
   inputType,
   label,
   placeholder,
+  required,
 }: FormInputProps<T>) => {
   return (
-    <label className="block">
+    <label>
       {label}
+      {required ? (
+        <span className="text-primary ml-0.5 text-xs">*</span>
+      ) : (
+        <span className="text-text-muted ml-0.5 text-xs">(facoltativo)</span>
+      )}
       <input
         {...register(inputName)}
         type={inputType}
         placeholder={placeholder}
-        className="bg-white border border-borderDefault py-3.5 px-4 rounded-xl mt-1.5 w-full appearance-none"
+        className="bg-white border border-border py-3 px-4 rounded-[10px] w-full appearance-none mt-1.5 font-light"
       />
     </label>
   );

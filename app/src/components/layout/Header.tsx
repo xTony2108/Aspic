@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import logo from "../../assets/logo_aspic.png";
+import logo from "../../assets/logo_aspic.svg";
 import { useEffect, useState } from "react";
 import { HamburgerMenu } from "./HamburgerMenu";
 
@@ -20,11 +20,11 @@ export const Header = () => {
   return (
     <>
       <header
-        className={`fixed flex justify-between items-center px-5 border-b border-border lg:px-16 z-50 w-full bg-bg top-0 left-0 right-0 transition-all duration-300 ease-in ${scrolled ? "py-4" : "py-6"}`}
+        className={`max-h-18 fixed flex justify-between items-center px-5 border-b border-border lg:px-16 z-50 w-full bg-bg top-0 left-0 right-0 transition-all duration-300 ease-in ${scrolled ? "py-2" : "py-3.5"}`}
       >
-        <div className="">
+        <div className="max-w-40">
           <img
-            className="object-contain relative z-50 block max-h-6 w-auto"
+            className="object-contain relative z-50 block w-full"
             src={logo}
             alt="logo aspic reggio calabria"
             loading="eager"
@@ -44,7 +44,6 @@ export const Header = () => {
         >
           <Link
             to="/"
-            href="#servizi"
             className="inline-block whitespace-nowrap relative py-3.5 text-text-muted uppercase tracking-wider font-normal hover:bg-cream hover:text-primary px-6 lg:p-0"
           >
             Servizi
@@ -66,9 +65,8 @@ export const Header = () => {
           </Link>
 
           <Link
-            to="/"
-            className="relative bg-primary text-white py-3 px-5.5 inline-flex items-center justify-center rounded-4xl font-medium cursor-pointer gap-2 mt-2 mx-6 select-none lg:m-0"
-            href="#contatti"
+            to="/prenota/servizio"
+            className="relative bg-primary text-white text-sm py-2 px-5.5 inline-flex items-center justify-center rounded-4xl font-medium cursor-pointer gap-2 mt-2 mx-6 select-none lg:m-0"
           >
             PRENOTA
           </Link>

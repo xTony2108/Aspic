@@ -1,42 +1,44 @@
-import type { Path, UseFormRegister } from "react-hook-form";
-import type { IconType } from "react-icons";
+import { useWatch, type Path, type UseFormRegister } from "react-hook-form";
 
 interface FormCheckboxProps<T extends Object> {
   register: UseFormRegister<T>;
   inputName: Path<T>;
-  text: string;
-  Icon?: IconType;
+  label: string;
+  heading: string;
+  description: string;
 }
 
 export const FormCheckbox = <T extends Object>({
   register,
   inputName,
-  text,
-  Icon,
+  label,
+  heading,
+  description,
 }: FormCheckboxProps<T>) => {
+  const { urgent } = useWatch();
+
   return (
-    <div className="p-3 mt-4 bg-white rounded-xl border border-borderDefault flex items-center font-semibold">
-      <label className="flex items-center gap-3 cursor-pointer">
-        <span className="relative w-5 h-5 border border-borderDefault rounded-md bg-white transition has-checked:bg-primary has-checked:border-primary">
+    <label className="cursor-pointer">
+      {label}
+      <div className="mt-2 flex items-center gap-3.5 bg-white border border-border rounded-xl p-4 pointer transition-colors duration-200 has-checked:border-warn has-checked:bg-warnBg">
+        <div className="w-10 h-5.5 shrink-0 bg-border relative transition-all duration-200 rounded-xl select-none has-checked:bg-warn">
           <input
             {...register(inputName)}
             type="checkbox"
-            className="absolute inset-0 opacity-0 cursor-pointer"
+            className="cursor-pointer absolute top-0.75 left-0.75 w-4 h-4 rounded-full bg-white transition-transform duration-200 appearance-none outline-none shadow-none select-none checked:translate-x-4.5"
           />
-
-          <svg
-            className="absolute inset-0 m-auto w-4 h-4 text-white transitionpointer-events-none has-checked:opacity-100"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="3"
+        </div>
+        <div className="flex flex-col flex-1">
+          <strong
+            className={`text-form font-medium ${urgent ? "text-warn" : "text-text"}`}
           >
-            <path d="M5 13l4 4L19 7" />
-          </svg>
-        </span>
-        {Icon && <Icon className="text-warn" />}
-        {text}
-      </label>
-    </div>
+            {heading}
+          </strong>
+          <span className="text-xs font-light text-text-muted">
+            {description}
+          </span>
+        </div>
+      </div>
+    </label>
   );
 };
