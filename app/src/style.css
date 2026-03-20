@@ -2,7 +2,7 @@
 
 @theme {
   --color-bg: hsl(0 0% 97%);
-  --light-grey: hsl(0, 0%, 87.9%);
+  --color-light-grey: hsl(0, 0%, 87.9%);
   --color-primary: hsl(229 54.2% 32.5%);
   --color-blue-dark: hsl(229, 30%, 14%);
   --color-blue-light: hsl(229, 35%, 82%);
@@ -18,6 +18,11 @@
   --color-highlight: hsl(0 0% 97.9%);
   --color-border: hsl(0 0% 87.9%);
   --color-borderCard: hsl(0 0% 92.9%);
+  --color-sidebar: hsl(229, 35%, 11%);
+  --color-login-border: hsl(229, 25%, 22%);
+  --color-login-bg: hsl(229, 28%, 20%);
+  --color-login-white: rgba(255, 255, 255, 0.6);
+  --color-login-warn: rgb(226, 105, 105);
   --font-dm: "DM Sans", sans-serif;
   --font-garamond: "Cormorant Garamond", serif;
   --text-form: 0.9rem;

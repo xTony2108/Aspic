@@ -1,7 +1,7 @@
 // CONNESSIONE AL DB E LISTEN
 
 import app from "./app";
-import db from "./db";
+import connect from "./db";
 
 const { SERVER_PORT } = process.env || "3000";
 
@@ -10,7 +10,7 @@ if (!SERVER_PORT) {
 }
 const startServer = async () => {
   try {
-    await db.connect();
+    await connect();
     app.listen(Number(SERVER_PORT), "0.0.0.0", () => {
       console.log(`SERVER UP AND RUNNING ON PORT ${SERVER_PORT}`);
     });

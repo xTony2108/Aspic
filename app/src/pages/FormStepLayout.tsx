@@ -13,7 +13,7 @@ export const FormStepLayout = () => {
   return (
     <>
       <FormHeader />
-      <div className="border-b border-border fixed w-full bg-bg z-50">
+      <div className="border-b border-border fixed w-full bg-bg z-50 mt-18">
         <div className="flex items-center m-auto px-5 py-3.5 max-w-3xl">
           {STEPS.map((step, i) => (
             <Fragment key={step.path}>
@@ -33,7 +33,7 @@ export const FormStepLayout = () => {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
         viewport={{ once: false }}
-        className="px-5 pt-24 pb-20 md:pt-26 md:pb-24 lg:pt-32 lg:pb-28 max-w-3xl m-auto"
+        className="px-5 pt-42 pb-20 md:pb-24 lg:pb-28 max-w-3xl mx-auto"
         key={pathname}
       >
         <div className="mb-8">

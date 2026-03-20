@@ -83,7 +83,7 @@ export const Appuntamento = () => {
     control: methods.control,
   });
 
-  const onSubmit = async (data: FormSchema) => {
+  const onSubmit = (data: FormSchema) => {
     setData(data);
 
     navigate({

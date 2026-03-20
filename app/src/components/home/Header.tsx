@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import logo from "../../assets/logo_aspic.svg";
 import { useEffect, useState } from "react";
-import { HamburgerMenu } from "./HamburgerMenu";
+import { HamburgerMenu } from "../layout/HamburgerMenu";
 
 export const Header = () => {
   const [showDropdown, setShowDropDown] = useState(false);
@@ -9,13 +9,27 @@ export const Header = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      const isScrolled = window.scrollY > 50;
+
+      setScrolled((prev) => {
+        if (prev === isScrolled) return prev;
+        return isScrolled;
+      });
     };
 
     window.addEventListener("scroll", handleScroll);
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(id);
+
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+      setShowDropDown(false);
+    }
+  };
 
   return (
     <>
@@ -40,28 +54,36 @@ export const Header = () => {
         </div>
 
         <nav
-          className={`flex flex-col fixed top-16 left-0 right-0 bg-bg text-[0.9rem] tracking-[0.06em] border-b border-border py-4 transition-all duration-500 ease-in-out opacity-100 z-50 lg:transition-none lg:relative lg:top-0 lg:opacity-100 lg:flex lg:flex-row lg:border-0 lg:py-0 lg:items-center lg:gap-10 lg:scale-100 ${!showDropdown ? "scale-0" : "scale-100"}`}
+          className={`flex flex-col fixed top-16 left-0 right-0 bg-bg text-form tracking-[0.06em] border-b border-border py-4 transition-all duration-500 ease-in-out opacity-100 z-50 lg:transition-none lg:relative lg:top-0 lg:opacity-100 lg:flex lg:flex-row lg:border-0 lg:py-0 lg:items-center lg:gap-10 lg:scale-100 ${!showDropdown ? "scale-0" : "scale-100"}`}
         >
           <Link
             to="/"
             className="inline-block whitespace-nowrap relative py-3.5 text-text-muted uppercase tracking-wider font-normal hover:bg-cream hover:text-primary px-6 lg:p-0"
+            onClick={() => scrollToSection("chi-siamo")}
           >
-            Servizi
+            Chi siamo
           </Link>
 
           <Link
             to="/"
-            href="#chi-sono"
             className="inline-block whitespace-nowrap relative py-3.5 text-text-muted uppercase tracking-wider font-normal hover:bg-cream hover:text-primary px-6 lg:p-0"
+            onClick={() => scrollToSection("mission")}
           >
-            Chi sono
+            La nostra mission
           </Link>
           <Link
             to="/"
-            href="#approccio"
             className="inline-block whitespace-nowrap relative py-3.5 text-text-muted uppercase tracking-wider font-normal hover:bg-cream hover:text-primary px-6 lg:p-0"
+            onClick={() => scrollToSection("guide")}
           >
-            Approccio
+            Chi dirige
+          </Link>
+          <Link
+            to="/"
+            className="inline-block whitespace-nowrap relative py-3.5 text-text-muted uppercase tracking-wider font-normal hover:bg-cream hover:text-primary px-6 lg:p-0"
+            onClick={() => scrollToSection("contact-us")}
+          >
+            Contattaci
           </Link>
 
           <Link

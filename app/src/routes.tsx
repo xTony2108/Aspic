@@ -8,6 +8,10 @@ import { Appuntamento } from "./pages/Appuntamento";
 import { DatiPersonali } from "./pages/DatiPersonali";
 import { Riepilogo } from "./pages/Riepilogo";
 import { Successo } from "./pages/Successo";
+import { AdminLogin } from "./pages/AdminLogin";
+import { AdminVerifica } from "./pages/AdminVerifica";
+import { Dashboard } from "./pages/Dashboard";
+import { PersistLogin } from "./components/PersistLogin";
 
 const rootRoute = createRootRoute({
   component: Root,
@@ -30,34 +34,63 @@ const prenotaRedirectRoute = createRoute({
   component: FormStepLayout,
 });
 
-export const servizioRoute = createRoute({
+const servizioRoute = createRoute({
   getParentRoute: () => prenotaRedirectRoute,
   path: "servizio",
   component: Servizio,
 });
 
-export const appuntamentoRoute = createRoute({
+const appuntamentoRoute = createRoute({
   getParentRoute: () => prenotaRedirectRoute,
   path: "appuntamento",
   component: Appuntamento,
 });
 
-export const datiPersonaliRoute = createRoute({
+const datiPersonaliRoute = createRoute({
   getParentRoute: () => prenotaRedirectRoute,
   path: "dati",
   component: DatiPersonali,
 });
 
-export const riepilogoRoute = createRoute({
+const riepilogoRoute = createRoute({
   getParentRoute: () => prenotaRedirectRoute,
   path: "riepilogo",
   component: Riepilogo,
 });
 
-export const successoRoute = createRoute({
+const successoRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "prenota/successo",
   component: Successo,
+});
+
+const adminAutenticatoRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  id: "_autenticato",
+  component: PersistLogin,
+});
+
+const adminRoute = createRoute({
+  getParentRoute: () => adminAutenticatoRoute,
+  path: "admin",
+});
+
+const adminIndexRoute = createRoute({
+  getParentRoute: () => adminRoute,
+  path: "/",
+  component: AdminLogin,
+});
+
+const adminVerificaRoute = createRoute({
+  getParentRoute: () => adminRoute,
+  path: "verifica",
+  component: AdminVerifica,
+});
+
+const dashboardRoute = createRoute({
+  getParentRoute: () => adminAutenticatoRoute,
+  path: "dashboard",
+  component: Dashboard,
 });
 
 export const routeTree = rootRoute.addChildren([
@@ -69,4 +102,8 @@ export const routeTree = rootRoute.addChildren([
     riepilogoRoute,
   ]),
   successoRoute,
+  adminAutenticatoRoute.addChildren([
+    adminRoute.addChildren([adminIndexRoute, adminVerificaRoute]),
+    dashboardRoute,
+  ]),
 ]);

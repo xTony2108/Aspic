@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 
 export const Guide = () => {
   return (
-    <section className="bg-bg">
+    <section className="bg-bg" id="guide">
       <div className="max-w-225 m-auto">
         <span className="mb-3 text-primary text-xs font-medium uppercase block tracking-widest text-center">
           La guida

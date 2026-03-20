@@ -1,0 +1,3 @@
+export const AUTH_MESSAGES = {
+  ACCOUNT_NOT_COMPLETED: "ACCOUNT_NOT_COMPLETED",
+} as const;
