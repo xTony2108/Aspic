@@ -3,7 +3,7 @@ import { Outlet } from "@tanstack/react-router";
 export const Root = () => {
   return (
     <>
-      <main className="relative pt-18 ">
+      <main className="relative">
         <Outlet />
       </main>
     </>

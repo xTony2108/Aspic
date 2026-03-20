@@ -3,7 +3,10 @@ import { motion } from "motion/react";
 export const OurMission = () => {
   return (
     <>
-      <section className="overflow-hidden bg-blue-dark relative before:content-[''] before:absolute before:-top-30 before:-right-30 before:w-85 before:h-85 before:rounded-[50%] before:opacity-[0.12] before:bg-primary before:filter-[blur(70px)] before:pointer-events-none">
+      <section
+        id="mission"
+        className="overflow-hidden bg-blue-dark relative before:content-[''] before:absolute before:-top-30 before:-right-30 before:w-85 before:h-85 before:rounded-[50%] before:opacity-[0.12] before:bg-primary before:filter-[blur(70px)] before:pointer-events-none"
+      >
         <div className="max-w-225 m-auto relative z-10">
           <span className="text-blue-light text-xs font-medium tracking-widest block mb-3 uppercase">
             La nostra mission

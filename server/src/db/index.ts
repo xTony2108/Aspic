@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import Appointment from "./models/Appointment";
 
 const { MONGO_DB_URI } = process.env;
 
@@ -16,6 +15,4 @@ const connect = async () => {
   }
 };
 
-const models = { Appointment: Appointment };
-
-export default { models, connect };
+export default connect;

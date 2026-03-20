@@ -27,3 +27,20 @@ export const useServizioFormStore = create<ServizioState>()(
     },
   ),
 );
+
+type AuthData = {
+  accessToken?: string;
+};
+
+export type AuthState = AuthData & {
+  setData: (data: AuthData) => void;
+  clearData: () => void;
+};
+
+export const useAuthStore = create<AuthState>()((set) => ({
+  accessToken: undefined,
+  setData: (data) => set(data),
+  clearData: () => {
+    set({ accessToken: undefined });
+  },
+}));

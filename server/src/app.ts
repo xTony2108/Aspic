@@ -6,6 +6,7 @@ import express from "express";
 import helmet from "helmet";
 import cors from "cors";
 import apiRoute from "./routes/index";
+import cookieParser from "cookie-parser";
 
 const app = express();
 
@@ -42,6 +43,7 @@ if (process.env.NODE_ENV === "production") {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: "http://localhost:5173" }));
+app.use(cookieParser());
 
 // routes
 /**

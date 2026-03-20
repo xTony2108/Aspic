@@ -1,7 +1,7 @@
 import { type Response, type Request } from "express";
-import { baseSchema, type BaseTypeSchema } from "../schema/schemas";
 import z from "zod";
-import Appointment from "../db/models/Appointment";
+import { baseSchema, BaseTypeSchema } from "../../schema/schemas";
+import Appointment from "../../db/models/Appointment";
 
 export const bookingController = async (req: Request, res: Response) => {
   const parsed = baseSchema.safeParse(req.body as BaseTypeSchema);

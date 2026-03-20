@@ -13,9 +13,9 @@ export const Hero = () => {
     }
   };
   return (
-    <section className="relative min-h-[calc(100svh-72px)] flex p-0">
-      <div className="relative flex flex-col lg:grid lg:grid-cols-2 grow">
-        <div className="flex flex-col justify-center px-10 pt-16 pb-12 lg:px-10 xl:px-16 lg:py-24 flex-1 row-start-1 fadeUp">
+    <section className="mt-18 relative min-h-[calc(100svh-72px)] flex p-0">
+      <div className="relative flex flex-col xl:grid xl:grid-cols-2 grow">
+        <div className="flex flex-col justify-center px-10 pt-16 pb-12 lg:px-10 xl:px-16 xl:py-24 flex-1 row-start-1 fadeUp">
           <span className="before:content-[''] before:w-5 before:h-px before:bg-primary inline-flex items-center gap-2 text-xs font-medium tracking-[.18em] text-primary mb-5 uppercase">
             Psicologia • Benessere • Crescita
           </span>
@@ -53,7 +53,7 @@ export const Hero = () => {
           <StatCard heading="500+" desc="pazienti seguiti" />
           <StatCard heading="98%" desc="soddisfazione" />
         </div>
-        <div className="hidden lg:flex lg:items-center lg:justify-center fadeIn flex-1 col-span-1">
+        <div className="hidden xl:flex lg:items-center lg:justify-center fadeIn flex-1 col-span-1">
           <div className="relative w-110 h-135">
             <div className="blob"></div>
             <FloatCard
