@@ -1,5 +1,9 @@
 import { useEffect } from "react";
-import { useNavigate, useSearch } from "@tanstack/react-router";
+import {
+  createLazyRoute,
+  useNavigate,
+  useSearch,
+} from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import logo from "../assets/logo_aspic_bianco.svg";
 import { createEmailVerificationMutationOptions } from "../api/verifyEmail/createEmailVerificationMutationOptions";
@@ -108,3 +112,7 @@ export const AdminVerifica = () => {
     </div>
   );
 };
+
+export const Route = createLazyRoute("/_autenticato/admin/verifica")({
+  component: AdminVerifica,
+});

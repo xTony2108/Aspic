@@ -1,6 +1,6 @@
 import { useServizioFormStore } from "../store";
 import { useEffect } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { createLazyRoute, useNavigate } from "@tanstack/react-router";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -282,3 +282,7 @@ export const Riepilogo = () => {
     </>
   );
 };
+
+export const Route = createLazyRoute("/prenota/riepilogo")({
+  component: Riepilogo,
+});

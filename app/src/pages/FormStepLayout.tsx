@@ -1,10 +1,11 @@
-import { Outlet, useLocation } from "@tanstack/react-router";
+import { createLazyRoute, Outlet, useLocation } from "@tanstack/react-router";
 import { ProgressDot } from "../components/form/progress/ProgressDot";
 import { ProgressLine } from "../components/form/progress/ProgressLine";
 import { FormHeader } from "../components/form/FormHeader";
 import { STEPS } from "../features/services/services.config";
 import { Fragment } from "react/jsx-runtime";
 import { motion } from "motion/react";
+import { StepNotFound } from "../components/form/StepNotFound";
 
 export const FormStepLayout = () => {
   const { pathname } = useLocation();
@@ -53,3 +54,8 @@ export const FormStepLayout = () => {
     </>
   );
 };
+
+export const Route = createLazyRoute("/prenota")({
+  component: FormStepLayout,
+  notFoundComponent: StepNotFound,
+});

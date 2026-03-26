@@ -6,11 +6,23 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../../helpers/generateJWTTokens";
+import { loginSchema, LoginTypeSchema } from "../../schema/schemas";
+import z from "zod";
 
 export const loginController = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   try {
+    const parsed = loginSchema.safeParse(req.body as LoginTypeSchema);
+
+    if (!parsed.success) {
+      const zodErrors = z.flattenError(parsed.error);
+
+      return res
+        .status(400)
+        .json({ message: "Sono presenti errori", errors: zodErrors });
+    }
+
     const user = await User.findOne(
       { email },
       "_id firstName lastName email password temporaryPassword emailVerified emailVerificationToken emailVerificationExpires passwordChanged",

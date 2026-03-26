@@ -20,7 +20,6 @@ export const FormHeader = () => {
         <nav className={`bg-bg text-sm tracking-[0.06em]`}>
           <Link
             to="/"
-            href="#approccio"
             className="inline-flex items-center gap-1 whitespace-nowrap relative py-3.5 text-text-muted tracking-wider font-normal hover:bg-cream hover:text-primary px-6 lg:p-0"
           >
             <MdKeyboardArrowLeft size={20} />

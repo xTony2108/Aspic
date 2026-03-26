@@ -1,3 +1,4 @@
+import { createLazyRoute } from "@tanstack/react-router";
 import { Header } from "../components/home/Header";
 import { AboutUs } from "../components/home/sections/AboutUs";
 import { Equipe } from "../components/home/sections/Equipe";
@@ -21,3 +22,7 @@ export const Home = () => {
     </>
   );
 };
+
+export const Route = createLazyRoute("/")({
+  component: Home,
+});

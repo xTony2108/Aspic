@@ -11,7 +11,7 @@
   --color-white-rgba-2: rgba(255, 255, 255, 0.6);
   --color-cream: hsl(0, 0%, 93%);
   --color-text: hsl(229, 30%, 18%);
-  --color-text-muted: hsl(0, 0%, 45%);
+  --color-text-muted: hsl(0, 0%, 44%);
   --color-warnBg: hsl(0, 72%, 98%);
   --color-warn: hsl(0, 72%, 40%);
   --color-warnBorder: hsl(0, 72%, 51%);
@@ -26,6 +26,12 @@
   --font-dm: "DM Sans", sans-serif;
   --font-garamond: "Cormorant Garamond", serif;
   --text-form: 0.9rem;
+  --color-sidebar-text-color: rgba(255, 255, 255, 0.3);
+  --text-sidebar-text: 0.68rem;
+  --tracking-sidebar: 0.08em;
+  --tracking-sidebar-wider: 0.14em;
+  --color-sidebar-link-color: rgba(255, 255, 255, 0.5);
+  --color-sidebar-active: hsl(229, 40%, 28%);
 }
 
 @layer base {

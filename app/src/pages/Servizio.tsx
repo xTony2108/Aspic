@@ -5,7 +5,7 @@ import { baseSchema } from "../features/services/schemas/schemas";
 import type z from "zod";
 import { useServizioFormStore } from "../store";
 import { SERVIZI_CONFIG } from "../features/services/services.config";
-import { useNavigate } from "@tanstack/react-router";
+import { createLazyRoute, useNavigate } from "@tanstack/react-router";
 import { NextButton } from "../components/form/NextButton";
 
 export const Servizio = () => {
@@ -63,3 +63,7 @@ export const Servizio = () => {
     </>
   );
 };
+
+export const Route = createLazyRoute("/prenota/servizio")({
+  component: Servizio,
+});

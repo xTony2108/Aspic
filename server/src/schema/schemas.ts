@@ -61,3 +61,57 @@ export const baseSchema = z
   .superRefine(ageValidation);
 
 export type BaseTypeSchema = z.infer<typeof baseSchema>;
+
+export const loginSchema = z.object({
+  email: z.email({ error: "Inserisci un indirizzo email valido" }),
+  password: z
+    .string({ error: "Inserisci la password" })
+    .min(8, "La password deve contenere almeno 8 caratteri")
+    .regex(/[A-Z]/, "Deve contenere almeno una lettera maiuscola")
+    .regex(/[a-z]/, "Deve contenere almeno una lettera minuscola")
+    .regex(/[0-9]/, "Deve contenere almeno un numero")
+    .regex(/[^A-Za-z0-9]/, "Deve contenere almeno un carattere speciale"),
+});
+
+export type LoginTypeSchema = z.infer<typeof loginSchema>;
+
+export const accountPersonal = z.object({
+  firstName: z
+    .string({ error: "Inserisci un nome valido" })
+    .min(2, { error: "Inserisci un nome valido" }),
+  lastName: z
+    .string({ error: "Inserisci un cognome valido" })
+    .min(2, { error: "Inserisci un cognome valido" }),
+  email: z.email({ error: "Inserisci un indirizzo email valido" }),
+  phoneNumber: z
+    .string({ error: "Inserisci un numero di cellulare valido" })
+    .regex(/^3\d{9}$/, "Numero di cellulare non valido"),
+});
+
+export type AccountPersonalTypeSchema = z.infer<typeof accountPersonal>;
+
+export const passwordChange = z.object({
+  oldPassword: z
+    .string({ error: "Inserisci la password" })
+    .min(8, "La password deve contenere almeno 8 caratteri")
+    .regex(/[A-Z]/, "Deve contenere almeno una lettera maiuscola")
+    .regex(/[a-z]/, "Deve contenere almeno una lettera minuscola")
+    .regex(/[0-9]/, "Deve contenere almeno un numero")
+    .regex(/[^A-Za-z0-9]/, "Deve contenere almeno un carattere speciale"),
+  password: z
+    .string({ error: "Inserisci la password" })
+    .min(8, "La password deve contenere almeno 8 caratteri")
+    .regex(/[A-Z]/, "Deve contenere almeno una lettera maiuscola")
+    .regex(/[a-z]/, "Deve contenere almeno una lettera minuscola")
+    .regex(/[0-9]/, "Deve contenere almeno un numero")
+    .regex(/[^A-Za-z0-9]/, "Deve contenere almeno un carattere speciale"),
+  confirmPassword: z
+    .string({ error: "Inserisci la password" })
+    .min(8, "La password deve contenere almeno 8 caratteri")
+    .regex(/[A-Z]/, "Deve contenere almeno una lettera maiuscola")
+    .regex(/[a-z]/, "Deve contenere almeno una lettera minuscola")
+    .regex(/[0-9]/, "Deve contenere almeno un numero")
+    .regex(/[^A-Za-z0-9]/, "Deve contenere almeno un carattere speciale"),
+});
+
+export type PasswordChangeTypeSchema = z.infer<typeof passwordChange>;

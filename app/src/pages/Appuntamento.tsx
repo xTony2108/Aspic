@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { IoWarningOutline } from "react-icons/io5";
 import { FormCheckbox } from "../components/form/FormCheckbox";
 import { InfoBox } from "../components/form/InfoBox";
-import { useNavigate } from "@tanstack/react-router";
+import { createLazyRoute, useNavigate } from "@tanstack/react-router";
 import { FormInput } from "../components/form/FormInput";
 import { baseSchema } from "../features/services/schemas/schemas";
 import { useServizioFormStore } from "../store";
@@ -256,3 +256,7 @@ export const Appuntamento = () => {
     </>
   );
 };
+
+export const Route = createLazyRoute("/prenota/appuntamento")({
+  component: Appuntamento,
+});

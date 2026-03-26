@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import logo from "../assets/logo_aspic.svg";
 
-export const NotFound = () => {
+export const NotFoundDashboard = () => {
   return (
     <div className="min-h-screen bg-off-white flex items-center justify-center px-4 relative overflow-hidden">
       <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-primary opacity-10 blur-[100px] pointer-events-none" />
@@ -23,10 +23,10 @@ export const NotFound = () => {
         </div>
 
         <Link
-          to=".."
+          to="/dashboard"
           className="bg-primary text-white text-sm font-medium px-6 py-3 rounded-xl transition-all duration-200 hover:bg-text hover:-translate-y-px"
         >
-          Indietro
+          Torna alla dashboard
         </Link>
 
         <p className="text-xs text-text-muted">

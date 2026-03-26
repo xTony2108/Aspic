@@ -10,6 +10,7 @@ import { useServizioFormStore } from "../store";
 import { BackButton } from "../components/form/BackButton";
 import { NextButton } from "../components/form/NextButton";
 import { ErrorSpan } from "../components/form/ErrorSpan";
+import { createLazyRoute } from "@tanstack/react-router";
 
 export const DatiPersonali = () => {
   const navigate = useNavigate();
@@ -245,3 +246,7 @@ export const DatiPersonali = () => {
     </>
   );
 };
+
+export const Route = createLazyRoute("/prenota/dati")({
+  component: DatiPersonali,
+});

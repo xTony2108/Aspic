@@ -5,11 +5,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   loginSchema,
   type LoginTypeSchema,
-} from "../features/services/schemas/schemas";
-import { useNavigate } from "@tanstack/react-router";
-import { createLoginMutationOptions } from "../api/login/createLoginMutationOptions";
-import { AUTH_MESSAGES } from "../costants/authMessages";
-import { useAuthStore } from "../store";
+} from "../../features/services/schemas/schemas";
+import { createLazyRoute, useNavigate } from "@tanstack/react-router";
+import { createLoginMutationOptions } from "../../api/login/createLoginMutationOptions";
+import { AUTH_MESSAGES } from "../../costants/authMessages";
+import { useAuthStore } from "../../store";
+import { LoginInput } from "../../components/login/LoginInput";
+import { LoginErrorSpan } from "../../components/login/LoginErrorSpan";
 export const AdminLogin = () => {
   const navigate = useNavigate();
   const setData = useAuthStore((s) => s.setData);
@@ -66,35 +68,27 @@ export const AdminLogin = () => {
             Pannello amministrativo
           </div>
           <div className="mb-4.5">
-            <label htmlFor="email" className="text-login-white">
-              Email
-            </label>
-            <input
-              type="email"
+            <LoginInput
               id="email"
-              {...register("email")}
-              autoComplete="email"
+              type="email"
+              register={register}
+              inputName="email"
               placeholder="admin@aspicrc.it"
-              className="border border-login-border bg-login-bg w-full px-4 py-3 rounded-xl outline-none text-form text-white focus:border-blue-mid focus:shadow-none transition-colors duration-200"
             />
-            <div className="mt-3 text-xs text-login-warn">
-              {errors && errors.email?.message}
-            </div>
+            <LoginErrorSpan errors={errors} inputName="email" />
           </div>
           <div className="mb-4.5">
             <label htmlFor="password" className="text-login-white">
               Password
             </label>
-            <input
-              type="password"
+            <LoginInput
               id="password"
-              {...register("password")}
+              type="password"
+              register={register}
+              inputName="password"
               placeholder="••••••••"
-              className="border border-login-border bg-login-bg w-full px-4 py-3 rounded-xl outline-none text-form text-white focus:border-blue-mid focus:shadow-none transition-colors duration-200"
             />
-            <div className="mt-3 text-xs text-login-warn">
-              {errors && errors.password?.message}
-            </div>
+            <LoginErrorSpan errors={errors} inputName="password" />
           </div>
           <button
             className="w-full mt-2 bg-primary p-3.5 rounded-xl text-form cursor-pointer font-medium text-white hover:bg-blue-mid hover:-translate-y-px transition-all duration-200"
@@ -112,3 +106,7 @@ export const AdminLogin = () => {
     </form>
   );
 };
+
+export const Route = createLazyRoute("/_autenticato/admin/")({
+  component: AdminLogin,
+});

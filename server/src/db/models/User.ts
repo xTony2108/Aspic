@@ -85,6 +85,7 @@ const userSchema = new Schema(
       default: "admin",
       required: true,
     },
+
     refreshToken: {
       type: String,
       default: null,

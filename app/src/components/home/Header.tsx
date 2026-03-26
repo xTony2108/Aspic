@@ -41,7 +41,6 @@ export const Header = () => {
             className="object-contain relative z-50 block w-full"
             src={logo}
             alt="logo aspic reggio calabria"
-            loading="eager"
             fetchPriority="high"
           />
         </div>

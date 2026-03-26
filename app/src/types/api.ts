@@ -15,3 +15,14 @@ export type LoginErrorResponse = {
 export type VerifyTokenResponse = {
   message: string;
 };
+
+export type UserDataResponse = {
+  message: string;
+  userData: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+    passwordChanged: boolean;
+  };
+};

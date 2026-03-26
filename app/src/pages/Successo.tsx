@@ -1,5 +1,6 @@
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { SuccessStep } from "../components/form/SuccessStep";
+import { createLazyRoute } from "@tanstack/react-router";
 
 export const Successo = () => {
   return (
@@ -37,3 +38,7 @@ export const Successo = () => {
     </div>
   );
 };
+
+export const Route = createLazyRoute("/prenota/successo")({
+  component: Successo,
+});
