@@ -26,15 +26,11 @@ const userSchema = new Schema(
 
     password: {
       type: String,
+      required: true,
     },
 
     passwordChanged: {
       type: Boolean,
-      required: true,
-    },
-
-    temporaryPassword: {
-      type: String,
       required: true,
     },
 
@@ -84,11 +80,6 @@ const userSchema = new Schema(
       type: String,
       default: "admin",
       required: true,
-    },
-
-    refreshToken: {
-      type: String,
-      default: null,
     },
   },
   { strict: true, timestamps: true },

@@ -1,6 +1,7 @@
 import { axiosPrivate } from "./axios";
 import { useAuthStore } from "../store";
 import axios from "axios";
+import { router } from "../App";
 
 axiosPrivate.interceptors.request.use((config) => {
   if (!config.headers["Authorization"]) {
@@ -14,6 +15,7 @@ axiosPrivate.interceptors.response.use(
   (response) => response,
   async (error) => {
     const prevRequest = error.config;
+
     if (!prevRequest || prevRequest.sent) return Promise.reject(error);
 
     if (error?.response?.status === 401) {
@@ -28,6 +30,7 @@ axiosPrivate.interceptors.response.use(
         return axiosPrivate(prevRequest);
       } catch {
         useAuthStore.getState().clearData();
+        router.navigate({ to: "/admin" });
       }
     }
 

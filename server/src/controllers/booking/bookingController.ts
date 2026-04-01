@@ -1,32 +1,42 @@
 import { type Response, type Request } from "express";
-import z from "zod";
-import { baseSchema, BaseTypeSchema } from "../../schema/schemas";
 import Appointment from "../../db/models/Appointment";
+import { logger } from "../../logger";
 
 export const bookingController = async (req: Request, res: Response) => {
-  const parsed = baseSchema.safeParse(req.body as BaseTypeSchema);
+  const { fiscalCode, firstName, lastName, email } = req.body;
 
-  if (!parsed.success) {
-    const zodErrors = z.flattenError(parsed.error);
+  try {
+    logger.info(
+      `[BOOKING] Attempt for fiscal code: ${fiscalCode} (${firstName} ${lastName})`,
+    );
 
-    return res
-      .status(400)
-      .json({ message: "Sono presenti errori", errors: zodErrors });
-  }
+    // Controllo duplicati per codice fiscale
+    const existingAppointment = await Appointment.findOne(
+      { fiscalCode },
+      "fiscalCode",
+      { lean: true },
+    );
 
-  const fiscalCode = await Appointment.findOne(
-    {
-      fiscalCode: parsed.data.fiscalCode,
-    },
-    "fiscalCode",
-    { lean: true },
-  );
+    if (existingAppointment) {
+      logger.warn(`[BOOKING] Failed: duplicate fiscal code - ${fiscalCode}`);
+      return res.status(400).json({
+        message:
+          "É già stata effettuata una richiesta con questo Codice Fiscale",
+      });
+    }
 
-  if (fiscalCode)
-    return res.status(400).json({
-      message: "É già stata effettuata una richiesta con questo Codice Fiscale",
+    const newAppointment = await Appointment.create(req.body);
+
+    logger.info(
+      `[BOOKING] Created: ${newAppointment._id} for ${email} (${fiscalCode})`,
+    );
+
+    return res.status(201).json({
+      message: "Richiesta inviata con successo!",
+      appointmentId: newAppointment._id,
     });
-
-  await Appointment.create(req.body);
-  return res.status(201).json({ message: "Richiesta inviata con successo!" });
+  } catch (error) {
+    logger.error(`[BOOKING] Error for ${fiscalCode}: ${error}`);
+    return res.status(500).json({ message: "Errore interno del server" });
+  }
 };

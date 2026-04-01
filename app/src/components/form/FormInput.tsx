@@ -1,7 +1,7 @@
-import type { Path, UseFormRegister } from "react-hook-form";
+import { useController, type Control, type Path } from "react-hook-form";
 
-interface FormInputProps<T extends Object> {
-  register: UseFormRegister<T>;
+interface FormInputProps<T extends Record<string, any>> {
+  control: Control<T>;
   inputName: Path<T>;
   inputType: string;
   label: string;
@@ -9,14 +9,19 @@ interface FormInputProps<T extends Object> {
   required: boolean;
 }
 
-export const FormInput = <T extends Object>({
-  register,
+export const FormInput = <T extends Record<string, any>>({
+  control,
   inputName,
   inputType,
   label,
   placeholder,
   required,
 }: FormInputProps<T>) => {
+  const { field } = useController({
+    control,
+    name: inputName,
+  });
+
   return (
     <label>
       {label}
@@ -26,9 +31,13 @@ export const FormInput = <T extends Object>({
         <span className="text-text-muted ml-0.5 text-xs">(facoltativo)</span>
       )}
       <input
-        {...register(inputName)}
-        type={inputType}
+        onChange={field.onChange}
+        onBlur={field.onBlur}
+        value={field.value}
+        name={field.name}
+        ref={field.ref}
         placeholder={placeholder}
+        type={inputType}
         className="bg-white border border-border py-3 px-4 rounded-[10px] w-full appearance-none mt-1.5 font-light"
       />
     </label>

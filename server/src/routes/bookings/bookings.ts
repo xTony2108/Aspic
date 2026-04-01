@@ -1,5 +1,7 @@
 import express from "express";
 import { bookingController } from "../../controllers/booking/bookingController";
+import { validateBody } from "../../middleware/validateBody";
+import { baseSchema } from "../../schema/schemas";
 const router = express.Router();
 
 /**
@@ -7,6 +9,6 @@ const router = express.Router();
  * @method POST
  */
 
-router.post("/", bookingController);
+router.post("/", validateBody(baseSchema), bookingController);
 
 export default router;

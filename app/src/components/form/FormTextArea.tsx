@@ -1,20 +1,24 @@
-import type { Path, UseFormRegister } from "react-hook-form";
+import { useController, type Control, type Path } from "react-hook-form";
 
-interface FormTextAreaProps<T extends Object> {
+interface FormTextAreaProps<T extends Record<string, any>> {
+  control: Control<T>;
   inputName: Path<T>;
-  register: UseFormRegister<T>;
   label: string;
   placeholder: string;
   required: boolean;
 }
 
-export const FormTextArea = <T extends Object>({
+export const FormTextArea = <T extends Record<string, any>>({
+  control,
   inputName,
-  register,
   label,
   placeholder,
   required,
 }: FormTextAreaProps<T>) => {
+  const { field } = useController({
+    control,
+    name: inputName,
+  });
   return (
     <div className="flex flex-col gap-2">
       <label htmlFor="reason">
@@ -26,7 +30,10 @@ export const FormTextArea = <T extends Object>({
         )}
       </label>
       <textarea
-        {...register(inputName)}
+        onBlur={field.onBlur}
+        name={field.name}
+        ref={field.ref}
+        onChange={field.onChange}
         id="reason"
         className="h-28 bg-white w-full rounded-xl px-4 py-3 border border-border text-form"
         placeholder={placeholder}

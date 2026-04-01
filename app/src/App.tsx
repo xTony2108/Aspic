@@ -1,10 +1,12 @@
 import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { queryClient } from "./queryClient";
 import { routeTree } from "./routes";
 
-const router = createRouter({
+export const router = createRouter({
   routeTree,
   scrollRestoration: true,
-  context: { axiosPrivate: undefined! },
+  defaultPreload: "intent",
+  context: { queryClient },
 });
 
 declare module "@tanstack/react-router" {
@@ -14,5 +16,9 @@ declare module "@tanstack/react-router" {
 }
 
 export const App = () => {
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <RouterProvider router={router} />
+    </>
+  );
 };

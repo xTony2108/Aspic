@@ -2,13 +2,9 @@ import jwt from "jsonwebtoken";
 
 const { JWT_SECRET, JWT_REFRESH_SECRET } = process.env;
 
-if (!JWT_SECRET || !JWT_REFRESH_SECRET)
-  throw new Error(
-    "Variabile d'ambiente JWT_SECRET o JWT_REFRESH_SECRET non definita",
-  );
-
 interface TokenPayload {
   _id: string;
+  jti?: string;
 }
 
 export const generateAccessToken = (payload: TokenPayload) => {

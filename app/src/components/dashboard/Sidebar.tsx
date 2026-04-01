@@ -2,14 +2,32 @@ import { useState } from "react";
 import logo from "../../assets/logo_aspic_bianco.svg";
 import { SidebarLink } from "./SidebarLink";
 import { CiLogout } from "react-icons/ci";
-import { useLoaderData } from "@tanstack/react-router";
 import { SidebarLabel } from "./SidebarLabel";
 import { DashboardAvatar } from "./DashboardAvatar";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { createGetUserDataQueryOptions } from "../../api/admin/getUserData";
+import { createLogoutMutationOptions } from "../../api/auth/createLogoutMutationOptions";
+import { useNavigate } from "@tanstack/react-router";
+import { useAuthStore } from "../../store";
+import { queryClient } from "../../queryClient";
 
 export const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const { userData } = useLoaderData({ from: "/_autenticato" });
+  const navigate = useNavigate();
 
+  const [isOpen, setIsOpen] = useState(false);
+  const {
+    data: { userData },
+  } = useSuspenseQuery(createGetUserDataQueryOptions());
+
+  const cleanup = () => {
+    useAuthStore.getState().setData({ accessToken: undefined });
+    queryClient.clear();
+    return navigate({ to: "/admin" });
+  };
+
+  const { mutate } = useMutation(
+    createLogoutMutationOptions({ onError: cleanup, onSuccess: cleanup }),
+  );
   return (
     <>
       <button
@@ -21,15 +39,20 @@ export const Sidebar = () => {
 
       {isOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-40 backdrop-blur-sm"
+          className="lg:hidden fixed inset-0 bg-black/50 z-30 backdrop-blur-sm"
           onClick={() => setIsOpen(false)}
         />
       )}
       <aside
-        className={`fixed lg:sticky top-0 left-0 h-screen z-50 w-60 bg-sidebar flex flex-col transition-transform duration-300 lg:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
+        className={`fixed lg:sticky top-0 left-0 bottom-0 h-dvh z-50 w-60 bg-sidebar flex flex-col transition-transform duration-300 lg:translate-x-0 will-change-auto overflow-y-scroll no-scrollbar ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         <div className="px-5 pt-6 pb-4 border-b border-login-border">
-          <img src={logo} alt="" className="w-3/4" />
+          <img
+            src={logo}
+            alt="logo aspic reggio calabria"
+            fetchPriority="high"
+            className="w-3/4"
+          />
           <div className="text-sidebar-text text-sidebar-text-color tracking-sidebar uppercase mt-[.2rem]">
             Pannello amministrativo
           </div>
@@ -85,7 +108,10 @@ export const Sidebar = () => {
                 Amministratore
               </div>
             </div>
-            <button className="text-primary shrink-0 cursor-pointer">
+            <button
+              className="text-white shrink-0 cursor-pointer"
+              onClick={() => mutate()}
+            >
               <CiLogout size={24} />
             </button>
           </div>

@@ -26,3 +26,20 @@ export type UserDataResponse = {
     passwordChanged: boolean;
   };
 };
+
+export type GenericResponse = {
+  message: string;
+};
+
+export type SessionType = {
+  device_name: string;
+  ip: string;
+  createdAt: Date;
+  current: boolean;
+  jti: string;
+};
+
+export type ActiveSessionsResponse = {
+  message: string;
+  sessions: SessionType[];
+};

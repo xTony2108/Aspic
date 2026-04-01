@@ -1,42 +1,62 @@
-import { useLoaderData } from "@tanstack/react-router";
 import { DashboardAvatar } from "../DashboardAvatar";
 import { useForm } from "react-hook-form";
-import {
-  accountPersonal,
-  type AccountPersonalTypeSchema,
-} from "../../../features/services/schemas/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DashboardAccountInput } from "./DashboardAccountInput";
 import { DashboardSubmit } from "../DashboardSubmit";
 import { ErrorSpan } from "../../form/ErrorSpan";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { createGetUserDataQueryOptions } from "../../../api/admin/getUserData";
+import {
+  changePersonalDataDataSchema,
+  type ChangePersonalDataTypeSchema,
+} from "../../../features/services/schemas/schemas";
+import { createChangePersonalDataMutationOptions } from "../../../api/dashboard/createChangePersonalDataMutationOptions";
+import { queryClient } from "../../../queryClient";
+import { DasbhoardAccountFormTitle } from "./DasbhoardAccountFormTitle";
+import { DashboardAlert } from "./DashboardAlert";
 
 export const DashboardAccountDataForm = () => {
-  const { userData } = useLoaderData({ from: "/_autenticato" });
+  const {
+    data: { userData },
+  } = useSuspenseQuery(createGetUserDataQueryOptions());
 
   const {
-    register,
+    control,
     handleSubmit,
-    formState: { isDirty, errors },
-  } = useForm<AccountPersonalTypeSchema>({
-    resolver: zodResolver(accountPersonal),
-    defaultValues: {
+    formState: { isDirty, errors, isValid },
+  } = useForm<ChangePersonalDataTypeSchema>({
+    resolver: zodResolver(changePersonalDataDataSchema),
+    values: {
       email: userData.email ?? "",
       firstName: userData.firstName ?? "",
       lastName: userData.lastName ?? "",
       phoneNumber: userData.phoneNumber ?? "",
     },
+    mode: "onChange",
   });
 
-  const onSubmit = (data: AccountPersonalTypeSchema) => {};
+  const { mutate, isSuccess, isPending, reset } = useMutation(
+    createChangePersonalDataMutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: createGetUserDataQueryOptions().queryKey,
+        });
+        setTimeout(() => reset(), 2000);
+      },
+    }),
+  );
+
+  const onSubmit = (data: ChangePersonalDataTypeSchema) => {
+    mutate(data);
+  };
 
   return (
     <form
       className="bg-white p-6 rounded-2xl border border-border"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <div className="bg-white font-garamond text-lg font-semibold border-b border-border pb-3 mb-5">
-        Dati <em className="text-primary italic">personali</em>
-      </div>
+      <DasbhoardAccountFormTitle title="Dati" titleEm="personali" />
+
       <div className="flex flex-col mb-5">
         <div className="flex gap-5 leading-none">
           <DashboardAvatar
@@ -56,7 +76,7 @@ export const DashboardAccountDataForm = () => {
       <div className="flex flex-col mb-3.5 gap-3.5">
         <div className="flex flex-col gap-[.4rem] text-form">
           <DashboardAccountInput
-            register={register}
+            control={control}
             inputName="firstName"
             id="firstName"
             type="text"
@@ -67,7 +87,7 @@ export const DashboardAccountDataForm = () => {
         </div>
         <div className="flex flex-col gap-[.4rem] text-form">
           <DashboardAccountInput
-            register={register}
+            control={control}
             inputName="lastName"
             id="lastName"
             type="text"
@@ -78,7 +98,7 @@ export const DashboardAccountDataForm = () => {
         </div>
         <div className="flex flex-col gap-[.4rem] text-form">
           <DashboardAccountInput
-            register={register}
+            control={control}
             inputName="email"
             id="email"
             type="text"
@@ -89,7 +109,7 @@ export const DashboardAccountDataForm = () => {
         </div>
         <div className="flex flex-col gap-[.4rem] text-form">
           <DashboardAccountInput
-            register={register}
+            control={control}
             inputName="phoneNumber"
             id="phoneNumber"
             type="text"
@@ -100,8 +120,14 @@ export const DashboardAccountDataForm = () => {
         </div>
       </div>
       <div className="flex justify-end">
-        <DashboardSubmit text="Salva modifiche" disabled={!isDirty} />
+        <DashboardSubmit
+          text="Salva modifiche"
+          disabled={!isDirty || isPending || isSuccess || !isValid}
+        />
       </div>
+      {isSuccess && (
+        <DashboardAlert type="success" text="✓ Dati aggiornati con successo." />
+      )}
     </form>
   );
 };

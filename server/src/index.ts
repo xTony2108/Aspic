@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: "same-origin" } }));
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(cors({ origin: process.env.ORIGIN }));
 
 const { SERVER_PORT } = process.env;
 

@@ -75,7 +75,7 @@ export const loginSchema = z.object({
 
 export type LoginTypeSchema = z.infer<typeof loginSchema>;
 
-export const accountPersonal = z.object({
+export const personalDataSchema = z.object({
   firstName: z
     .string({ error: "Inserisci un nome valido" })
     .min(2, { error: "Inserisci un nome valido" }),
@@ -88,16 +88,10 @@ export const accountPersonal = z.object({
     .regex(/^3\d{9}$/, "Numero di cellulare non valido"),
 });
 
-export type AccountPersonalTypeSchema = z.infer<typeof accountPersonal>;
+export type AccountPersonalTypeSchema = z.infer<typeof personalDataSchema>;
 
-export const passwordChange = z.object({
-  oldPassword: z
-    .string({ error: "Inserisci la password" })
-    .min(8, "La password deve contenere almeno 8 caratteri")
-    .regex(/[A-Z]/, "Deve contenere almeno una lettera maiuscola")
-    .regex(/[a-z]/, "Deve contenere almeno una lettera minuscola")
-    .regex(/[0-9]/, "Deve contenere almeno un numero")
-    .regex(/[^A-Za-z0-9]/, "Deve contenere almeno un carattere speciale"),
+export const changePasswordSchema = z.object({
+  oldPassword: z.string({ error: "Inserisci la password" }),
   password: z
     .string({ error: "Inserisci la password" })
     .min(8, "La password deve contenere almeno 8 caratteri")
@@ -114,4 +108,4 @@ export const passwordChange = z.object({
     .regex(/[^A-Za-z0-9]/, "Deve contenere almeno un carattere speciale"),
 });
 
-export type PasswordChangeTypeSchema = z.infer<typeof passwordChange>;
+export type PasswordChangeTypeSchema = z.infer<typeof changePasswordSchema>;

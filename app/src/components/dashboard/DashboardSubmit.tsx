@@ -8,7 +8,7 @@ export const DashboardSubmit = ({
   return (
     <button
       type="submit"
-      className="bg-primary text-white px-5 py-2.5 rounded-lg text-form font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+      className="bg-primary text-white px-5 py-2.5 rounded-lg text-form font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-blue-dark hover:-translate-y-px"
       disabled={disabled}
     >
       {text}

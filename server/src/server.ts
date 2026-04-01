@@ -2,20 +2,19 @@
 
 import app from "./app";
 import connect from "./db";
+import { config } from "./config";
+import { logger } from "./logger";
 
-const { SERVER_PORT } = process.env || "3000";
-
-if (!SERVER_PORT) {
-  throw new Error("SERVER_PORT non è definito tra le variabili d'ambiente");
-}
 const startServer = async () => {
   try {
     await connect();
-    app.listen(Number(SERVER_PORT), "0.0.0.0", () => {
-      console.log(`SERVER UP AND RUNNING ON PORT ${SERVER_PORT}`);
+    app.listen(config.SERVER_PORT, "0.0.0.0", () => {
+      logger.info(
+        `[SERVER] Running on port ${config.SERVER_PORT} in ${config.NODE_ENV} mode`,
+      );
     });
   } catch (error) {
-    console.error(`Errore durante la connessione al DB: ${error}`);
+    logger.error(`[SERVER] Startup failed: ${error}`);
     process.exit(1);
   }
 };

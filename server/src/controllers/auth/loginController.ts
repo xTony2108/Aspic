@@ -6,32 +6,28 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../../helpers/generateJWTTokens";
-import { loginSchema, LoginTypeSchema } from "../../schema/schemas";
-import z from "zod";
+import RefreshToken from "../../db/models/RefreshToken";
+import { UAParser } from "ua-parser-js";
+import { logger } from "../../logger";
 
 export const loginController = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   try {
-    const parsed = loginSchema.safeParse(req.body as LoginTypeSchema);
-
-    if (!parsed.success) {
-      const zodErrors = z.flattenError(parsed.error);
-
-      return res
-        .status(400)
-        .json({ message: "Sono presenti errori", errors: zodErrors });
-    }
+    logger.info(`[LOGIN] Attempt for email: ${email}`);
 
     const user = await User.findOne(
       { email },
-      "_id firstName lastName email password temporaryPassword emailVerified emailVerificationToken emailVerificationExpires passwordChanged",
+      "_id firstName lastName email password emailVerified emailVerificationToken emailVerificationExpires passwordChanged",
       {
         lean: true,
       },
     );
 
-    if (!user) return res.status(400).json({ message: "Credenziali errate" });
+    if (!user) {
+      logger.warn(`[LOGIN] Failed: user not found - ${email}`);
+      return res.status(400).json({ message: "Credenziali errate" });
+    }
 
     if (!user.emailVerified) {
       const tokenScaduto =
@@ -51,23 +47,19 @@ export const loginController = async (req: Request, res: Response) => {
       });
     }
 
-    if (!user.passwordChanged) {
-      const compare = password === user.temporaryPassword;
+    const compare = await bcrypt.compare(password, user.password);
 
-      if (!compare)
-        return res.status(400).json({ message: "Credenziali errate" });
-    } else {
-      if (!user.password) throw new Error("Errore configurazione utente");
+    if (!compare)
+      return res.status(400).json({ message: "Credenziali errate" });
 
-      const compare = await bcrypt.compare(password, user.password);
+    const jti = crypto.randomUUID();
 
-      if (!compare)
-        return res.status(400).json({ message: "Credenziali errate" });
-    }
+    const accessToken = generateAccessToken({ _id: user._id.toString(), jti });
 
-    const accessToken = generateAccessToken({ _id: user._id.toString() });
-
-    const refreshToken = generateRefreshToken({ _id: user._id.toString() });
+    const refreshToken = generateRefreshToken({
+      _id: user._id.toString(),
+      jti,
+    });
 
     const isDev = process.env.NODE_ENV === "development";
 
@@ -82,7 +74,24 @@ export const loginController = async (req: Request, res: Response) => {
       .update(refreshToken)
       .digest("hex");
 
-    await User.updateOne({ email }, { refreshToken: hashedRefresh });
+    const parser = new UAParser(req.headers["user-agent"]);
+    const result = parser.getResult();
+
+    const deviceName = `${result.browser.name || "Unknown"} on ${
+      result.os.name || "Unknown"
+    }`;
+
+    await RefreshToken.create({
+      jti,
+      refresh_token_hash: hashedRefresh,
+      device_info: {
+        device_name: deviceName,
+        ip: req.ip,
+        user_agent: req.headers["user-agent"],
+      },
+      user_id: user._id,
+      expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    });
 
     return res.status(200).json({
       message: "Login effettuato con successo!",
@@ -90,8 +99,7 @@ export const loginController = async (req: Request, res: Response) => {
       passwordChanged: user.passwordChanged,
     });
   } catch (error) {
-    console.log(error);
-
-    return res.status(500).json({ message: "Errore generico" });
+    logger.error(`[LOGIN] Error for ${email}: ${error}`);
+    return res.status(500).json({ message: "Errore interno del server" });
   }
 };
