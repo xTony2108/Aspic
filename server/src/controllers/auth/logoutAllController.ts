@@ -1,17 +1,13 @@
 import { Request, Response } from "express";
-import RefreshToken from "../../db/models/RefreshToken";
 import { logger } from "../../logger";
-import mongoose from "mongoose";
+import { logoutAllService } from "../../services/auth";
 
 export const logoutAllController = async (req: Request, res: Response) => {
   const { jti, _id } = req.user;
 
   try {
     logger.info(`[LOGOUT ALL] Attempt for user: ${_id} (JTI: ${jti})`);
-    const deletedToken = await RefreshToken.deleteMany({
-      user_id: _id,
-      jti: { $ne: jti },
-    });
+    const deletedToken = await logoutAllService(_id, jti);
 
     if (!deletedToken) {
       logger.warn(`[LOGOUT ALL] Token not found - JTI: ${jti}`);

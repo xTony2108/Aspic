@@ -2,14 +2,12 @@ import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormInput } from "../../../components/form/FormInput";
-import { useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { isValidAge } from "../../../helpers/isValidAge";
 import { baseSchema } from "../../../features/services/schemas/schemas";
 import { useServizioFormStore } from "../../../store";
 import { BackButton } from "../../../components/form/BackButton";
 import { NextButton } from "../../../components/form/NextButton";
-import { ErrorSpan } from "../../../components/form/ErrorSpan";
+import { ageValidation } from "../../../features/services/schemas/refinements/ageValidation";
 
 const formDatiPersonaliSchema = baseSchema
   .pick({
@@ -24,43 +22,7 @@ const formDatiPersonaliSchema = baseSchema
     clientType: true,
     clientAge: true,
   })
-  .superRefine((data, ctx) => {
-    const today = new Date();
-    const birth = new Date(data.birthday);
-
-    let calcAge = today.getFullYear() - birth.getFullYear();
-    const monthDiff = today.getMonth() - birth.getMonth();
-    if (
-      monthDiff < 0 ||
-      (monthDiff === 0 && today.getDate() < birth.getDate())
-    ) {
-      calcAge--;
-    }
-
-    if (!data.birthday) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["birthday"],
-        message: "Seleziona una data di nascita",
-      });
-    }
-
-    if (birth >= today) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["birthday"],
-        message: "La data selezionata non è valida",
-      });
-    }
-
-    if (!isValidAge(calcAge, data.clientType, data.clientAge)) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["birthday"],
-        message: `La data selezionata non è coerente con la fascia d'età selezionata${data.clientAge && " (" + data.clientAge + " anni)"}`,
-      });
-    }
-  });
+  .superRefine(ageValidation);
 
 type FormSchema = z.infer<typeof formDatiPersonaliSchema>;
 
@@ -84,11 +46,7 @@ export const DatiPersonali = () => {
   const email = useServizioFormStore((s) => s.email);
   const setData = useServizioFormStore((s) => s.setData);
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormSchema>({
+  const { control, handleSubmit } = useForm<FormSchema>({
     resolver: zodResolver(formDatiPersonaliSchema),
     defaultValues: {
       firstName: firstName || "",
@@ -121,12 +79,6 @@ export const DatiPersonali = () => {
     });
   };
 
-  useEffect(() => {
-    if (!appointmentDate || !appointmentTime || !clientType) {
-      navigate({ to: "/prenota/appuntamento" });
-    }
-  }, []);
-
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -141,7 +93,6 @@ export const DatiPersonali = () => {
                 placeholder="Es. Mario"
                 required={true}
               />
-              <ErrorSpan errors={errors} inputName="firstName" />
             </div>
             <div className="flex-1">
               <FormInput
@@ -152,7 +103,6 @@ export const DatiPersonali = () => {
                 placeholder="Es. Rossi"
                 required={true}
               />
-              <ErrorSpan errors={errors} inputName="lastName" />
             </div>
           </div>
 
@@ -165,7 +115,6 @@ export const DatiPersonali = () => {
                 label="Data di nascita"
                 required={true}
               />
-              <ErrorSpan errors={errors} inputName="birthday" />
             </div>
 
             <div className="flex-1">
@@ -177,7 +126,6 @@ export const DatiPersonali = () => {
                 placeholder="Città (Prov)"
                 required={true}
               />
-              <ErrorSpan errors={errors} inputName="birthPlace" />
             </div>
           </div>
 
@@ -189,7 +137,6 @@ export const DatiPersonali = () => {
               label="Numero di telefono"
               required={true}
             />
-            <ErrorSpan errors={errors} inputName="phoneNumber" />
           </div>
 
           <div className="flex-1">
@@ -201,7 +148,6 @@ export const DatiPersonali = () => {
               placeholder="Codice fiscale"
               required={true}
             />
-            <ErrorSpan errors={errors} inputName="fiscalCode" />
           </div>
 
           <div className="flex-1">
@@ -212,7 +158,6 @@ export const DatiPersonali = () => {
               label="Email"
               required={true}
             />
-            <ErrorSpan errors={errors} inputName="email" />
           </div>
           <div className="flex-1">
             <FormInput
@@ -223,7 +168,6 @@ export const DatiPersonali = () => {
               placeholder="Via, Piazza, Civico"
               required={true}
             />
-            <ErrorSpan errors={errors} inputName="address" />
           </div>
         </div>
         <div className="flex justify-between">

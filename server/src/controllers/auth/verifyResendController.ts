@@ -1,48 +1,31 @@
 import { Request, Response } from "express";
-import User from "../../db/models/User";
-import crypto from "crypto";
 import { createElement } from "react";
-import VerificaEmail from "../../emails/templates/VerificaEmail";
+import { VerifyEmail } from "../../emails/templates/VerifyEmail";
 import { sendEmail } from "../../emails/sendEmail";
-import bcrypt from "bcrypt";
-import { generateTempPassword } from "../../helpers/generateRandomPassword";
-
-const { SALT_ROUNDS } = process.env;
+import {
+  findEmailTokenService,
+  generateNewEmailToken,
+} from "../../services/auth";
 
 export const verifyResendController = async (req: Request, res: Response) => {
   try {
     const { token } = req.body;
 
-    const user = await User.findOne(
-      { emailVerificationToken: token },
-      "firstName lastName createdBy email",
-    );
+    const user = await findEmailTokenService(token);
 
     if (!user)
       return res.status(404).json({
         message: "Utente non trovato. Si prega di contattare l'amministrazione",
       });
 
-    const emailVerificationToken = crypto.randomBytes(32).toString("hex");
-    const emailVerificationExpires = new Date(Date.now() + 1000 * 60 * 60 * 24);
-
-    const generatedPw = generateTempPassword();
-    const hashedPw = await bcrypt.hash(generatedPw, Number(SALT_ROUNDS));
-
-    await User.updateOne(
-      { emailVerificationToken: token },
-      {
-        emailVerificationToken,
-        emailVerificationExpires,
-        password: hashedPw,
-      },
-    );
+    const { generatedPw, emailVerificationToken } =
+      await generateNewEmailToken(token);
 
     //Invio mail di verifica
 
     await sendEmail(
       "Verifica il tuo indirizzo email",
-      createElement(VerificaEmail, {
+      createElement(VerifyEmail, {
         firstName: user.firstName,
         lastName: user.lastName,
         createdByName: user.createdBy,
@@ -51,6 +34,7 @@ export const verifyResendController = async (req: Request, res: Response) => {
         email: user.email,
         temporaryPassword: generatedPw,
       }),
+      user.email,
     );
 
     return res.status(200).json({ message: "Nuovo link inviato." });

@@ -6,14 +6,18 @@ export const baseSchema = z.object({
       error: "Seleziona il servizio",
     })
     .nullable(),
-  appointmentDate: z.string({ error: "Seleziona una data valida" }),
-  appointmentTime: z.string({ error: "Seleziona un orario" }),
+  appointmentDate: z.coerce.date({ error: "Seleziona una data valida" }),
+  appointmentTime: z
+    .string({ error: "Seleziona un orario" })
+    .nonempty({ error: "Seleziona un orario" }),
   urgent: z.boolean({
     error: "Richiesta urgente è di un formato non valido",
   }),
-  clientAge: z.string({
-    error: "La fascia d'età del cliente è di un formato non valido",
-  }),
+  clientAge: z
+    .enum(["0-3", "4-11", "12-14", "15-18"], {
+      error: "Seleziona la fascia d'età",
+    })
+    .nullable(),
   clientType: z
     .enum(["bambini", "adulti", "anziani"], {
       error: "Seleziona un tipo di paziente",
@@ -108,3 +112,18 @@ export const changePasswordSchema = z
     path: ["confirmPassword"],
   });
 export type ChangePasswordTypeSchema = z.infer<typeof changePasswordSchema>;
+
+export const changeDateSchema = z.object({
+  newDate: z.coerce
+    .date({
+      error: "Seleziona una data valida",
+    })
+    .min(new Date(new Date().setHours(0, 0, 0, 0)), {
+      error: "Seleziona una data valida",
+    }),
+  newTime: z
+    .string({ error: "Seleziona un orario" })
+    .nonempty({ error: "Seleziona un orario" }),
+});
+
+export type ChangeDateTypeSchema = z.infer<typeof changeDateSchema>;

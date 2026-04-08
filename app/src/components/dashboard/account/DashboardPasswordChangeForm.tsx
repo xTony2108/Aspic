@@ -8,10 +8,9 @@ import { DashboardAccountInput } from "./DashboardAccountInput";
 import { DashboardSubmit } from "../DashboardSubmit";
 import { ErrorSpan } from "../../form/ErrorSpan";
 import { useMutation } from "@tanstack/react-query";
-import { createChangePasswordMutationOptions } from "../../../api/dashboard/createChangePasswordMutationOptions";
+import { createChangePasswordMutationOptions } from "../../../api/dashboard/profile/createChangePasswordMutationOptions";
 import { DasbhoardAccountFormTitle } from "./DasbhoardAccountFormTitle";
 import { DashboardAlert } from "./DashboardAlert";
-import { DevTool } from "@hookform/devtools";
 
 export const DashboardPasswordChangeForm = () => {
   const {
@@ -87,6 +86,7 @@ export const DashboardPasswordChangeForm = () => {
         </div>
         <div className="flex justify-end">
           <DashboardSubmit
+            type="submit"
             text="Salva modifiche"
             disabled={!isDirty || isPending || isSuccess}
           />

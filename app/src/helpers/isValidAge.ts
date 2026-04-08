@@ -1,9 +1,9 @@
 export const isValidAge = (
   calcAge: number,
   clientType: "bambini" | "adulti" | "anziani" | null | undefined,
-  clientAge?: string | undefined,
+  clientAge?: "0-3" | "4-11" | "12-14" | "15-18" | null | undefined,
 ) => {
-  if (!clientType) return true;
+  if (!clientType || (clientType === "bambini" && !clientAge)) return true;
 
   if (clientType === "bambini") {
     switch (clientAge) {

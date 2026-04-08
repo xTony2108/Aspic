@@ -6,9 +6,13 @@ import { STEPS } from "../../../features/services/services.config";
 import { Fragment } from "react/jsx-runtime";
 import { motion } from "motion/react";
 
+import { useStepGuard } from "../../../hooks/useStepGuard";
+
 export const PrenotaStepLayout = () => {
   const { pathname } = useLocation();
+
   const currentIndex = STEPS.findIndex((s) => s.path === pathname);
+  useStepGuard(currentIndex);
 
   return (
     <>

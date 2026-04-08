@@ -2,7 +2,8 @@ import { queryOptions, type UseQueryOptions } from "@tanstack/react-query";
 import { axiosPrivate } from "../axios";
 import { type ApiError, type UserDataResponse } from "../../types/api";
 
-const getUserDataFn = () => axiosPrivate.get("/admin/me").then((r) => r.data);
+const getUserDataFn = (): Promise<UserDataResponse> =>
+  axiosPrivate.get("/admin/me").then((r) => r.data);
 
 export const createGetUserDataQueryOptions = <
   TError = ApiError<UserDataResponse>,

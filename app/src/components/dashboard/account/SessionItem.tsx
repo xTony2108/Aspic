@@ -2,9 +2,9 @@ import { useMutation } from "@tanstack/react-query";
 import { calculateDiffDays } from "../../../helpers/calculateDiffDays";
 import { getDeviceIcon } from "../../../helpers/getDeviceIcon";
 import type { SessionType } from "../../../types/api";
-import { createDeleteSessionMutationOptions } from "../../../api/dashboard/createDeleteSessionMutationOptions";
+import { createDeleteSessionMutationOptions } from "../../../api/dashboard/sessions/createDeleteSessionMutationOptions";
 import { queryClient } from "../../../queryClient";
-import { createActiveSessionsQueryOptions } from "../../../api/dashboard/createActiveSessionsQueryOptions";
+import { createActiveSessionsQueryOptions } from "../../../api/dashboard/sessions/createActiveSessionsQueryOptions";
 
 export const SessionItem = ({ session }: { session: SessionType }) => {
   const { mutate } = useMutation(

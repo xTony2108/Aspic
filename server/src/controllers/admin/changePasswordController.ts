@@ -2,13 +2,17 @@ import { Request, Response } from "express";
 import User from "../../db/models/User";
 import bcrypt from "bcrypt";
 import { logger } from "../../logger";
+import {
+  changePasswordService,
+  comparePasswordService,
+  findUserByIDService,
+} from "../../services/auth";
 
 export const changePasswordController = async (req: Request, res: Response) => {
   const { _id } = req.user;
+  const { password, oldPassword } = req.body;
 
   try {
-    const { password, oldPassword } = req.body;
-
     logger.info(`[PASSWORD] Change attempt for user: ${_id}`);
 
     // Validazione input
@@ -19,7 +23,7 @@ export const changePasswordController = async (req: Request, res: Response) => {
         .json({ message: "Tutti i campi sono obbligatori" });
     }
 
-    const user = await User.findById(_id, "password", { lean: true });
+    const user = await findUserByIDService(_id);
 
     if (!user) {
       logger.warn(`[PASSWORD] Failed: user not found - ${_id}`);
@@ -27,19 +31,17 @@ export const changePasswordController = async (req: Request, res: Response) => {
     }
 
     // Verifica password attuale
-    const isOldPasswordValid = await bcrypt.compare(oldPassword, user.password);
+    const isOldPasswordValid = await comparePasswordService(
+      oldPassword,
+      user.password,
+    );
     if (!isOldPasswordValid) {
       logger.warn(`[PASSWORD] Failed: wrong old password - user: ${_id}`);
       return res.status(400).json({ message: "Password attuale errata" });
     }
 
     // Hash nuova password
-    const newHashedPassword = await bcrypt.hash(password, 12);
-
-    await User.findByIdAndUpdate(_id, {
-      password: newHashedPassword,
-      passwordChanged: true,
-    });
+    await changePasswordService(_id, password);
 
     logger.info(`[PASSWORD] Changed successfully for user: ${_id}`);
 

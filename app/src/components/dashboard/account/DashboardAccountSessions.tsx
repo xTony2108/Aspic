@@ -1,10 +1,12 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { DasbhoardAccountFormTitle } from "./DasbhoardAccountFormTitle";
-import { createActiveSessionsQueryOptions } from "../../../api/dashboard/createActiveSessionsQueryOptions";
+
 import { SessionItem } from "./SessionItem";
 import { ListSkeleton } from "../ListSkeleton";
 import { createLogoutAllMutationOptions } from "../../../api/auth/createLogoutAllMutationOptions";
 import { queryClient } from "../../../queryClient";
+import { DashboardSubmitRed } from "../DashboardSubmitRed";
+import { createActiveSessionsQueryOptions } from "../../../api/dashboard/sessions/createActiveSessionsQueryOptions";
 
 export const DashboardAccountSessions = () => {
   const { data, isPending } = useQuery(createActiveSessionsQueryOptions());
@@ -38,13 +40,11 @@ export const DashboardAccountSessions = () => {
           ))}
       </div>
       <div className="flex justify-end">
-        <button
+        <DashboardSubmitRed
           onClick={handleLogoutAll}
+          label="Disconnetti tutti gli altri dispositivi"
           disabled={(data && data.sessions.length <= 1) || isLogoutAllPending}
-          className="border rounded-lg px-4 py-2 text-[.8rem] cursor-pointer text-dashboard-errorText border-dashboard-errorBorder bg-dashboard-errorBg font-medium hover:bg-dashboard-errorHover transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Disconnetti tutti gli altri dispositivi
-        </button>
+        />
       </div>
     </div>
   );

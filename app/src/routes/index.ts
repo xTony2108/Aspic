@@ -49,6 +49,11 @@ const riepilogoRoute = createRoute({
 const successoRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "prenota/successo",
+  beforeLoad: ({ location }) => {
+    if (!location.state?.success) {
+      throw redirect({ to: "/prenota", replace: true });
+    }
+  },
 }).lazy(() => import("./public/prenota/successo.routes").then((d) => d.Route));
 
 // AUTENTICATO

@@ -10,7 +10,7 @@ import {
   changePersonalDataDataSchema,
   type ChangePersonalDataTypeSchema,
 } from "../../../features/services/schemas/schemas";
-import { createChangePersonalDataMutationOptions } from "../../../api/dashboard/createChangePersonalDataMutationOptions";
+import { createChangePersonalDataMutationOptions } from "../../../api/dashboard/profile/createChangePersonalDataMutationOptions";
 import { queryClient } from "../../../queryClient";
 import { DasbhoardAccountFormTitle } from "./DasbhoardAccountFormTitle";
 import { DashboardAlert } from "./DashboardAlert";
@@ -121,6 +121,7 @@ export const DashboardAccountDataForm = () => {
       </div>
       <div className="flex justify-end">
         <DashboardSubmit
+          type="submit"
           text="Salva modifiche"
           disabled={!isDirty || isPending || isSuccess || !isValid}
         />

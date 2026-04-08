@@ -5,6 +5,7 @@ const appointmentSchema = new Schema(
     service: {
       type: String,
       required: true,
+      enum: ["consulenza-psicologica", "valutazione-psicodiagnostica"],
     },
     appointmentDate: {
       type: Date,
@@ -21,6 +22,7 @@ const appointmentSchema = new Schema(
     clientType: {
       type: String,
       required: true,
+      enum: ["bambini", "adulti", "anziani"],
     },
     clientAge: {
       type: String || undefined,
@@ -64,6 +66,27 @@ const appointmentSchema = new Schema(
     privacyAccepted: {
       type: Boolean,
       required: true,
+    },
+    status: {
+      type: String,
+      required: true,
+      default: "pending",
+      enum: ["pending", "confirmed", "cancelled", "completed"],
+    },
+    assignedTo: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+    protocolNumber: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    pendingDateChange: {
+      newDate: Date,
+      newTime: String,
+      token: String,
+      expiresAt: Date,
     },
   },
   { strict: true },

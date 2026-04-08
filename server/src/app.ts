@@ -5,7 +5,8 @@ dotenv.config();
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
-import apiRoute from "./routes/index";
+import apiRoute from "./routes/api/index";
+import webhooksRoute from "./routes/webhooks/index";
 import cookieParser from "cookie-parser";
 import { httpLogger, morganMiddleware } from "./logger";
 import { config } from "./config";
@@ -44,10 +45,14 @@ if (process.env.NODE_ENV === "production") {
 } else {
   app.use(helmet());
 }
-
-app.use(express.json());
+const isDev = config.NODE_ENV === "development";
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: config.ORIGIN, credentials: true }));
+app.use(
+  cors({
+    origin: isDev ? config.ORIGIN : config.ORIGIN_DEV,
+    credentials: true,
+  }),
+);
 app.use(cookieParser());
 
 // routes
@@ -56,5 +61,11 @@ app.use(cookieParser());
  */
 
 app.use("/api", apiRoute);
+
+/**
+ * @path /webhook
+ */
+
+app.use("/webhooks", webhooksRoute);
 
 export default app;

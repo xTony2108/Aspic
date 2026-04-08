@@ -5,7 +5,8 @@ import {
 import { type ApiError, type GenericResponse } from "../../types/api";
 import { axiosPrivate } from "../axios";
 
-const logout = () => axiosPrivate.post("/auth/logout").then((r) => r.data);
+const logout = (): Promise<GenericResponse> =>
+  axiosPrivate.post("/auth/logout").then((r) => r.data);
 
 export const createLogoutMutationOptions = <TError = ApiError<GenericResponse>>(
   options?: Omit<

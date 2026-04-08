@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
 import User from "../../db/models/User";
+import {
+  confirmEmailService,
+  findEmailTokenService,
+} from "../../services/auth";
 
 export const verifyEmailController = async (req: Request, res: Response) => {
   const { token } = req.body;
 
   try {
-    const user = await User.findOne(
-      { emailVerificationToken: token },
-      "emailVerified emailVerificationExpires",
-      { lean: true },
-    );
+    const user = await findEmailTokenService(token);
 
     if (!user) return res.status(404).json({ message: "Link non valido." });
 
@@ -20,15 +20,7 @@ export const verifyEmailController = async (req: Request, res: Response) => {
     if (tokenScaduto)
       return res.status(410).json({ message: "Il link è scaduto." });
 
-    await User.updateOne(
-      { emailVerificationToken: token },
-      {
-        emailVerificationToken: null,
-        emailVerificationExpires: null,
-        emailVerified: true,
-        emailVerifiedAt: new Date(),
-      },
-    );
+    await confirmEmailService(token);
 
     return res
       .status(200)

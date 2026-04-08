@@ -31,7 +31,7 @@ export const Sidebar = () => {
   return (
     <>
       <button
-        className="lg:hidden fixed top-4 right-4 z-50 min-w-10 min-h-10 rounded-lg bg-sidebar text-white"
+        className="flex items-center justify-center lg:hidden fixed top-4 right-4 z-50 min-w-10 min-h-10 rounded-lg bg-sidebar text-white"
         onClick={() => setIsOpen(!isOpen)}
       >
         ☰

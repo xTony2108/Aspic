@@ -1,9 +1,4 @@
-import {
-  useController,
-  useWatch,
-  type Control,
-  type Path,
-} from "react-hook-form";
+import { useController, type Control, type Path } from "react-hook-form";
 
 interface FormCheckboxProps<T extends Record<string, any>> {
   control: Control<T>;
@@ -27,7 +22,7 @@ export const FormCheckbox = <T extends Record<string, any>>({
   return (
     <label className="cursor-pointer">
       {label}
-      <div className="mt-2 flex items-center gap-3.5 bg-white border border-border rounded-xl p-4 pointer transition-colors duration-200 has-checked:border-warn has-checked:bg-warnBg">
+      <div className="mt-2 flex items-center gap-3.5 bg-white border border-border rounded-xl p-4 pointer transition-colors duration-200 has-checked:border-warn has-checked:bg-warnBg select-none">
         <div className="w-10 h-5.5 shrink-0 bg-border relative transition-all duration-200 rounded-xl select-none has-checked:bg-warn">
           <input
             onChange={() => field.onChange(!field.value)}

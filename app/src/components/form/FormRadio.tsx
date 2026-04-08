@@ -25,7 +25,9 @@ export const FormRadio = <T extends Record<string, any>>({
         name={field.name}
         ref={field.ref}
         checked={field.value === value}
-        onChange={() => field.onChange(value)}
+        onChange={() => {
+          field.onChange(value);
+        }}
         type="radio"
         className="hidden appearance-none text-form"
         value={value}

@@ -20,6 +20,7 @@ if (missing.length > 0) {
 export const config = {
   SERVER_PORT: Number(process.env.SERVER_PORT || "3000"),
   ORIGIN: process.env.ORIGIN as string,
+  ORIGIN_DEV: process.env.ORIGIN_DEV as string,
   MONGO_DB_URI: process.env.MONGO_DB_URI as string,
   RESEND_API_KEY: process.env.RESEND_API_KEY as string,
   MAIL_DEV_FROM: process.env.MAIL_DEV_FROM as string,
@@ -30,6 +31,7 @@ export const config = {
   NODE_ENV: (process.env.NODE_ENV || "development") as
     | "development"
     | "production",
+  STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY as string,
 } as const;
 
 export type Config = typeof config;

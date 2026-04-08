@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
-import User from "../../db/models/User";
 import { logger } from "../../logger";
+import {
+  findUserByIDService,
+  updateUserDataService,
+} from "../../services/auth";
 
 export const changePersonalDataController = async (
   req: Request,
@@ -8,14 +11,19 @@ export const changePersonalDataController = async (
 ) => {
   try {
     const { _id } = req.user;
-    const body = req.body;
+    const body = req.body as {
+      firstName: string;
+      lastName: string;
+      phoneNumber: string;
+      email: string;
+    };
     logger.info(`[PERSONAL DATA] Request for user: ${_id}`);
 
-    const user = await User.findById(_id, "", { lean: true });
+    const user = await findUserByIDService(_id);
 
     if (!user) return res.status(404).json({ message: "Utente non trovato" });
 
-    await User.findByIdAndUpdate(_id, body);
+    await updateUserDataService(_id, body);
 
     return res
       .status(200)

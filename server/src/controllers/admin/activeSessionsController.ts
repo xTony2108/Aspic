@@ -1,17 +1,11 @@
 import { Request, Response } from "express";
-import RefreshToken from "../../db/models/RefreshToken";
+import { getActiveSessionsService } from "../../services/auth";
 
 export const activeSessionsController = async (req: Request, res: Response) => {
   try {
     const { _id } = req.user;
 
-    const sessions = await RefreshToken.find(
-      { user_id: _id, expires_at: { $gt: new Date() } },
-      "device_info jti createdAt",
-      {
-        lean: true,
-      },
-    );
+    const sessions = await getActiveSessionsService(_id);
 
     return res.status(200).json({
       message: "Sessioni recuperate",

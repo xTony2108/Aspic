@@ -31,6 +31,7 @@ axiosPrivate.interceptors.response.use(
       } catch {
         useAuthStore.getState().clearData();
         router.navigate({ to: "/admin" });
+        return Promise.reject(error);
       }
     }
 

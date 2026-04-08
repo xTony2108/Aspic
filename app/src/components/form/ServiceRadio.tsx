@@ -26,7 +26,7 @@ export const ServiceRadio = <T extends Record<string, any>>({
   children,
   list,
 }: ServiceRadioProps<T>) => {
-  const watch = useWatch();
+  const service = useWatch({ name: inputName, control });
 
   const { field } = useController({
     control,
@@ -48,7 +48,7 @@ export const ServiceRadio = <T extends Record<string, any>>({
         />
         <div className="flex-1">
           <p
-            className={`text-xs mb-1 tracking-widest ${watch.service === value ? "text-primary" : "text-text-muted"}`}
+            className={`text-xs mb-1 tracking-widest ${service === value ? "text-primary" : "text-text-muted"}`}
           >
             {number}
           </p>
@@ -61,7 +61,7 @@ export const ServiceRadio = <T extends Record<string, any>>({
         </div>
       </label>
       <div
-        className={`grid transition-all duration-300 ease-out  bg-white ${watch.service === value ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+        className={`grid transition-all duration-300 ease-out  bg-white ${service === value ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
       >
         <div className="overflow-hidden">
           <div className="p-6 border-t border-border">

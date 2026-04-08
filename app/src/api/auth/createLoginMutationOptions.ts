@@ -10,7 +10,7 @@ import {
   type LoginResponse,
 } from "../../types/api";
 
-const login = (data: LoginTypeSchema) =>
+const login = (data: LoginTypeSchema): Promise<LoginResponse> =>
   axiosPublic.post("/auth/login", data).then((r) => r.data);
 
 export const createLoginMutationOptions = <

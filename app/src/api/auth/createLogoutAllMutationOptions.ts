@@ -5,7 +5,7 @@ import {
 import { type ApiError, type GenericResponse } from "../../types/api";
 import { axiosPrivate } from "../axios";
 
-const logoutAll = () =>
+const logoutAll = (): Promise<GenericResponse> =>
   axiosPrivate.post("/auth/logout-all").then((r) => r.data);
 
 export const createLogoutAllMutationOptions = <
