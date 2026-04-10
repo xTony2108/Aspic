@@ -44,12 +44,7 @@ export const baseSchema = z
       .string({
         error: "Inserisci un codice fiscale",
       })
-      .min(16, {
-        error: "Il codice fiscale inserito contiene meno di 16 caratteri",
-      })
-      .max(16, {
-        error: "Il codice fiscale inserito contiene più di 16 caratteri",
-      })
+      .length(16, "Il codice fiscale deve essere di 16 caratteri")
       .toUpperCase()
       .regex(
         /^[A-Z]{6}[0-9]{2}[ABCDEHLMPRST][0-9]{2}[A-Z][0-9]{3}[A-Z]$/,
@@ -128,3 +123,23 @@ export const changeDateSchema = z.object({
 });
 
 export type ChangeDateTypeSchema = z.infer<typeof changeDateSchema>;
+
+export const registerProfessionalSchema = z.object({
+  firstName: z.string().min(2, "Campo obbligatorio"),
+  lastName: z.string().min(2, "Campo obbligatorio"),
+  email: z.email("Email non valida"),
+  fiscalCode: z
+    .string()
+    .length(16, "Il codice fiscale deve essere di 16 caratteri")
+    .toUpperCase()
+    .regex(
+      /^[A-Z]{6}[0-9]{2}[ABCDEHLMPRST][0-9]{2}[A-Z][0-9]{3}[A-Z]$/,
+      "Codice fiscale non valido",
+    ),
+  iban: z.string().min(15, "IBAN non valido"),
+  createdBy: z.string("Professionista non specificato"),
+});
+
+export type RegisterProfessionalTypeSchema = z.infer<
+  typeof registerProfessionalSchema
+>;

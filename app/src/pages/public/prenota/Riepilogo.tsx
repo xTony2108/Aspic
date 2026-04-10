@@ -17,11 +17,10 @@ import { ErrorSpan } from "../../../components/form/ErrorSpan";
 import { IoWarningOutline } from "react-icons/io5";
 import { InfoBox } from "../../../components/form/InfoBox";
 import { useShallow } from "zustand/react/shallow";
+type FormSchema = z.input<typeof baseSchema>;
 
 export const Riepilogo = () => {
   const navigate = useNavigate();
-
-  type FormSchema = z.input<typeof baseSchema>;
 
   const {
     service,
@@ -91,7 +90,7 @@ export const Riepilogo = () => {
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["appointments"],
-    mutationFn: (data: FormSchema) => axios.post("/api/bookings", data),
+    mutationFn: (data: FormSchema) => axios.post("/api/appointments", data),
     onError: (error) => {
       if (axios.isAxiosError(error)) {
         const message = error.response?.data?.message;

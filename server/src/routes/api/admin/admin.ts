@@ -8,6 +8,7 @@ import {
   changeDateSchema,
   changePasswordSchema,
   personalDataSchema,
+  registerProfessionalSchema,
 } from "../../../schema/schemas";
 import { activeSessionsController } from "../../../controllers/admin/activeSessionsController";
 import { deleteSessionController } from "../../../controllers/admin/deleteSessionController";
@@ -17,6 +18,7 @@ import { registerController } from "../../../controllers/auth/registerController
 import { cancelAppointmentController } from "../../../controllers/admin/cancelAppointmentController";
 import { changeAppointmentDateController } from "../../../controllers/admin/changeAppointmentDateController";
 import { appointmentSuccessController } from "../../../controllers/admin/appointmentSuccessController";
+import { getUsersController } from "../../../controllers/admin/getUsersController";
 
 const router = express.Router();
 
@@ -34,7 +36,11 @@ router.get("/me", meController);
  * @METHOD POST
  */
 
-router.post("/register", registerController);
+router.post(
+  "/register",
+  validateBody(registerProfessionalSchema),
+  registerController,
+);
 
 /**
  * @path /api/admin/personal
@@ -110,5 +116,12 @@ router.patch(
  */
 
 router.get("/appointments/success", appointmentSuccessController);
+
+/**
+ * @path /api/admin/getUsers
+ * PATCH
+ */
+
+router.get("/getUsers", getUsersController);
 
 export default router;

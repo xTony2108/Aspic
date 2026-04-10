@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { generateTempPassword } from "../../utility/generateRandomPassword";
 import { sendEmail } from "../../emails/sendEmail";
 import { createElement } from "react";
 import VerificaEmail from "../../emails/templates/VerifyEmail";

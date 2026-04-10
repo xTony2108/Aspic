@@ -71,3 +71,16 @@ export type AppointmentInfiniteQueryResponse = {
   pageParams: number[];
   pages: AppointmentResponse[];
 };
+
+export type UsersType = {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  fiscalCode: string;
+  phoneNumber: string;
+};
+
+export type GetUsersResponse = GenericResponse & {
+  users: UsersType[];
+};

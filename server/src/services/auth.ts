@@ -11,11 +11,11 @@ import { generateTempPassword } from "../utility/generateRandomPassword";
 import crypto from "crypto";
 import Appointment from "../db/models/Appointment";
 import mongoose from "mongoose";
-import { stripe } from "../lib/stripe";
+import { stripe } from "../lib/stripe/stripe";
 import { getServiceLabel } from "../utility/getLabels";
 import { config } from "../config";
 import { StripeAppointmentInfoParams } from "../types/StripeAppointmentInfoParams";
-import jwt from "jsonwebtoken";
+import { createStripeAccount } from "../lib/stripe/createStripeAccount";
 
 export const findUserByEmailService = async (email: string) => {
   return User.findOne(
@@ -116,15 +116,7 @@ export const createUserService = async (data: RegisterTypeSchema) => {
   const hashedPw = await bcrypt.hash(generatedPw, 12);
   const emailVerificationToken = crypto.randomBytes(32).toString("hex");
 
-  const stripeAccount = await stripe.accounts.create({
-    type: "express",
-    country: "IT",
-    email: data.email,
-    capabilities: {
-      card_payments: { requested: true },
-      transfers: { requested: true },
-    },
-  });
+  const stripeAccount = await createStripeAccount(data.email);
 
   const user = await User.create({
     ...data,
@@ -359,4 +351,10 @@ export const updateAppointmentDate = async (
   });
 
   return Appointment.findOneAndUpdate(searchFields, updateFields);
+};
+
+export const findUsers = async () => {
+  return User.find({}, "_id email firstName lastName fiscalCode phoneNumber", {
+    lean: true,
+  });
 };

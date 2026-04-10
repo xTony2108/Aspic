@@ -35,6 +35,7 @@ export const DashboardRichieste = () => {
     );
 
   const appointments = data?.pages.flatMap((page) => page.data);
+  console.log(appointments);
 
   const totals = data?.pages[0] ?? {
     pending: 0,

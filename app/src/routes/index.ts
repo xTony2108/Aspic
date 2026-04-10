@@ -5,6 +5,8 @@ import axios, { isAxiosError } from "axios";
 import { Loading } from "../components/Loading";
 import { NotFound } from "../pages/public/NotFound";
 import { createGetUserDataQueryOptions } from "../api/admin/getUserData";
+import { queryClient } from "../queryClient";
+import { createGetUsersQueryOptions } from "../api/dashboard/professional/createGetUsersQueryOptions";
 
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -183,7 +185,33 @@ const dashboardDisponibilitaRoute = createRoute({
 const dashboardProfessionistiRoute = createRoute({
   getParentRoute: () => dashboardLayoutRoute,
   path: "professionisti",
-});
+  loader: async () => {
+    const { accessToken } = useAuthStore.getState();
+
+    if (!accessToken || location.pathname.startsWith("/admin")) return null;
+
+    try {
+      const { users } = await queryClient.ensureQueryData(
+        createGetUsersQueryOptions(),
+      );
+
+      return { users };
+    } catch (error) {
+      if (isRedirect(error)) throw error;
+      if (isAxiosError(error)) {
+        if (error.status === 401) {
+          throw redirect({ to: "/admin" });
+        }
+        if (error.status === 500)
+          throw new Error(error.response?.data?.message || "Server error");
+      }
+
+      throw error;
+    }
+  },
+}).lazy(() =>
+  import("./private/dashboard/professionisti.routes").then((d) => d.Route),
+);
 
 const dashboardImpostazioniRoute = createRoute({
   getParentRoute: () => dashboardLayoutRoute,
