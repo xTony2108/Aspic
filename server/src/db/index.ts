@@ -1,17 +1,14 @@
 import mongoose from "mongoose";
-
-const { MONGO_DB_URI } = process.env;
-
-if (!MONGO_DB_URI) {
-  throw new Error("MONGO_DB_URI non è definito tra le variabili d'ambiente");
-}
+import { logger } from "../logger";
+import { config } from "../config";
 
 const connect = async () => {
   try {
-    await mongoose.connect(MONGO_DB_URI);
-    console.log("ATLAS DB CONNECTED");
+    await mongoose.connect(config.MONGO_DB_URI);
+    logger.info("[DB] MongoDB Atlas connected successfully");
   } catch (error) {
-    console.log(error);
+    logger.error(`[DB] Connection failed: ${error}`);
+    throw error;
   }
 };
 

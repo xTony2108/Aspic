@@ -3,7 +3,7 @@ import logo from "../../assets/logo_aspic_bianco.svg";
 export const Footer = () => {
   const year = new Date().getFullYear();
   return (
-    <footer className="flex flex-col items-center justify-center gap-5 px-6 py-8 lg:p-10 lg:flex-row lg:justify-between bg-blue-dark text-text-muted text-xs text-center">
+    <footer className="flex flex-col items-center justify-center gap-5 px-6 py-8 lg:p-10 lg:flex-row lg:justify-between bg-blue-dark text-light-grey text-xs text-center">
       <div className="max-w-60">
         <img
           src={logo}

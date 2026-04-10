@@ -1,0 +1,38 @@
+import type { Status } from "../../../pages/private/Dashboard/DashboardRichieste";
+
+const FILTERS: { key: Status; label: string }[] = [
+  { key: "pending", label: "In attesa" },
+  { key: "confirmed", label: "In carico" },
+  { key: "completed", label: "Confermate" },
+  { key: "cancelled", label: "Annullate" },
+];
+
+interface FilterTabProps {
+  active: Status;
+  onChange: (status: Status) => void;
+  totals: {
+    pending: number;
+    confirmed: number;
+    cancelled: number;
+    completed: number;
+  };
+}
+export const FilterTab = ({ active, onChange, totals }: FilterTabProps) => {
+  return (
+    <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-1.5 bg-cream rounded-xl p-1.5 mb-5 justify-around">
+      {FILTERS.map((f) => (
+        <button
+          key={f.key}
+          onClick={() => onChange(f.key)}
+          className={`px-3.5 py-2 rounded-lg text-[13px] transition-all whitespace-nowrap cursor-pointer ${
+            active === f.key
+              ? "bg-white text-text shadow-sm"
+              : "text-text-muted hover:text-text"
+          }`}
+        >
+          {f.label} {totals && `(${totals[f.key]})`}
+        </button>
+      ))}
+    </div>
+  );
+};

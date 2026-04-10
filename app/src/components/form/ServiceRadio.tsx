@@ -1,7 +1,12 @@
-import { useWatch, type Path, type UseFormRegister } from "react-hook-form";
+import {
+  useController,
+  useWatch,
+  type Control,
+  type Path,
+} from "react-hook-form";
 
-interface ServiceRadioProps<T extends Object> {
-  register: UseFormRegister<T>;
+interface ServiceRadioProps<T extends Record<string, any>> {
+  control: Control<T>;
   inputName: Path<T>;
   value: string;
   number: string;
@@ -11,8 +16,8 @@ interface ServiceRadioProps<T extends Object> {
   list?: string[];
 }
 
-export const ServiceRadio = <T extends Object>({
-  register,
+export const ServiceRadio = <T extends Record<string, any>>({
+  control,
   inputName,
   value,
   number,
@@ -21,20 +26,29 @@ export const ServiceRadio = <T extends Object>({
   children,
   list,
 }: ServiceRadioProps<T>) => {
-  const watch = useWatch();
+  const service = useWatch({ name: inputName, control });
+
+  const { field } = useController({
+    control,
+    name: inputName,
+  });
 
   return (
     <div className="border-[1.5px] border-border rounded-2xl has-checked:shadow-lg has-checked:border-primary overflow-hidden cursor-pointer">
       <label className="transition-all duration-300 ease-in-out flex gap-4 p-5 bg-white cursor-pointer">
         <input
-          {...register(inputName)}
           type="radio"
+          name={field.name}
+          ref={field.ref}
+          checked={field.value === value}
+          onChange={() => field.onChange(value)}
+          onBlur={field.onBlur}
           className="outline-none transition-colors duration-300 ease-in-out relative appearance-none h-5 w-5 rounded-full border-2 border-border checked:bg-primary checked:border-primary after:absolute after:content-[''] after:w-2 after:h-2 after:bg-white after:rounded-full after:top-1/2 after:left-1/2 after:-translate-1/2 after:transition-all after:duration-300 after:ease-in-out mt-1 cursor-pointer"
           value={value}
         />
         <div className="flex-1">
           <p
-            className={`text-xs mb-1 tracking-widest ${watch.service === value ? "text-primary" : "text-text-muted"}`}
+            className={`text-xs mb-1 tracking-widest ${service === value ? "text-primary" : "text-text-muted"}`}
           >
             {number}
           </p>
@@ -47,7 +61,7 @@ export const ServiceRadio = <T extends Object>({
         </div>
       </label>
       <div
-        className={`grid transition-all duration-300 ease-out  bg-white ${watch.service === value ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+        className={`grid transition-all duration-300 ease-out  bg-white ${service === value ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
       >
         <div className="overflow-hidden">
           <div className="p-6 border-t border-border">

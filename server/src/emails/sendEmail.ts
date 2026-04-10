@@ -1,26 +1,29 @@
 import { Resend } from "resend";
+import { logger } from "../logger";
+import { config } from "../config";
 
-const isDev = process.env.NODE_ENV === "development";
+const isDev = config.NODE_ENV === "development";
 
 export const sendEmail = async (
   subject: string,
   component: React.ReactElement,
+  mailTo: string,
 ) => {
-  const { RESEND_API_KEY, MAIL_DEV_FROM, MAIL_FROM, MAIL_DEV_TO } = process.env;
+  const resend = new Resend(config.RESEND_API_KEY);
 
-  if (!RESEND_API_KEY || !MAIL_DEV_FROM || !MAIL_FROM || !MAIL_DEV_TO)
-    throw new Error("Variabile d'ambiente mancante");
+  try {
+    await resend.emails.send({
+      from: isDev ? config.MAIL_DEV_FROM : config.MAIL_FROM,
+      to: mailTo,
+      subject,
+      react: component,
+    });
 
-  const resend = new Resend(RESEND_API_KEY);
-
-  await resend.emails.send({
-    from: isDev ? MAIL_DEV_FROM : MAIL_FROM,
-    to: MAIL_DEV_TO,
-    subject,
-    react: component,
-  });
-
-  console.log(
-    `EMAIL INVIATA DA ${isDev ? MAIL_DEV_FROM : MAIL_FROM} A ${MAIL_DEV_TO}`,
-  );
+    logger.info(
+      `[EMAIL] Sent: "${subject}" from ${isDev ? config.MAIL_DEV_FROM : config.MAIL_FROM} to ${config.MAIL_DEV_TO}`,
+    );
+  } catch (error) {
+    logger.error(`[EMAIL] Sending failed: ${error}`);
+    throw error;
+  }
 };

@@ -5,10 +5,16 @@ dotenv.config();
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
-import apiRoute from "./routes/index";
+import apiRoute from "./routes/api/index";
+import webhooksRoute from "./routes/webhooks/index";
 import cookieParser from "cookie-parser";
+import { httpLogger, morganMiddleware } from "./logger";
+import { config } from "./config";
 
 const app = express();
+
+app.use(morganMiddleware);
+app.use(httpLogger);
 
 app.set("trust proxy", 1);
 
@@ -39,10 +45,14 @@ if (process.env.NODE_ENV === "production") {
 } else {
   app.use(helmet());
 }
-
-app.use(express.json());
+const isDev = config.NODE_ENV === "development";
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(
+  cors({
+    origin: isDev ? config.ORIGIN : config.ORIGIN_DEV,
+    credentials: true,
+  }),
+);
 app.use(cookieParser());
 
 // routes
@@ -52,11 +62,10 @@ app.use(cookieParser());
 
 app.use("/api", apiRoute);
 
-app.get("/a", (req, res) => {
-  try {
-    return res.status(200).json({ message: "ciao" });
-  } catch (error) {
-    console.log(error);
-  }
-});
+/**
+ * @path /webhook
+ */
+
+app.use("/webhooks", webhooksRoute);
+
 export default app;

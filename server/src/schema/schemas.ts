@@ -1,21 +1,26 @@
 import { z } from "zod";
-import { ageValidation } from "../helpers/ageValidation";
+import { baseSchemaRefinements } from "../utility/baseSchemaRefinements";
 
 export const baseSchema = z
   .object({
-    service: z
-      .enum(["consulenza-psicologica", "valutazione-psicodiagnostica"], {
+    service: z.enum(
+      ["consulenza-psicologica", "valutazione-psicodiagnostica"],
+      {
         error: "Seleziona il servizio",
-      })
-      .nullable(),
-    appointmentDate: z.string({ error: "Seleziona una data valida" }),
-    appointmentTime: z.string({ error: "Seleziona un orario" }),
+      },
+    ),
+    appointmentDate: z.coerce.date({ error: "Seleziona una data valida" }),
+    appointmentTime: z
+      .string({ error: "Seleziona un orario" })
+      .nonempty({ error: "Seleziona un orario" }),
     urgent: z.boolean({
       error: "Richiesta urgente è di un formato non valido",
     }),
-    clientAge: z.string({
-      error: "La fascia d'età del cliente è di un formato non valido",
-    }),
+    clientAge: z
+      .enum(["0-3", "4-11", "12-14", "15-18"], {
+        error: "Seleziona la fascia d'età",
+      })
+      .nullable(),
     clientType: z.enum(["bambini", "adulti", "anziani"], {
       error: "Seleziona un tipo di paziente",
     }),
@@ -39,12 +44,7 @@ export const baseSchema = z
       .string({
         error: "Inserisci un codice fiscale",
       })
-      .min(16, {
-        error: "Il codice fiscale inserito contiene meno di 16 caratteri",
-      })
-      .max(16, {
-        error: "Il codice fiscale inserito contiene più di 16 caratteri",
-      })
+      .length(16, "Il codice fiscale deve essere di 16 caratteri")
       .toUpperCase()
       .regex(
         /^[A-Z]{6}[0-9]{2}[ABCDEHLMPRST][0-9]{2}[A-Z][0-9]{3}[A-Z]$/,
@@ -58,6 +58,88 @@ export const baseSchema = z
       error: "Devi accettare il trattamento dei dati per procedere",
     }),
   })
-  .superRefine(ageValidation);
+  .superRefine(baseSchemaRefinements);
 
 export type BaseTypeSchema = z.infer<typeof baseSchema>;
+
+export const loginSchema = z.object({
+  email: z.email({ error: "Inserisci un indirizzo email valido" }),
+  password: z
+    .string({ error: "Inserisci la password" })
+    .min(8, "La password deve contenere almeno 8 caratteri")
+    .regex(/[A-Z]/, "Deve contenere almeno una lettera maiuscola")
+    .regex(/[a-z]/, "Deve contenere almeno una lettera minuscola")
+    .regex(/[0-9]/, "Deve contenere almeno un numero")
+    .regex(/[^A-Za-z0-9]/, "Deve contenere almeno un carattere speciale"),
+});
+
+export type LoginTypeSchema = z.infer<typeof loginSchema>;
+
+export const personalDataSchema = z.object({
+  firstName: z
+    .string({ error: "Inserisci un nome valido" })
+    .min(2, { error: "Inserisci un nome valido" }),
+  lastName: z
+    .string({ error: "Inserisci un cognome valido" })
+    .min(2, { error: "Inserisci un cognome valido" }),
+  email: z.email({ error: "Inserisci un indirizzo email valido" }),
+  phoneNumber: z
+    .string({ error: "Inserisci un numero di cellulare valido" })
+    .regex(/^3\d{9}$/, "Numero di cellulare non valido"),
+});
+
+export type AccountPersonalTypeSchema = z.infer<typeof personalDataSchema>;
+
+export const changePasswordSchema = z
+  .object({
+    oldPassword: z.string({ error: "Inserisci la password" }),
+    password: z
+      .string({ error: "Inserisci la password" })
+      .min(8, "La password deve contenere almeno 8 caratteri")
+      .regex(/[A-Z]/, "Deve contenere almeno una lettera maiuscola")
+      .regex(/[a-z]/, "Deve contenere almeno una lettera minuscola")
+      .regex(/[0-9]/, "Deve contenere almeno un numero")
+      .regex(/[^A-Za-z0-9]/, "Deve contenere almeno un carattere speciale"),
+    confirmPassword: z.string({ error: "Conferma la password" }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Le password non corrispondono",
+    path: ["confirmPassword"],
+  });
+
+export type PasswordChangeTypeSchema = z.infer<typeof changePasswordSchema>;
+
+export const changeDateSchema = z.object({
+  newDate: z.coerce
+    .date({
+      error: "Seleziona una data valida",
+    })
+    .min(new Date(new Date().setHours(0, 0, 0, 0)), {
+      error: "Seleziona una data valida",
+    }),
+  newTime: z
+    .string({ error: "Seleziona un orario" })
+    .nonempty({ error: "Seleziona un orario" }),
+});
+
+export type ChangeDateTypeSchema = z.infer<typeof changeDateSchema>;
+
+export const registerProfessionalSchema = z.object({
+  firstName: z.string().min(2, "Campo obbligatorio"),
+  lastName: z.string().min(2, "Campo obbligatorio"),
+  email: z.email("Email non valida"),
+  fiscalCode: z
+    .string()
+    .length(16, "Il codice fiscale deve essere di 16 caratteri")
+    .toUpperCase()
+    .regex(
+      /^[A-Z]{6}[0-9]{2}[ABCDEHLMPRST][0-9]{2}[A-Z][0-9]{3}[A-Z]$/,
+      "Codice fiscale non valido",
+    ),
+  iban: z.string().min(15, "IBAN non valido"),
+  createdBy: z.string("Professionista non specificato"),
+});
+
+export type RegisterProfessionalTypeSchema = z.infer<
+  typeof registerProfessionalSchema
+>;

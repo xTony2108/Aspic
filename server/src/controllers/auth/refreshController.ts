@@ -1,32 +1,32 @@
 import { Request, Response } from "express";
-import User from "../../db/models/User";
-import { generateAccessToken } from "../../helpers/generateJWTTokens";
-import { createHash } from "node:crypto";
+import { logger } from "../../logger";
+import { refreshTokenService } from "../../services/auth";
 
 export const refreshController = async (req: Request, res: Response) => {
   const { decoded, refreshToken } = req.user;
-  try {
-    // Controllo se l'utente esiste
-    const hashedToken = createHash("sha256").update(refreshToken).digest("hex");
 
-    const user = await User.findOne(
-      { _id: decoded._id, refreshToken: hashedToken },
-      "refreshToken",
-      {
-        lean: true,
-      },
+  try {
+    logger.info(`[REFRESH] Token refresh attempt for user: ${decoded._id}`);
+
+    const accessToken = await refreshTokenService(refreshToken, decoded);
+
+    logger.info(
+      `[REFRESH] Token refreshed successfully for user: ${decoded._id}`,
     );
 
-    if (!user) return res.status(401).json({ message: "Non sei autorizzato" });
-
-    const accessToken = generateAccessToken({ _id: decoded._id });
-
-    return res
-      .status(200)
-      .json({ message: "Refresh ok", accessToken: accessToken });
+    return res.status(200).json({
+      message: "Refresh ok",
+      accessToken: accessToken,
+    });
   } catch (error) {
-    console.log(error);
-
-    return res.status(500).json({ message: "Errore generico" });
+    logger.error(`[REFRESH] Error for user ${decoded._id}: ${error}`);
+    if (
+      error instanceof Error &&
+      (error?.message === "TOKEN_NOT_FOUND" ||
+        error?.message === "TOKEN_INVALID")
+    ) {
+      return res.status(401).json({ message: "Token non valido" });
+    }
+    return res.status(500).json({ message: "Errore interno del server" });
   }
 };
