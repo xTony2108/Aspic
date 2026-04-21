@@ -38,6 +38,7 @@ export const Riepilogo = () => {
     email,
     urgent,
     reason,
+    appointmentMode,
   } = useServizioFormStore(
     useShallow((s) => ({
       service: s.service,
@@ -55,6 +56,7 @@ export const Riepilogo = () => {
       fiscalCode: s.fiscalCode,
       phoneNumber: s.phoneNumber,
       email: s.email,
+      appointmentMode: s.appointmentMode,
     })),
   );
 
@@ -85,6 +87,7 @@ export const Riepilogo = () => {
       email: email ?? "",
       urgent: urgent ?? false,
       privacyAccepted,
+      appointmentMode: appointmentMode ?? undefined,
     },
   });
 

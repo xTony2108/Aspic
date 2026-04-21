@@ -3,7 +3,6 @@ import { NuovoProfessionistaModal } from "../../../components/dashboard/professi
 import { DashboardTitle } from "../../../components/dashboard/DashboardTitle";
 import { DashboardSubmit } from "../../../components/dashboard/DashboardSubmit";
 import { DashboardAvatar } from "../../../components/dashboard/DashboardAvatar";
-import { useLoaderData } from "@tanstack/react-router";
 import type { UsersType } from "../../../types/api";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createGetUsersQueryOptions } from "../../../api/dashboard/professional/createGetUsersQueryOptions";

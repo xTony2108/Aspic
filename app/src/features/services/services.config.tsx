@@ -1,16 +1,15 @@
 interface ServiziConfig {
   value: string;
   heading: string;
-  description: string;
+  price: string;
   children: React.ReactNode;
   list?: string[];
 }
 export const SERVIZI_CONFIG: ServiziConfig[] = [
   {
     value: "consulenza-psicologica",
-    heading: "Prima Consulenza Psicologica Individuale",
-    description:
-      "Un primo incontro strutturato per comprendere la tua situazione e orientarti verso il percorso più adatto.",
+    heading: "Consulenza Psicologica Individuale",
+    price: "80€",
     children: (
       <p className="text-sm font-light mb-4">
         La consulenza sarà eseguita da{" "}
@@ -25,8 +24,7 @@ export const SERVIZI_CONFIG: ServiziConfig[] = [
   {
     value: "valutazione-psicodiagnostica",
     heading: "Valutazione Psicodiagnostica",
-    description:
-      "Percorso diagnostico strutturato con strumenti evidence-based e batterie di test standardizzate.",
+    price: "250€",
     list: [
       "Colloquio clinico",
       "Valutazione del funzionamento cognitivo",

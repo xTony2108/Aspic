@@ -11,7 +11,7 @@ interface ServiceRadioProps<T extends Record<string, any>> {
   value: string;
   number: string;
   heading: string;
-  description: string;
+  price: string;
   children: React.ReactNode;
   list?: string[];
 }
@@ -22,7 +22,7 @@ export const ServiceRadio = <T extends Record<string, any>>({
   value,
   number,
   heading,
-  description,
+  price,
   children,
   list,
 }: ServiceRadioProps<T>) => {
@@ -55,8 +55,10 @@ export const ServiceRadio = <T extends Record<string, any>>({
           <h3 className="font-garamond text-xl font-semibold text-blue-dark">
             {heading}
           </h3>
-          <p className="text-sm font-light text-text-muted mt-1.5">
-            {description}
+          <p
+            className={`text-sm font-medium mt-1.5 ${service === value ? "text-primary" : "text-text-muted"}`}
+          >
+            Prezzo: {price}
           </p>
         </div>
       </label>

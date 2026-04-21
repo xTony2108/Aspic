@@ -10,6 +10,7 @@ import webhooksRoute from "./routes/webhooks/index";
 import cookieParser from "cookie-parser";
 import { httpLogger, morganMiddleware } from "./logger";
 import { config } from "./config";
+import path from "node:path";
 
 const app = express();
 

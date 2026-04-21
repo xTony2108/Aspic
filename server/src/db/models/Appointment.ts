@@ -7,6 +7,10 @@ const appointmentSchema = new Schema(
       required: true,
       enum: ["consulenza-psicologica", "valutazione-psicodiagnostica"],
     },
+    price: {
+      type: Number,
+      required: true,
+    },
     appointmentDate: {
       type: Date,
       required: true,
@@ -14,6 +18,11 @@ const appointmentSchema = new Schema(
     appointmentTime: {
       type: String,
       required: true,
+    },
+    appointmentMode: {
+      type: String,
+      required: true,
+      enum: ["online", "in_person"],
     },
     urgent: {
       type: Boolean,

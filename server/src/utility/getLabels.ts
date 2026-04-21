@@ -6,7 +6,7 @@ const CLIENT_TYPE_LABELS = {
 
 const SERVICE_LABELS = {
   "valutazione-psicodiagnostica": "Valutazione Psicodiagnostica",
-  "consulenza-psicologica": "Prima Consulenza Psicologica Individuale",
+  "consulenza-psicologica": "Consulenza Psicologica Individuale",
 };
 
 export const getServiceLabel = (

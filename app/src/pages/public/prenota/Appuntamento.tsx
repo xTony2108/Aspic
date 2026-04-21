@@ -16,6 +16,7 @@ import { FormTextArea } from "../../../components/form/FormTextArea";
 import { ErrorSpan } from "../../../components/form/ErrorSpan";
 import { FormDatePicker } from "../../../components/form/FormDatePicker";
 import { refineClientType } from "../../../features/services/schemas/refinements/refineClientType";
+import { FormInlineRadio } from "../../../components/form/FormInlineRadio";
 
 const refinedSchema = baseSchema
   .pick({
@@ -25,6 +26,7 @@ const refinedSchema = baseSchema
     clientType: true,
     clientAge: true,
     reason: true,
+    appointmentMode: true,
   })
   .superRefine(refineClientType);
 
@@ -40,6 +42,7 @@ export const Appuntamento = () => {
   const clientAgeVal = useServizioFormStore((s) => s.clientAge);
   const clientTypeVal = useServizioFormStore((s) => s.clientType);
   const reasonVal = useServizioFormStore((s) => s.reason);
+  const appointmentModeVal = useServizioFormStore((s) => s.appointmentMode);
   const setData = useServizioFormStore((s) => s.setData);
 
   const methods = useForm<FormInput>({
@@ -51,6 +54,7 @@ export const Appuntamento = () => {
       clientAge: clientAgeVal ?? null,
       clientType: clientTypeVal ?? null,
       reason: reasonVal ?? "",
+      appointmentMode: appointmentModeVal ?? undefined,
     },
   });
   const clientType = useWatch({
@@ -98,6 +102,33 @@ export const Appuntamento = () => {
                 required={true}
               />
             </div>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="modalita">
+              Modalità <span className="text-primary ml-0.5 text-xs">*</span>
+            </label>
+            <div className="flex gap-2 wrap">
+              <FormInlineRadio
+                control={methods.control}
+                inputName="appointmentMode"
+                icon="🏥"
+                heading="In studio"
+                description="Presso la nostra sede"
+                value="in_person"
+              />
+              <FormInlineRadio
+                control={methods.control}
+                inputName="appointmentMode"
+                icon="💻"
+                heading="Online"
+                description="Videochiamata sicura"
+                value="online"
+              />
+            </div>
+            <ErrorSpan
+              errors={methods.formState.errors}
+              inputName={"appointmentMode"}
+            />
           </div>
 
           <div className="flex flex-col gap-2">
@@ -165,18 +196,16 @@ export const Appuntamento = () => {
                   errors={methods.formState.errors}
                   inputName="clientAge"
                 />
-                <div className="mt-6">
-                  <InfoBox
-                    Icon={IoWarningOutline}
-                    text={
-                      <>
-                        <strong className="font-medium">Nota: </strong>Per i
-                        minori è necessaria la firma di entrambi i genitori al
-                        consenso così come da norma di legge
-                      </>
-                    }
-                  />
-                </div>
+                <InfoBox
+                  Icon={IoWarningOutline}
+                  text={
+                    <>
+                      <strong className="font-medium">Nota: </strong>Per i
+                      minori è necessaria la firma di entrambi i genitori al
+                      consenso così come da norma di legge
+                    </>
+                  }
+                />
               </>
             )}
           </div>

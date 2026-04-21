@@ -54,7 +54,7 @@ export const Servizio = () => {
               value={item.value}
               number={"0" + (i + 1)}
               heading={item.heading}
-              description={item.description}
+              price={item.price}
               list={item.list}
             >
               {item.children}

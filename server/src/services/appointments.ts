@@ -4,6 +4,7 @@ import Counter from "../db/models/Counter";
 import { sendEmail } from "../emails/sendEmail";
 import AppointmentReceived from "../emails/templates/AppointmentReceived";
 import { BaseTypeSchema } from "../schema/schemas";
+import { getServicePrice } from "../utility/getPrices";
 
 export const getExistingAppointmentService = async (fiscalCode: string) => {
   return Appointment.findOne({ fiscalCode }, "fiscalCode", {
@@ -27,10 +28,16 @@ export const createNewAppointmentService = async (data: BaseTypeSchema) => {
         { new: true, upsert: true, session },
       );
 
+      const price = getServicePrice(data.service);
+      if (!price) throw new Error("Servizio non valido");
+
       const protocolNumber = `ASPICRC-${year}/${String(counter.seq).padStart(4, "0")}`;
-      [appointment] = await Appointment.create([{ ...data, protocolNumber }], {
-        session,
-      });
+      [appointment] = await Appointment.create(
+        [{ ...data, protocolNumber, price }],
+        {
+          session,
+        },
+      );
     });
 
     if (!appointment)

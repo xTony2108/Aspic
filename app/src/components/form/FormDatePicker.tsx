@@ -27,7 +27,7 @@ export const FormDatePicker = <T extends Record<string, any>>({
     <>
       <div className="relative">
         <label htmlFor={inputName}>
-          {label} <span className="text-primary ml-0.5 text-xs">*</span>
+          {label} <span className="text-primary text-xs">*</span>
         </label>
 
         <div className="relative mt-1.5">
