@@ -13,6 +13,9 @@ export const baseSchema = z
     appointmentTime: z
       .string({ error: "Seleziona un orario" })
       .nonempty({ error: "Seleziona un orario" }),
+    appointmentMode: z.enum(["online", "in_person"], {
+      error: "Seleziona una modalità",
+    }),
     urgent: z.boolean({
       error: "Richiesta urgente è di un formato non valido",
     }),

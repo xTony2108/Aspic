@@ -20,6 +20,11 @@ const CLIENT_TYPE_LABELS = {
   anziani: "Età geriatrica",
 };
 
+const APPOINTMENT_MODE_LABELS = {
+  online: "💻 Online",
+  in_person: "🏥 Studio",
+};
+
 function formatDate(str: string) {
   const locale = new Date(str).toLocaleDateString();
   return locale;
@@ -100,6 +105,9 @@ export const RequestCard = ({
         {/* {appointment.assignedTo && <span>🩺 {appointment.assignedTo}</span>} */}
         {appointment.email && <span>✉️ {appointment.email}</span>}
         {appointment.phoneNumber && <span>📞 {appointment.phoneNumber}</span>}
+        {appointment.appointmentMode && (
+          <span>{APPOINTMENT_MODE_LABELS[appointment.appointmentMode]}</span>
+        )}
       </div>
 
       {appointment.reason && (

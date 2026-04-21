@@ -28,11 +28,11 @@ export const FormInput = <T extends Record<string, any>>({
   return (
     <>
       <label>
-        {label}
+        {label}{" "}
         {required ? (
-          <span className="text-primary ml-0.5 text-xs">*</span>
+          <span className="text-primary text-xs">*</span>
         ) : (
-          <span className="text-text-muted ml-0.5 text-xs">(facoltativo)</span>
+          <span className="text-text-muted text-xs">(facoltativo)</span>
         )}
         <input
           onChange={field.onChange}

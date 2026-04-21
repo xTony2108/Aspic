@@ -42,6 +42,7 @@ export type AppointmentData = {
   lastName: string;
   appointmentDate: string;
   appointmentTime: string;
+  appointmentMode: "online" | "in_person";
   urgent: boolean;
   status: "pending" | "confirmed" | "cancelled" | "completed";
   service: string;

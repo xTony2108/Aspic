@@ -203,7 +203,7 @@ export const paginateAppointmentsService = async (
       status === "pending" || status === "cancelled"
         ? { status }
         : { status, assignedTo: userID },
-      "_id firstName lastName appointmentDate appointmentTime urgent status service clientType clientAge email phoneNumber createdAt protocolNumber reason",
+      "_id firstName lastName appointmentDate appointmentTime appointmentMode urgent status service clientType clientAge email phoneNumber createdAt protocolNumber reason",
       { lean: true, skip: offset, limit, sort: { appointmentDate: 1 } },
     ),
     Appointment.countDocuments({ status }),
