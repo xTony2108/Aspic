@@ -59,27 +59,52 @@ const userSchema = new Schema(
     stripeAccountId: {
       type: String,
       required: false,
+      index: true,
     },
 
-    onboardingCompleted: {
+    stripeOnboardingCompleted: {
       type: Boolean,
       default: false,
     },
 
-    chargesEnabled: {
+    stripeDetailsSubmitted: {
       type: Boolean,
       default: false,
     },
 
-    payoutsEnabled: {
+    stripeChargesEnabled: {
       type: Boolean,
       default: false,
+    },
+
+    stripePayoutsEnabled: {
+      type: Boolean,
+      default: false,
+    },
+
+    stripeRequirementsDue: {
+      type: [String],
+      default: [],
+    },
+
+    stripeAccountStatus: {
+      type: String,
+      enum: ["pending", "restricted", "active"],
+      default: "pending",
     },
 
     createdBy: {
       type: String,
       default: "admin",
       required: true,
+    },
+    status: {
+      type: String,
+      enum: ["active", "deleted"],
+      default: "active",
+    },
+    deletedAt: {
+      type: Date,
     },
   },
   { strict: true, timestamps: true },

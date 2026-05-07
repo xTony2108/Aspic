@@ -24,7 +24,7 @@ interface VerifyEmailProps {
   expiresInHours?: number;
 }
 
-const VerifyEmail = ({
+export const VerifyEmail = ({
   firstName = "Maria",
   lastName = "Rossi",
   email = "m.rossi@aspicrc.it",
@@ -160,8 +160,6 @@ const VerifyEmail = ({
     </Body>
   </Html>
 );
-
-export default VerifyEmail;
 
 // ── STYLES ──
 const body: React.CSSProperties = {

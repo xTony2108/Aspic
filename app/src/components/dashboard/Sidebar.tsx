@@ -5,7 +5,7 @@ import { CiLogout } from "react-icons/ci";
 import { SidebarLabel } from "./SidebarLabel";
 import { DashboardAvatar } from "./DashboardAvatar";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { createGetUserDataQueryOptions } from "../../api/admin/getUserData";
+import { createGetUserDataQueryOptions } from "../../api/admin/createGetUserDataQueryOptions";
 import { createLogoutMutationOptions } from "../../api/auth/createLogoutMutationOptions";
 import { useNavigate } from "@tanstack/react-router";
 import { useAuthStore } from "../../store";

@@ -2,9 +2,9 @@ import { Request, Response } from "express";
 import {
   findAppointmentByID,
   updateAppointmentStatus,
-} from "../../services/auth";
-import { sendEmail } from "../../emails/sendEmail";
-import AppointmentCancelled from "../../emails/templates/AppointmentCancelled";
+} from "../../services/admin.js";
+import { sendEmail } from "../../emails/sendEmail.js";
+import AppointmentCancelled from "../../emails/templates/AppointmentCancelled.js";
 import { createElement } from "react";
 
 export const cancelAppointmentController = async (
@@ -58,6 +58,7 @@ export const cancelAppointmentController = async (
         time: appointment.appointmentTime,
         clientType: appointment.clientType,
         protocolNumber: appointment.protocolNumber,
+        appointmentMode: appointment.appointmentMode,
       }),
       appointment.email,
     );

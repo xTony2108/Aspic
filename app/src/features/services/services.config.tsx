@@ -9,7 +9,7 @@ export const SERVIZI_CONFIG: ServiziConfig[] = [
   {
     value: "consulenza-psicologica",
     heading: "Consulenza Psicologica Individuale",
-    price: "80€",
+    price: "€80,00 + €2,00 di imposta di bollo",
     children: (
       <p className="text-sm font-light mb-4">
         La consulenza sarà eseguita da{" "}
@@ -24,7 +24,7 @@ export const SERVIZI_CONFIG: ServiziConfig[] = [
   {
     value: "valutazione-psicodiagnostica",
     heading: "Valutazione Psicodiagnostica",
-    price: "250€",
+    price: "€300,00 + €2,00 di imposta di bollo",
     list: [
       "Colloquio clinico",
       "Valutazione del funzionamento cognitivo",

@@ -16,6 +16,7 @@ const initialServizioState: Partial<ServizioState> = {
   service: null,
   appointmentDate: undefined,
   appointmentTime: undefined,
+  appointmentMode: undefined,
   urgent: undefined,
   clientAge: undefined,
   clientType: undefined,

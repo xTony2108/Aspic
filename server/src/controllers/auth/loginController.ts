@@ -1,19 +1,12 @@
 import { Request, Response } from "express";
-import bcrypt from "bcrypt";
-import User from "../../db/models/User";
-import { createHash } from "crypto";
-import {
-  generateAccessToken,
-  generateRefreshToken,
-} from "../../utility/generateJWTTokens";
-import RefreshToken from "../../db/models/RefreshToken";
-import { UAParser } from "ua-parser-js";
-import { logger } from "../../logger";
+import { generateAccessToken } from "../../utility/generateJWTTokens.js";
+import { logger } from "../../logger.js";
 import {
   comparePasswordService,
   createRefreshTokenService,
   findUserByEmailService,
-} from "../../services/auth";
+  getStripeOnboardingLinkService,
+} from "../../services/auth.js";
 
 export const loginController = async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -39,6 +32,10 @@ export const loginController = async (req: Request, res: Response) => {
         emailVerificationToken: user.emailVerificationToken,
       });
 
+    const { onboardingCompleted, url } = await getStripeOnboardingLinkService(
+      user._id,
+    );
+
     const jti = crypto.randomUUID();
 
     const accessToken = generateAccessToken({ _id: user._id.toString(), jti });
@@ -63,6 +60,8 @@ export const loginController = async (req: Request, res: Response) => {
       message: "Login effettuato con successo!",
       accessToken,
       passwordChanged: user.passwordChanged,
+      onboardingCompleted,
+      stripeOnboardingUrl: url,
     });
   } catch (error) {
     logger.error(`[LOGIN] Error for ${email}: ${error}`);

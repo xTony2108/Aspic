@@ -1,7 +1,7 @@
 import express from "express";
-import { appointmentsController } from "../../../controllers/appointments/appointmentsController";
-import { validateBody } from "../../../middleware/validateBody";
-import { baseSchema } from "../../../schema/schemas";
+import { appointmentsController } from "../../../controllers/appointments/appointmentsController.js";
+import { validateBody } from "../../../middleware/validateBody.js";
+import { baseSchema } from "../../../schema/schemas.js";
 const router = express.Router();
 
 /**

@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { NuovoProfessionistaModal } from "../../../components/dashboard/professionisti/NuovoProfessionistaModal";
+import { NuovoProfessionistaModal } from "../../../components/dashboard/professional/NuovoProfessionistaModal";
 import { DashboardTitle } from "../../../components/dashboard/DashboardTitle";
 import { DashboardSubmit } from "../../../components/dashboard/DashboardSubmit";
-import { DashboardAvatar } from "../../../components/dashboard/DashboardAvatar";
 import type { UsersType } from "../../../types/api";
+import { ProfessionalRow } from "../../../components/dashboard/professional/ProfessionalRow";
+import { useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createGetUsersQueryOptions } from "../../../api/dashboard/professional/createGetUsersQueryOptions";
 
@@ -13,6 +13,7 @@ export const DashboardProfessionisti = () => {
   const {
     data: { users },
   } = useSuspenseQuery(createGetUsersQueryOptions());
+
   return (
     <>
       <DashboardTitle title="Gestione" titleEm="professionisti" />
@@ -32,36 +33,12 @@ export const DashboardProfessionisti = () => {
             </thead>
             <tbody className="text-left text-text">
               {users.map((user: UsersType) => {
-                return (
-                  <tr
-                    className="text-xs font-medium uppercase border-b border-border last:border-0 hover:bg-blue-light"
-                    key={user._id}
-                  >
-                    <td className="py-4 px-4.5 truncate">
-                      <DashboardAvatar
-                        nameLetter={user.firstName.charAt(0)}
-                        size="base"
-                      />
-                    </td>
-                    <td className="py-4 px-4.5 truncate">
-                      {user.firstName} {user.lastName}
-                    </td>
-                    <td className="py-4 px-4.5 truncate">{user.email}</td>
-                    <td className="py-4 px-4.5 truncate">{user.fiscalCode}</td>
-                    <td className="py-4 px-4.5 text-text truncate">
-                      {user.phoneNumber}
-                    </td>
-                    <td className="py-4 px-4.5 text-center">
-                      <button className="text-warnBorder text-lg font-bold cursor-pointer">
-                        ✕
-                      </button>
-                    </td>
-                  </tr>
-                );
+                return <ProfessionalRow user={user} key={user._id} />;
               })}
             </tbody>
           </table>
         </div>
+
         <NuovoProfessionistaModal
           isOpen={open}
           onClose={() => setOpen(false)}

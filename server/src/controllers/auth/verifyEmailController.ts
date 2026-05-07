@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
-import User from "../../db/models/User";
 import {
   confirmEmailService,
   findEmailTokenService,
-} from "../../services/auth";
+} from "../../services/auth.js";
 
 export const verifyEmailController = async (req: Request, res: Response) => {
   const { token } = req.body;

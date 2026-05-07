@@ -15,8 +15,11 @@ import {
   Img,
   Button,
 } from "@react-email/components";
-import { getClientTypeLabel, getServiceLabel } from "../../utility/getLabels";
-import { config } from "../../config";
+import {
+  getClientTypeLabel,
+  getServiceLabel,
+} from "../../utility/getLabels.js";
+import { config } from "../../config.js";
 
 interface AppointmentDateChangeProps {
   firstName: string;

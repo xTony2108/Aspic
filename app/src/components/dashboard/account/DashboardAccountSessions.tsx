@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { DasbhoardAccountFormTitle } from "./DasbhoardAccountFormTitle";
 
 import { SessionItem } from "./SessionItem";
@@ -9,7 +9,9 @@ import { DashboardSubmitRed } from "../DashboardSubmitRed";
 import { createActiveSessionsQueryOptions } from "../../../api/dashboard/sessions/createActiveSessionsQueryOptions";
 
 export const DashboardAccountSessions = () => {
-  const { data, isPending } = useQuery(createActiveSessionsQueryOptions());
+  const { data, isPending } = useSuspenseQuery(
+    createActiveSessionsQueryOptions(),
+  );
 
   const { mutate, isPending: isLogoutAllPending } = useMutation(
     createLogoutAllMutationOptions({

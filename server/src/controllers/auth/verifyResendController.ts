@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import { createElement } from "react";
-import { VerifyEmail } from "../../emails/templates/VerifyEmail";
-import { sendEmail } from "../../emails/sendEmail";
+import { VerifyEmail } from "../../emails/templates/VerifyEmail.js";
+import { sendEmail } from "../../emails/sendEmail.js";
 import {
   findEmailTokenService,
   generateNewEmailToken,
-} from "../../services/auth";
+} from "../../services/auth.js";
 
 export const verifyResendController = async (req: Request, res: Response) => {
   try {

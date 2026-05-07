@@ -4,9 +4,10 @@ import { useAuthStore } from "../store";
 import axios, { isAxiosError } from "axios";
 import { Loading } from "../components/Loading";
 import { NotFound } from "../pages/public/NotFound";
-import { createGetUserDataQueryOptions } from "../api/admin/getUserData";
-import { queryClient } from "../queryClient";
+import { createGetUserDataQueryOptions } from "../api/admin/createGetUserDataQueryOptions";
 import { createGetUsersQueryOptions } from "../api/dashboard/professional/createGetUsersQueryOptions";
+import { createActiveSessionsQueryOptions } from "../api/dashboard/sessions/createActiveSessionsQueryOptions";
+import { stripeSearchSchema } from "../features/services/schemas/schemas";
 
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -63,7 +64,6 @@ const successoRoute = createRoute({
 const adminAutenticatoRoute = createRoute({
   getParentRoute: () => rootRoute,
   id: "_autenticato",
-
   beforeLoad: async ({ location }) => {
     const { accessToken } = useAuthStore.getState();
     if (accessToken) return;
@@ -80,7 +80,7 @@ const adminAutenticatoRoute = createRoute({
         location.pathname.endsWith("/admin") ||
         location.pathname.endsWith("/admin/")
       ) {
-        throw redirect({ to: "/dashboard" });
+        throw redirect({ to: "/dashboard/richieste" });
       }
     } catch (error) {
       if (isRedirect(error)) throw error;
@@ -131,40 +131,19 @@ const dashboardLayoutRoute = createRoute({
   pendingComponent: Loading,
   pendingMs: 300,
   pendingMinMs: 800,
-  beforeLoad: ({ location }) => {
-    if (location.pathname.endsWith("/dashboard"))
-      throw redirect({ to: "/dashboard/richieste" });
-  },
   loader: async ({ location, context: { queryClient } }) => {
-    const { accessToken } = useAuthStore.getState();
-
-    if (!accessToken || location.pathname.startsWith("/admin")) return null;
-
-    try {
-      const { userData } = await queryClient.ensureQueryData(
-        createGetUserDataQueryOptions({ staleTime: Infinity }),
-      );
-
-      if (
-        !userData.passwordChanged &&
-        location.pathname !== "/dashboard/impostazioni"
-      ) {
-        throw redirect({ to: "/dashboard/impostazioni" });
-      }
-
-      return { userData };
-    } catch (error) {
-      if (isRedirect(error)) throw error;
-      if (isAxiosError(error)) {
-        if (error.status === 401) {
-          throw redirect({ to: "/admin" });
-        }
-        if (error.status === 500)
-          throw new Error(error.response?.data?.message || "Server error");
-      }
-
-      throw error;
+    if (
+      location.pathname.endsWith("/dashboard") ||
+      location.pathname.endsWith("/dashboard/")
+    ) {
+      throw redirect({ to: "/dashboard/richieste" });
     }
+
+    const { userData } = await queryClient.ensureQueryData(
+      createGetUserDataQueryOptions({ staleTime: Infinity }),
+    );
+
+    return { userData };
   },
 }).lazy(() =>
   import("./private/dashboard/dashboard.routes").then((d) => d.Route),
@@ -185,11 +164,7 @@ const dashboardDisponibilitaRoute = createRoute({
 const dashboardProfessionistiRoute = createRoute({
   getParentRoute: () => dashboardLayoutRoute,
   path: "professionisti",
-  loader: async () => {
-    const { accessToken } = useAuthStore.getState();
-
-    if (!accessToken || location.pathname.startsWith("/admin")) return null;
-
+  loader: async ({ context: { queryClient } }) => {
     try {
       const { users } = await queryClient.ensureQueryData(
         createGetUsersQueryOptions(),
@@ -197,11 +172,15 @@ const dashboardProfessionistiRoute = createRoute({
 
       return { users };
     } catch (error) {
-      if (isRedirect(error)) throw error;
       if (isAxiosError(error)) {
-        if (error.status === 401) {
+        if (error.status === 401 && !location.pathname.startsWith("/admin")) {
           throw redirect({ to: "/admin" });
         }
+
+        if (!error.response) {
+          throw new Response("Server offline", { status: 503 });
+        }
+
         if (error.status === 500)
           throw new Error(error.response?.data?.message || "Server error");
       }
@@ -216,8 +195,40 @@ const dashboardProfessionistiRoute = createRoute({
 const dashboardImpostazioniRoute = createRoute({
   getParentRoute: () => dashboardLayoutRoute,
   path: "impostazioni",
+  loader: async ({ context: { queryClient } }) => {
+    try {
+      const { sessions } = await queryClient.ensureQueryData(
+        createActiveSessionsQueryOptions(),
+      );
+
+      return sessions;
+    } catch (error) {
+      if (isAxiosError(error)) {
+        if (error.status === 401 && !location.pathname.startsWith("/admin")) {
+          throw redirect({ to: "/admin" });
+        }
+
+        if (!error.response) {
+          throw new Response("Server offline", { status: 503 });
+        }
+
+        if (error.status === 500)
+          throw new Error(error.response?.data?.message || "Server error");
+      }
+
+      throw error;
+    }
+  },
 }).lazy(() =>
   import("./private/dashboard/account.routes").then((d) => d.Route),
+);
+
+const dashboardStripeCallbackRoute = createRoute({
+  getParentRoute: () => dashboardLayoutRoute,
+  path: "stripe-callback",
+  validateSearch: stripeSearchSchema,
+}).lazy(() =>
+  import("./private/dashboard/stripe-callback.routes").then((d) => d.Route),
 );
 
 export const routeTree = rootRoute.addChildren([
@@ -236,6 +247,7 @@ export const routeTree = rootRoute.addChildren([
       dashboardDisponibilitaRoute,
       dashboardProfessionistiRoute,
       dashboardImpostazioniRoute,
+      dashboardStripeCallbackRoute,
     ]),
   ]),
 ]);

@@ -1,7 +1,8 @@
 import express from "express";
-import appointmentsRoute from "./appointments/appointments";
-import authRoute from "./auth/auth";
-import adminRoute from "./admin/admin";
+import appointmentsRoute from "./appointments/appointments.js";
+import authRoute from "./auth/auth.js";
+import adminRoute from "./admin/admin.js";
+import stripeRoute from "./stripe/stripe.js";
 
 const router = express.Router();
 router.use(express.json());
@@ -23,5 +24,11 @@ router.use("/auth", authRoute);
  */
 
 router.use("/admin", adminRoute);
+
+/**
+ * @path /api/stripe
+ */
+
+router.use("/stripe", stripeRoute);
 
 export default router;

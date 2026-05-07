@@ -1,9 +1,9 @@
 import { type Response, type Request } from "express";
-import { logger } from "../../logger";
+import { logger } from "../../logger.js";
 import {
   createNewAppointmentService,
   getExistingAppointmentService,
-} from "../../services/appointments";
+} from "../../services/appointments.js";
 
 export const appointmentsController = async (req: Request, res: Response) => {
   const { fiscalCode, firstName, lastName, email } = req.body;

@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router";
-import { FloatCard } from "../FloatCard";
 import { StatCard } from "../StatCard";
 import { FaArrowRight } from "react-icons/fa";
 import { FaArrowDown } from "react-icons/fa";
+import logo from "../../../assets/Illustrazione_HeroSection_PNG.png";
 
 export const Hero = () => {
   const scrollToSection = (id: string) => {
@@ -13,7 +13,7 @@ export const Hero = () => {
     }
   };
   return (
-    <section className="mt-18 relative min-h-[calc(100svh-72px)] flex p-0">
+    <section className="mt-[77.66px] relative min-h-[calc(100svh-72px)] flex p-0 flex-col">
       <div className="relative flex flex-col xl:grid xl:grid-cols-2 grow">
         <div className="flex flex-col justify-center px-10 pt-16 pb-12 lg:px-10 xl:px-16 xl:py-24 flex-1 row-start-1 fadeUp">
           <span className="before:content-[''] before:w-5 before:h-px before:bg-primary inline-flex items-center gap-2 text-xs font-medium tracking-[.18em] text-primary mb-5 uppercase">
@@ -48,28 +48,14 @@ export const Hero = () => {
             </button>
           </div>
         </div>
-        <div className="flex border-t border-border text-g row-start-2 fadeUp">
-          <StatCard heading="18+" desc="anni di esperienza" />
-          <StatCard heading="500+" desc="pazienti seguiti" />
-          <StatCard heading="98%" desc="soddisfazione" />
+        <div className="hidden xl:flex lg:items-center lg:justify-center flex-1 fadeIn col-span-1 shrink-0">
+          <img src={logo} alt="" className="shrink-0" />
         </div>
-        <div className="hidden xl:flex lg:items-center lg:justify-center fadeIn flex-1 col-span-1">
-          <div className="relative w-110 h-135">
-            <div className="blob"></div>
-            <FloatCard
-              icon="🌿"
-              heading="Prima seduta"
-              desc="Prenota online"
-              position="bottom"
-            />
-            <FloatCard
-              icon="💬"
-              heading="Online & Presenza"
-              desc="Scegli tu il formato"
-              position="top"
-            />
-          </div>
-        </div>
+      </div>
+      <div className="flex border-t border-border text-g row-start-2 fadeUp">
+        <StatCard heading="18+" desc="anni di esperienza" />
+        <StatCard heading="500+" desc="pazienti seguiti" />
+        <StatCard heading="98%" desc="soddisfazione" />
       </div>
     </section>
   );

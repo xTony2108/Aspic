@@ -5,7 +5,7 @@ import { DashboardAccountInput } from "./DashboardAccountInput";
 import { DashboardSubmit } from "../DashboardSubmit";
 import { ErrorSpan } from "../../form/ErrorSpan";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { createGetUserDataQueryOptions } from "../../../api/admin/getUserData";
+import { createGetUserDataQueryOptions } from "../../../api/admin/createGetUserDataQueryOptions";
 import {
   changePersonalDataDataSchema,
   type ChangePersonalDataTypeSchema,

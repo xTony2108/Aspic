@@ -8,6 +8,8 @@ export type ApiError<T = GenericResponse> = AxiosError<T>;
 
 export type LoginResponse = GenericResponse & {
   accessToken: string;
+  onboardingCompleted: boolean;
+  stripeOnboardingUrl?: string | null;
 };
 
 export type LoginErrorResponse = GenericResponse & {
@@ -16,11 +18,23 @@ export type LoginErrorResponse = GenericResponse & {
 
 export type UserDataResponse = GenericResponse & {
   userData: {
+    _id: string;
     firstName: string;
     lastName: string;
     email: string;
     phoneNumber: string;
     passwordChanged: boolean;
+  };
+};
+
+export type StripeAccountStatus = "pending" | "restricted" | "active";
+
+export type StripeOnboardingDataResponse = GenericResponse & {
+  stripeData: {
+    onboardingCompleted: boolean;
+    url: string | null;
+    status: StripeAccountStatus;
+    requirementsDue: string[];
   };
 };
 
@@ -80,6 +94,7 @@ export type UsersType = {
   email: string;
   fiscalCode: string;
   phoneNumber: string;
+  createdBy: string;
 };
 
 export type GetUsersResponse = GenericResponse & {

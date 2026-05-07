@@ -1,7 +1,7 @@
 import pino from "pino";
-import pinoHttp from "pino-http";
 import morgan from "morgan";
-import { config } from "./config";
+import { config } from "./config.js";
+import { pinoHttp } from "pino-http";
 
 const logger = pino({
   level: config.NODE_ENV === "production" ? "info" : "debug",

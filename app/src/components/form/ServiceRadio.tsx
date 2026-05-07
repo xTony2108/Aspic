@@ -58,7 +58,7 @@ export const ServiceRadio = <T extends Record<string, any>>({
           <p
             className={`text-sm font-medium mt-1.5 ${service === value ? "text-primary" : "text-text-muted"}`}
           >
-            Prezzo: {price}
+            Importo: {price}
           </p>
         </div>
       </label>

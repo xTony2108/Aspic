@@ -8,8 +8,14 @@ import {
   type RegisterProfessionalTypeSchema,
 } from "../../../features/services/schemas/schemas";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { createGetUserDataQueryOptions } from "../../../api/admin/getUserData";
+import { createGetUserDataQueryOptions } from "../../../api/admin/createGetUserDataQueryOptions";
 import { createNewprofessionalMutationOptions } from "../../../api/dashboard/professional/createRegisterProfessionalMutationOptions";
+import { useRouteContext } from "@tanstack/react-router";
+import { isAxiosError } from "axios";
+import { InfoBox } from "../../form/InfoBox";
+import { IoWarningOutline } from "react-icons/io5";
+import toast from "react-hot-toast";
+import { createGetUsersQueryOptions } from "../../../api/dashboard/professional/createGetUsersQueryOptions";
 
 interface NuovoProfessionistaModalProps {
   isOpen: boolean;
@@ -20,6 +26,8 @@ export const NuovoProfessionistaModal = ({
   isOpen,
   onClose,
 }: NuovoProfessionistaModalProps) => {
+  const { queryClient } = useRouteContext({ from: "/_autenticato" });
+
   const {
     data: { userData },
   } = useSuspenseQuery(createGetUserDataQueryOptions());
@@ -36,14 +44,30 @@ export const NuovoProfessionistaModal = ({
       lastName: "",
       email: "",
       fiscalCode: "",
-      iban: "",
+      phoneNumber: "",
       createdBy: `${userData.firstName} ${userData.lastName}`,
     },
   });
 
-  const { mutate } = useMutation(createNewprofessionalMutationOptions());
+  const { mutate, isPending, error, isError } = useMutation(
+    createNewprofessionalMutationOptions({
+      onSuccess: (dataFromMutation) => {
+        queryClient.invalidateQueries({
+          queryKey: createGetUsersQueryOptions().queryKey,
+        });
+
+        toast.success(
+          dataFromMutation?.message
+            ? dataFromMutation?.message
+            : "Registrazione effettuata con successo!",
+        );
+
+        onClose();
+      },
+    }),
+  );
+
   const onSubmit = (data: RegisterProfessionalTypeSchema) => {
-    console.log(data);
     mutate(data);
   };
 
@@ -72,6 +96,18 @@ export const NuovoProfessionistaModal = ({
             ✕
           </button>
         </div>
+
+        {isError && isAxiosError(error) && (
+          <div className="flex items-center justify-between px-8">
+            <div className="mb-6 w-full">
+              <InfoBox
+                Icon={IoWarningOutline}
+                text={<>{error.response?.data.message}</>}
+              />
+            </div>
+            <span className="text-warn text-xs"></span>
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -122,11 +158,11 @@ export const NuovoProfessionistaModal = ({
             <div>
               <FormInput
                 control={control}
-                inputName="iban"
+                inputName="phoneNumber"
                 inputType="text"
-                label="IBAN"
+                label="Numero di cellulare"
                 required={true}
-                placeholder="IT60X0542811101000000123456"
+                placeholder="3331234567"
               />
             </div>
           </div>
@@ -138,9 +174,13 @@ export const NuovoProfessionistaModal = ({
               type="button"
             />
             <DashboardSubmit
-              text={isSubmitting ? "Salvataggio..." : "Salva professionista"}
+              text={
+                isSubmitting || isPending
+                  ? "Salvataggio..."
+                  : "Salva professionista"
+              }
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isPending}
             />
           </div>
         </form>

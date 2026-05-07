@@ -3,17 +3,17 @@ import {
   createStripeSession,
   findAppointmentByID,
   updateAppointmentStatus,
-} from "../../services/auth";
-import { sendEmail } from "../../emails/sendEmail";
+} from "../../services/admin.js";
+import { sendEmail } from "../../emails/sendEmail.js";
 import { createElement } from "react";
-import PayementRequest from "../../emails/templates/PayementRequest";
-import User from "../../db/models/User";
+import PayementRequest from "../../emails/templates/PayementRequest.jsx";
+import User from "../../db/models/User.js";
 
 export const confirmAppointmentController = async (
   req: Request,
   res: Response,
 ) => {
-  const { _id } = req.user;
+  const { _id: professionalID } = req.user;
 
   const { id: appointmentID } = req.params;
   const { status } = req.body;
@@ -32,30 +32,39 @@ export const confirmAppointmentController = async (
 
     if (
       appointment?.assignedTo &&
-      appointment.assignedTo.toString() !== _id.toString()
+      appointment.assignedTo.toString() !== professionalID.toString()
     )
       return res.status(403).json({ message: "Non autorizzato" });
 
     const searchFields = { _id: appointmentID };
-    const updateFields = { status, assignedTo: _id };
+    const updateFields = { status, assignedTo: professionalID };
 
     const assignee = await User.findById(
-      _id,
-      "firstName lastName stripeAccountId",
+      professionalID,
+      "firstName lastName stripeAccountId onboardingCompleted chargesEnabled payoutsEnabled",
     );
 
-    if (!assignee?.stripeAccountId)
+    if (
+      !assignee?.stripeAccountId ||
+      !assignee.onboardingCompleted ||
+      !assignee.chargesEnabled ||
+      !assignee.payoutsEnabled
+    )
       return res
         .status(400)
         .json({ message: "Professionista non configurato per i pagamenti" });
 
     const appointmentInfo = {
       service: appointment.service,
+      price: appointment.price,
       date: appointment.appointmentDate,
       time: appointment.appointmentTime,
-      _id: appointment._id.toString(),
+      appointmentID: appointment._id.toString(),
+      professionalID,
       stripeAccountId: assignee.stripeAccountId,
+      clientEmail: appointment.email,
     };
+    console.log(appointmentInfo);
 
     const session = await createStripeSession(appointmentInfo);
 
@@ -71,6 +80,7 @@ export const confirmAppointmentController = async (
         service: appointment.service,
         date: appointment.appointmentDate.toLocaleDateString(),
         time: appointment.appointmentTime,
+        appointmentMode: appointment.appointmentMode,
         amount: 80,
         protocolNumber: appointment.protocolNumber,
         professionalName: assignee

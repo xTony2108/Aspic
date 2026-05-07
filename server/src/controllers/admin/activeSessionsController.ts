@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getActiveSessionsService } from "../../services/auth";
+import { getActiveSessionsService } from "../../services/admin.js";
 
 export const activeSessionsController = async (req: Request, res: Response) => {
   try {

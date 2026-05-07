@@ -49,28 +49,26 @@ export const createPatchAppointmentMutationOptions = <
     | "onSuccess"
   >,
 ) => {
-  const appointmentInfiniteQueryKey = createAppointmentsUseInfiniteQueryOptions(
-    10,
-    filter,
-  ).queryKey;
   return mutationOptions({
     ...options,
     mutationFn: (data: BodyRequest) => patchAppointment(data),
     mutationKey: ["patchAppointment"],
     onMutate: async (data: BodyRequest) => {
+      const queryKey = ["getBookings"];
       // CANCELLO EVENTUALI REFETCH
       await queryClient.cancelQueries({
-        queryKey: appointmentInfiniteQueryKey,
+        queryKey,
       });
 
       // SALVO LO STATO DELLA CACHE PER ERRORE
-      const previousData = queryClient.getQueryData<
-        InfiniteData<AppointmentResponse, number>
-      >(appointmentInfiniteQueryKey);
+      const previousData =
+        queryClient.getQueryData<InfiniteData<AppointmentResponse, number>>(
+          queryKey,
+        );
 
       // AGGIORNO LA CACHE RIMUOVENDO L'ID AGGIORNATO
       queryClient.setQueryData<InfiniteData<AppointmentResponse, number>>(
-        appointmentInfiniteQueryKey,
+        queryKey,
         (oldData) => {
           if (!oldData) return;
 
@@ -87,7 +85,7 @@ export const createPatchAppointmentMutationOptions = <
       );
 
       //RITORNO VECCHIO STATO
-      return { previousData };
+      return { previousData, queryKey };
     },
     onError: (err, data, context) => {
       // SE ERRORE ROLLBACK
@@ -97,15 +95,13 @@ export const createPatchAppointmentMutationOptions = <
           `Errore durante ${data.status === "confirmed" ? "la conferma" : "la cancellazione"} dell'appuntamento`,
         );
 
-      queryClient.setQueryData(
-        appointmentInfiniteQueryKey,
-        context?.previousData,
-      );
+      if (context?.queryKey)
+        queryClient.setQueryData(context.queryKey, context?.previousData);
     },
-    onSettled: () => {
+    onSettled: (_data, _error, _variables, context) => {
       // SE OK INVALIDO QUERY
       queryClient.invalidateQueries({
-        queryKey: appointmentInfiniteQueryKey,
+        queryKey: context?.queryKey,
       });
     },
     onSuccess: (data) => {

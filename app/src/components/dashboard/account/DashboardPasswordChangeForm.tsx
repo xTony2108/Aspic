@@ -11,8 +11,12 @@ import { useMutation } from "@tanstack/react-query";
 import { createChangePasswordMutationOptions } from "../../../api/dashboard/profile/createChangePasswordMutationOptions";
 import { DasbhoardAccountFormTitle } from "./DasbhoardAccountFormTitle";
 import { DashboardAlert } from "./DashboardAlert";
+import { createGetUserDataQueryOptions } from "../../../api/admin/createGetUserDataQueryOptions";
+import { useRouteContext } from "@tanstack/react-router";
 
 export const DashboardPasswordChangeForm = () => {
+  const { queryClient } = useRouteContext({ from: "/_autenticato" });
+
   const {
     handleSubmit,
     formState: { isDirty, errors },
@@ -32,6 +36,9 @@ export const DashboardPasswordChangeForm = () => {
       createChangePasswordMutationOptions({
         onSuccess: () => {
           resetForm();
+          queryClient.invalidateQueries({
+            queryKey: createGetUserDataQueryOptions().queryKey,
+          });
           setTimeout(() => reset(), 2000);
         },
       }),

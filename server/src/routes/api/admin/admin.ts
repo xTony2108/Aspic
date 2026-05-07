@@ -1,32 +1,32 @@
 import express from "express";
-import { verifyAccessToken } from "../../../middleware/verifyAccessToken";
-import { meController } from "../../../controllers/admin/meController";
-import { changePersonalDataController } from "../../../controllers/admin/changePersonalDataController";
-import { changePasswordController } from "../../../controllers/admin/changePasswordController";
-import { validateBody } from "../../../middleware/validateBody";
+import { verifyAccessToken } from "../../../middleware/verifyAccessToken.js";
+import { meController } from "../../../controllers/admin/meController.js";
+import { changePersonalDataController } from "../../../controllers/admin/changePersonalDataController.js";
+import { changePasswordController } from "../../../controllers/admin/changePasswordController.js";
+import { validateBody } from "../../../middleware/validateBody.js";
 import {
   changeDateSchema,
   changePasswordSchema,
-  personalDataSchema,
+  changePersonalDataDataSchema,
   registerProfessionalSchema,
-} from "../../../schema/schemas";
-import { activeSessionsController } from "../../../controllers/admin/activeSessionsController";
-import { deleteSessionController } from "../../../controllers/admin/deleteSessionController";
-import { getAppointmentsController } from "../../../controllers/admin/getAppointmentsController";
-import { confirmAppointmentController } from "../../../controllers/admin/confirmAppointmentController";
-import { registerController } from "../../../controllers/auth/registerController";
-import { cancelAppointmentController } from "../../../controllers/admin/cancelAppointmentController";
-import { changeAppointmentDateController } from "../../../controllers/admin/changeAppointmentDateController";
-import { appointmentSuccessController } from "../../../controllers/admin/appointmentSuccessController";
-import { getUsersController } from "../../../controllers/admin/getUsersController";
-
+} from "../../../schema/schemas.js";
+import { activeSessionsController } from "../../../controllers/admin/activeSessionsController.js";
+import { deleteSessionController } from "../../../controllers/admin/deleteSessionController.js";
+import { getAppointmentsController } from "../../../controllers/admin/getAppointmentsController.js";
+import { confirmAppointmentController } from "../../../controllers/admin/confirmAppointmentController.js";
+import { registerController } from "../../../controllers/auth/registerController.js";
+import { cancelAppointmentController } from "../../../controllers/admin/cancelAppointmentController.js";
+import { changeAppointmentDateController } from "../../../controllers/admin/changeAppointmentDateController.js";
+import { appointmentSuccessController } from "../../../controllers/admin/appointmentSuccessController.js";
+import { getUsersController } from "../../../controllers/admin/getUsersController.js";
+import { deleteUserController } from "../../../controllers/admin/deleteUserController.js";
 const router = express.Router();
 
 router.use(verifyAccessToken);
 
 /**
  * @path /api/admin/me
- * POST
+ * GET
  */
 
 router.get("/me", meController);
@@ -49,7 +49,7 @@ router.post(
 
 router.post(
   "/personal",
-  validateBody(personalDataSchema),
+  validateBody(changePersonalDataDataSchema),
   changePersonalDataController,
 );
 
@@ -123,5 +123,12 @@ router.get("/appointments/success", appointmentSuccessController);
  */
 
 router.get("/getUsers", getUsersController);
+
+/**
+ * @delete /api/admin/professionals/:id
+ * DELETE
+ */
+
+router.delete("/professionals/:id", deleteUserController);
 
 export default router;

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { logger } from "../../logger";
-import { findUserByIDService } from "../../services/auth";
+import { logger } from "../../logger.js";
+import { findUserByIDService } from "../../services/admin.js";
 
 export const meController = async (req: Request, res: Response) => {
   const userID = req.user._id;

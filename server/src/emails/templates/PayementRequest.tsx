@@ -15,7 +15,7 @@ import {
   Column,
   Img,
 } from "@react-email/components";
-import { getServiceLabel } from "../../utility/getLabels";
+import { getServiceLabel } from "../../utility/getLabels.js";
 
 interface PayementRequestProps {
   firstName: string;
@@ -27,6 +27,7 @@ interface PayementRequestProps {
   paymentUrl: string;
   paymentExpiresAt: string;
   protocolNumber?: string;
+  appointmentMode: "online" | "in_person";
 }
 
 const PayementRequest = ({
@@ -39,6 +40,7 @@ const PayementRequest = ({
   paymentUrl = "https://aspicrc.it/pagamento?token=xxx",
   paymentExpiresAt = "27/03/2026 alle 23:59",
   protocolNumber = "ASPIC-2026-0042",
+  appointmentMode = "online",
 }: PayementRequestProps) => (
   <Html lang="it" dir="ltr">
     <Head>
@@ -132,6 +134,13 @@ const PayementRequest = ({
               <Column style={summaryLabelStyle}>Professionista</Column>
               <Column style={summaryValue}>{professionalName}</Column>
             </Row>
+            <Row style={summaryRow}>
+              <Column style={summaryLabelStyle}>Luogo</Column>
+              <Column style={summaryValue}>
+                {appointmentMode === "online" ? "Online" : "In studio"}
+              </Column>
+            </Row>
+
             <Hr style={{ borderColor: "hsl(229,40%,88%)", margin: "12px 0" }} />
             <Row>
               <Column style={{ ...summaryLabelStyle, fontWeight: 500 }}>
@@ -160,6 +169,15 @@ const PayementRequest = ({
               necessario contattarci per procedere con una nuova richiesta.
             </Text>
           </Section>
+
+          <Hr style={divider} />
+
+          <Text style={smallNote}>Dove trovarci</Text>
+          <Text style={smallNote}>
+            <a href="https://maps.app.goo.gl/BAWVuN624Fc6H8AY8" target="_blank">
+              Via Missori, 7, 89127 Reggio Calabria RC
+            </a>
+          </Text>
 
           <Hr style={divider} />
 

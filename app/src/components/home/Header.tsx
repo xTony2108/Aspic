@@ -30,12 +30,14 @@ export const Header = () => {
         ${scrolled ? "py-2" : "py-3.5"}
       `}
     >
-      <div className="max-w-40">
+      <div className="shrink-0">
         <img
-          className="object-contain relative z-50 block w-full"
+          className="object-contain block"
           src={logo}
           alt="logo aspic reggio calabria"
           fetchPriority="high"
+          width={160}
+          height={48}
         />
       </div>
 

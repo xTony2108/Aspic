@@ -4,11 +4,11 @@
   "description": "Server for ASPIC Reggio Calabria web app",
   "license": "ISC",
   "author": "Antonino Alampi",
-  "type": "commonjs",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "dev": "tsx watch src/server.ts",
     "email": "email dev --dir src/emails",
     "logs": "tail -f logs/app.log | pino-pretty",
     "logs:raw": "tail -f logs/app.log",
@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@react-email/components": "^1.0.9",
-    "@types/bcrypt": "^6.0.0",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
@@ -28,14 +27,15 @@
     "morgan": "^1.10.1",
     "pino": "^10.3.1",
     "pino-http": "^11.0.0",
-    "react-email": "^5.2.9",
+    "react-email": "^6.0.0",
     "resend": "^6.9.3",
-    "stripe": "^22.0.0",
+    "stripe": "^22.0.2",
     "ua-parser-js": "^2.0.9",
     "zod": "^4.3.6"
   },
   "devDependencies": {
     "@react-email/preview-server": "^5.2.9",
+    "@types/bcrypt": "^6.0.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
@@ -47,6 +47,7 @@
     "pino-pretty": "^13.1.3",
     "pino-rotating-file-stream": "^0.0.2",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.9.3"
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3"
   }
 }

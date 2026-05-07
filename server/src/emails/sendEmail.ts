@@ -1,6 +1,6 @@
 import { Resend } from "resend";
-import { logger } from "../logger";
-import { config } from "../config";
+import { logger } from "../logger.js";
+import { config } from "../config.js";
 
 const isDev = config.NODE_ENV === "development";
 
@@ -14,7 +14,7 @@ export const sendEmail = async (
   try {
     await resend.emails.send({
       from: isDev ? config.MAIL_DEV_FROM : config.MAIL_FROM,
-      to: mailTo,
+      to: isDev ? config.MAIL_DEV_TO : mailTo,
       subject,
       react: component,
     });

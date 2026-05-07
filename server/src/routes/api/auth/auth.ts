@@ -1,14 +1,14 @@
 import express from "express";
-import { loginController } from "../../../controllers/auth/loginController";
-import { verifyEmailController } from "../../../controllers/auth/verifyEmailController";
-import { verifyResendController } from "../../../controllers/auth/verifyResendController";
-import { refreshController } from "../../../controllers/auth/refreshController";
-import { verifyRefreshToken } from "../../../middleware/verifyRefreshToken";
-import { validateBody } from "../../../middleware/validateBody";
-import { loginSchema } from "../../../schema/schemas";
-import { verifyAccessToken } from "../../../middleware/verifyAccessToken";
-import { logoutController } from "../../../controllers/auth/logoutController";
-import { logoutAllController } from "../../../controllers/auth/logoutAllController";
+import { loginController } from "../../../controllers/auth/loginController.js";
+import { verifyEmailController } from "../../../controllers/auth/verifyEmailController.js";
+import { verifyResendController } from "../../../controllers/auth/verifyResendController.js";
+import { refreshController } from "../../../controllers/auth/refreshController.js";
+import { verifyRefreshToken } from "../../../middleware/verifyRefreshToken.js";
+import { validateBody } from "../../../middleware/validateBody.js";
+import { loginSchema } from "../../../schema/schemas.js";
+import { verifyAccessToken } from "../../../middleware/verifyAccessToken.js";
+import { logoutController } from "../../../controllers/auth/logoutController.js";
+import { logoutAllController } from "../../../controllers/auth/logoutAllController.js";
 
 const router = express.Router();
 

@@ -1,9 +1,10 @@
 // CONNESSIONE AL DB E LISTEN
+import "dotenv/config";
 
-import app from "./app";
-import connect from "./db";
-import { config } from "./config";
-import { logger } from "./logger";
+import app from "./app.js";
+import connect from "./db/index.js";
+import { config } from "./config.js";
+import { logger } from "./logger.js";
 
 const startServer = async () => {
   try {
