@@ -32,6 +32,8 @@ export const config = {
     | "development"
     | "production",
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY as string,
+  STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET as string,
+  BACKEND_URL: process.env.BACKEND_URL as string,
 } as const;
 
 export type Config = typeof config;

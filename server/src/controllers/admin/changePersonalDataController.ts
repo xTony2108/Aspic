@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { logger } from "../../logger";
+import { logger } from "../../logger.js";
 import {
   findUserByIDService,
   updateUserDataService,
-} from "../../services/auth";
+} from "../../services/admin.js";
 
 export const changePersonalDataController = async (
   req: Request,

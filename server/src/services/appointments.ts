@@ -1,10 +1,10 @@
 import { createElement } from "react";
-import Appointment from "../db/models/Appointment";
-import Counter from "../db/models/Counter";
-import { sendEmail } from "../emails/sendEmail";
-import AppointmentReceived from "../emails/templates/AppointmentReceived";
-import { BaseTypeSchema } from "../schema/schemas";
-import { getServicePrice } from "../utility/getPrices";
+import Appointment from "../db/models/Appointment.js";
+import Counter from "../db/models/Counter.js";
+import { sendEmail } from "../emails/sendEmail.js";
+import AppointmentReceived from "../emails/templates/AppointmentReceived.js";
+import { BaseTypeSchema } from "../schema/schemas.js";
+import { getServicePrice } from "../utility/getPrices.js";
 
 export const getExistingAppointmentService = async (fiscalCode: string) => {
   return Appointment.findOne({ fiscalCode }, "fiscalCode", {
@@ -16,12 +16,9 @@ export const createNewAppointmentService = async (data: BaseTypeSchema) => {
   const session = await Appointment.startSession();
 
   try {
-    let appointment:
-      | Awaited<ReturnType<typeof Appointment.create>>[0]
-      | undefined;
-
-    await session.withTransaction(async () => {
+    const appointment = await session.withTransaction(async () => {
       const year = new Date().getFullYear();
+
       const counter = await Counter.findOneAndUpdate(
         { year },
         { $inc: { seq: 1 } },
@@ -32,12 +29,15 @@ export const createNewAppointmentService = async (data: BaseTypeSchema) => {
       if (!price) throw new Error("Servizio non valido");
 
       const protocolNumber = `ASPICRC-${year}/${String(counter.seq).padStart(4, "0")}`;
-      [appointment] = await Appointment.create(
-        [{ ...data, protocolNumber, price }],
-        {
-          session,
-        },
-      );
+
+      const doc = new Appointment({
+        ...data,
+        clientType: data.clientType ?? undefined,
+        protocolNumber,
+        price,
+      });
+
+      return doc.save({ session });
     });
 
     if (!appointment)
@@ -53,6 +53,7 @@ export const createNewAppointmentService = async (data: BaseTypeSchema) => {
         clientType: appointment.clientType,
         urgent: appointment.urgent,
         protocolNumber: appointment.protocolNumber,
+        appointmentMode: appointment.appointmentMode,
       }),
       appointment.email,
     );

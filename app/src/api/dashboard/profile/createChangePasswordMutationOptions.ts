@@ -5,6 +5,8 @@ import {
 import type { ApiError, GenericResponse } from "../../../types/api";
 import { axiosPrivate } from "../../axios";
 import type { ChangePasswordTypeSchema } from "../../../features/services/schemas/schemas";
+import { queryClient } from "../../../queryClient";
+import { createGetUserDataQueryOptions } from "../../admin/createGetUserDataQueryOptions";
 
 const changePassword = (
   data: ChangePasswordTypeSchema,
@@ -23,5 +25,10 @@ export const createChangePasswordMutationOptions = <
     ...options,
     mutationKey: ["changePassword"],
     mutationFn: (data: ChangePasswordTypeSchema) => changePassword(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: createGetUserDataQueryOptions().queryKey,
+      });
+    },
   });
 };

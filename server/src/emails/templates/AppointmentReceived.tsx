@@ -14,7 +14,10 @@ import {
   Column,
   Img,
 } from "@react-email/components";
-import { getClientTypeLabel, getServiceLabel } from "../../utility/getLabels";
+import {
+  getClientTypeLabel,
+  getServiceLabel,
+} from "../../utility/getLabels.js";
 
 interface AppointmentReceivedProps {
   firstName: string;
@@ -24,6 +27,7 @@ interface AppointmentReceivedProps {
   clientType: "bambini" | "adulti" | "anziani";
   urgent?: boolean;
   protocolNumber?: string;
+  appointmentMode: "online" | "in_person";
 }
 
 const AppointmentReceived = ({
@@ -34,6 +38,7 @@ const AppointmentReceived = ({
   clientType = "adulti",
   urgent = false,
   protocolNumber = "ASPIC-2026-0042",
+  appointmentMode = "online",
 }: AppointmentReceivedProps) => (
   <Html lang="it" dir="ltr">
     <Head>
@@ -121,6 +126,12 @@ const AppointmentReceived = ({
                 {getClientTypeLabel(clientType)}
               </Column>
             </Row>
+            <Row style={summaryRow}>
+              <Column style={summaryLabel}>Luogo</Column>
+              <Column style={summaryValue}>
+                {appointmentMode === "online" ? "Online" : "In studio"}
+              </Column>
+            </Row>
           </Section>
 
           <Hr style={divider} />
@@ -172,6 +183,15 @@ const AppointmentReceived = ({
               </Column>
             </Row>
           </Section>
+
+          <Hr style={divider} />
+
+          <Text style={smallNote}>Dove trovarci</Text>
+          <Text style={smallNote}>
+            <a href="https://maps.app.goo.gl/BAWVuN624Fc6H8AY8" target="_blank">
+              Via Missori, 7, 89127 Reggio Calabria RC
+            </a>
+          </Text>
 
           <Hr style={divider} />
 

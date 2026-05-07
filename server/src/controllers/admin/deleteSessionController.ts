@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { deleteSessionByID } from "../../services/auth";
+import { deleteSessionByID } from "../../services/admin.js";
 
 export const deleteSessionController = async (req: Request, res: Response) => {
   try {

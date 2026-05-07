@@ -47,7 +47,11 @@ export const AdminLogin = () => {
       onSuccess: (data) => {
         setData({ accessToken: data.accessToken });
 
-        navigate({ from: "/admin", to: "/dashboard" });
+        if (!data.onboardingCompleted && data.stripeOnboardingUrl) {
+          window.location.href = data.stripeOnboardingUrl;
+        } else {
+          navigate({ from: "/admin", to: "/dashboard" });
+        }
       },
     }),
   );

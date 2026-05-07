@@ -1,16 +1,11 @@
-import dotenv from "dotenv";
-
-dotenv.config();
-
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
-import apiRoute from "./routes/api/index";
-import webhooksRoute from "./routes/webhooks/index";
+import apiRoute from "./routes/api/index.js";
+import webhooksRoute from "./routes/webhooks/index.js";
 import cookieParser from "cookie-parser";
-import { httpLogger, morganMiddleware } from "./logger";
-import { config } from "./config";
-import path from "node:path";
+import { httpLogger, morganMiddleware } from "./logger.js";
+import { config } from "./config.js";
 
 const app = express();
 

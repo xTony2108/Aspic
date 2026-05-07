@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { logger } from "../../logger";
-import { refreshTokenService } from "../../services/auth";
+import { logger } from "../../logger.js";
+import { refreshTokenService } from "../../services/auth.js";
 
 export const refreshController = async (req: Request, res: Response) => {
   const { decoded, refreshToken } = req.user;

@@ -2,10 +2,10 @@ import { Request, Response } from "express";
 import {
   findAppointmentByID,
   updateAppointmentDate,
-} from "../../services/auth";
-import { sendEmail } from "../../emails/sendEmail";
+} from "../../services/admin.js";
+import { sendEmail } from "../../emails/sendEmail.js";
 import { createElement } from "react";
-import AppointmentDateChange from "../../emails/templates/AppointmentDateChange";
+import AppointmentDateChange from "../../emails/templates/AppointmentDateChange.js";
 
 export const changeAppointmentDateController = async (
   req: Request,

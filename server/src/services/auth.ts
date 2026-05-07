@@ -1,21 +1,23 @@
 import { createHash } from "crypto";
-import User from "../db/models/User";
+import User from "../db/models/User.js";
 import bcrypt from "bcrypt";
 import { UAParser } from "ua-parser-js";
-import RefreshToken from "../db/models/RefreshToken";
+import RefreshToken from "../db/models/RefreshToken.js";
 import {
   generateAccessToken,
   generateRefreshToken,
-} from "../utility/generateJWTTokens";
-import { generateTempPassword } from "../utility/generateRandomPassword";
+} from "../utility/generateJWTTokens.js";
+import { generateTempPassword } from "../utility/generateRandomPassword.js";
 import crypto from "crypto";
-import Appointment from "../db/models/Appointment";
+import Appointment from "../db/models/Appointment.js";
 import mongoose from "mongoose";
-import { stripe } from "../lib/stripe/stripe";
-import { getServiceLabel } from "../utility/getLabels";
-import { config } from "../config";
-import { StripeAppointmentInfoParams } from "../types/StripeAppointmentInfoParams";
-import { createStripeAccount } from "../lib/stripe/createStripeAccount";
+import { stripe } from "../lib/stripe/stripe.js";
+import { config } from "../config.js";
+import { createStripeAccount } from "../lib/stripe/createStripeAccount.js";
+import { sendEmail } from "../emails/sendEmail.js";
+import { createElement } from "react";
+import { VerifyEmail } from "../emails/templates/VerifyEmail.js";
+import { logger } from "../logger.js";
 
 export const findUserByEmailService = async (email: string) => {
   return User.findOne(
@@ -25,13 +27,6 @@ export const findUserByEmailService = async (email: string) => {
       lean: true,
     },
   );
-};
-
-export const comparePasswordService = async (
-  password: string,
-  hashedPW: string,
-) => {
-  return bcrypt.compare(password, hashedPW);
 };
 
 export const createRefreshTokenService = async (
@@ -108,6 +103,7 @@ interface RegisterTypeSchema {
   lastName: string;
   fiscalCode: string;
   email: string;
+  phoneNumber: string;
   createdBy: string;
 }
 export const createUserService = async (data: RegisterTypeSchema) => {
@@ -118,17 +114,51 @@ export const createUserService = async (data: RegisterTypeSchema) => {
 
   const stripeAccount = await createStripeAccount(data.email);
 
-  const user = await User.create({
-    ...data,
-    password: hashedPw,
-    passwordChanged: false,
-    emailVerified: false,
-    emailVerificationToken,
-    emailVerificationExpires,
-    stripeAccountId: stripeAccount.id,
-  });
+  let user;
+  try {
+    user = await User.create({
+      ...data,
+      password: hashedPw,
+      passwordChanged: false,
+      emailVerified: false,
+      emailVerificationToken,
+      emailVerificationExpires,
+      stripeAccountId: stripeAccount.id,
+    });
+  } catch (dbError) {
+    await stripe.accounts.del(stripeAccount.id);
+    throw dbError;
+  }
+  logger.info(`[REGISTER] User created: ${user._id} - ${user.email}`);
 
-  return { id: user._id, generatedPw, emailVerificationToken };
+  try {
+    // Invio mail di verifica
+    const verificationUrl =
+      config.NODE_ENV === "development"
+        ? `http://localhost:5173/admin/verifica?token=${emailVerificationToken}`
+        : `${config.ORIGIN}/admin/verifica?token=${emailVerificationToken}`;
+
+    await sendEmail(
+      "Verifica il tuo indirizzo email",
+      createElement(VerifyEmail, {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        createdByName: data.createdBy,
+        verificationUrl,
+        expiresInHours: 24,
+        email: data.email,
+        temporaryPassword: generatedPw,
+      }),
+      data.email,
+    );
+  } catch (emailError) {
+    await stripe.accounts.del(stripeAccount.id);
+    await user.deleteOne();
+    throw emailError;
+  }
+
+  logger.info(`[REGISTER] Verification email sent to: ${data.email}`);
+  return { id: user._id };
 };
 
 export const findEmailTokenService = async (token: string) => {
@@ -172,19 +202,18 @@ export const generateNewEmailToken = async (token: string) => {
   return { generatedPw, emailVerificationToken };
 };
 
-export const findUserByIDService = async (userId: string) => {
-  return User.findById(
-    userId,
-    "-_id email firstName lastName phoneNumber password passwordChanged",
-    { lean: true },
-  );
-};
-
 export const paginateAppointmentsService = async (
   userID: string,
   page: number,
   limit: number,
-  status: string,
+  status:
+    | "pending"
+    | "cancelled"
+    | "awaiting_payment"
+    | "paid"
+    | "confirmed"
+    | "refunded"
+    | "completed",
 ) => {
   const offset = (page - 1) * limit;
   const matchCondition = {
@@ -242,119 +271,113 @@ export const paginateAppointmentsService = async (
   return { appointments, totalPages, counts };
 };
 
-export const deleteSessionByID = async (jti: string, userID: string) => {
-  return RefreshToken.findOneAndDelete({ jti, user_id: userID });
-};
-
-export const updateUserDataService = async (
-  userID: string,
-  data: {
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-    email: string;
-  },
-) => {
-  return User.findByIdAndUpdate(userID, data);
-};
-
-export const changePasswordService = async (
-  userID: string,
-  password: string,
-) => {
-  const newHashedPassword = await bcrypt.hash(password, 12);
-
-  await User.findByIdAndUpdate(userID, {
-    password: newHashedPassword,
-    passwordChanged: true,
-  });
-};
-
-export const getActiveSessionsService = async (userID: string) => {
-  return RefreshToken.find(
-    { user_id: userID, expires_at: { $gt: new Date() } },
-    "device_info jti createdAt",
+export const findUsers = async (userID: string) => {
+  return User.aggregate([
     {
-      lean: true,
+      $match: {
+        status: { $ne: "deleted" },
+      },
     },
-  );
-};
-
-export const findAppointmentByID = async (appointmentID: string) => {
-  return await Appointment.findById(appointmentID);
-};
-
-export const updateAppointmentStatus = async (
-  searchFields: Record<string, unknown>,
-  updateFields: Record<string, unknown>,
-) => {
-  return Appointment.findOneAndUpdate(searchFields, updateFields);
-};
-
-export const createStripeSession = async ({
-  service,
-  date,
-  time,
-  _id,
-  stripeAccountId,
-}: StripeAppointmentInfoParams) => {
-  const CLIENT_URL =
-    config.NODE_ENV === "development"
-      ? config.ORIGIN_DEV.split(",")[0]
-      : config.ORIGIN;
-
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ["card"],
-    mode: "payment",
-    line_items: [
-      {
-        price_data: {
-          currency: "eur",
-          unit_amount: 8000,
-          product_data: {
-            name: getServiceLabel(service),
-            description: `${date.toLocaleDateString("it-IT")} alle ${time}`,
-          },
+    {
+      $addFields: {
+        priority: {
+          $cond: [{ $eq: ["$_id", new mongoose.Types.ObjectId(userID)] }, 0, 1],
         },
-        quantity: 1,
-      },
-    ],
-    payment_intent_data: {
-      transfer_data: {
-        destination: stripeAccountId,
       },
     },
-    metadata: {
-      appointmentId: _id.toString(),
+    {
+      $sort: {
+        priority: 1,
+      },
     },
-    success_url: `${CLIENT_URL}/appuntamento/successo?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${CLIENT_URL}/appuntamento/annullata`,
-    expires_at: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
-  });
-
-  return session;
+    {
+      $project: {
+        _id: 1,
+        email: 1,
+        firstName: 1,
+        lastName: 1,
+        fiscalCode: 1,
+        phoneNumber: 1,
+        createdBy: 1,
+      },
+    },
+  ]);
 };
 
-export const updateAppointmentDate = async (
-  appointmentID: string,
-  searchFields: Record<string, unknown>,
-  updateFields: Record<string, unknown>,
+export const comparePasswordService = async (
+  password: string,
+  hashedPW: string,
 ) => {
-  const token = crypto.randomBytes(32).toString("hex");
-
-  await Appointment.findByIdAndUpdate(appointmentID, {
-    pendingDateChange: {
-      ...updateFields,
-      token,
-      expiresAt: new Date(Date.now() + 48 * 60 * 60 * 1000),
-    },
-  });
-
-  return Appointment.findOneAndUpdate(searchFields, updateFields);
+  return bcrypt.compare(password, hashedPW);
 };
 
-export const findUsers = async () => {
-  return User.find({}, "_id email firstName lastName fiscalCode phoneNumber", {
-    lean: true,
+export const getStripeOnboardingLinkService = async (
+  userId: mongoose.Types.ObjectId,
+) => {
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new Error("Utente non trovato");
+  }
+
+  if (user.createdBy?.toLowerCase() === "system") {
+    return {
+      onboardingCompleted: true,
+      url: null,
+    };
+  }
+
+  if (!user.stripeAccountId) {
+    throw new Error("Stripe account non configurato");
+  }
+
+  const account = await stripe.accounts.retrieve(user.stripeAccountId);
+
+  const onboardingCompleted =
+    account.details_submitted && account.charges_enabled;
+
+  const payoutsEnabled = account.payouts_enabled;
+
+  const requirementsDue = account.requirements?.currently_due || [];
+
+  let status: "pending" | "restricted" | "active" = "pending";
+
+  if (account.charges_enabled && account.payouts_enabled) {
+    status = "active";
+  } else if (requirementsDue.length > 0) {
+    status = "restricted";
+  }
+
+  // sync DB
+  user.stripeOnboardingCompleted = onboardingCompleted;
+  user.stripeChargesEnabled = account.charges_enabled;
+  user.stripePayoutsEnabled = payoutsEnabled;
+  user.stripeRequirementsDue = requirementsDue;
+  user.stripeAccountStatus = status;
+
+  await user.save();
+
+  // account fully active
+  if (onboardingCompleted) {
+    return {
+      onboardingCompleted: true,
+      url: null,
+      status,
+    };
+  }
+
+  // create onboarding link
+  const accountLink = await stripe.accountLinks.create({
+    account: user.stripeAccountId,
+    refresh_url: `${config.ORIGIN}/dashboard/impostazioni`,
+    return_url: `${config.ORIGIN}/dashboard/stripe-callback`,
+    type: "account_onboarding",
   });
+
+  return {
+    onboardingCompleted: false,
+    url: accountLink.url,
+    status,
+    requirementsDue,
+  };
 };

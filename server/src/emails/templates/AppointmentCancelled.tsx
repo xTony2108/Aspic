@@ -14,8 +14,11 @@ import {
   Column,
   Img,
 } from "@react-email/components";
-import { getClientTypeLabel, getServiceLabel } from "../../utility/getLabels";
-import { config } from "../../config";
+import {
+  getClientTypeLabel,
+  getServiceLabel,
+} from "../../utility/getLabels.js";
+import { config } from "../../config.js";
 
 interface AppointmentCancelledProps {
   firstName: string;
@@ -24,6 +27,7 @@ interface AppointmentCancelledProps {
   time: string;
   clientType: "bambini" | "adulti" | "anziani";
   protocolNumber?: string;
+  appointmentMode: "online" | "in_person";
 }
 
 const AppointmentCancelled = ({
@@ -33,6 +37,7 @@ const AppointmentCancelled = ({
   time = "10:00",
   clientType = "adulti",
   protocolNumber = "ASPIC-2026-0042",
+  appointmentMode = "online",
 }: AppointmentCancelledProps) => (
   <Html lang="it" dir="ltr">
     <Head>
@@ -85,7 +90,6 @@ const AppointmentCancelled = ({
           <Section style={summaryCard}>
             <Text style={summaryTitle}>Riepilogo appuntamento annullato</Text>
             <Hr style={summaryDivider} />
-
             <Row style={summaryRow}>
               <Column style={summaryLabel}>Protocollo</Column>
               <Column style={summaryValue}>
@@ -108,6 +112,12 @@ const AppointmentCancelled = ({
               <Column style={summaryLabel}>Tipo paziente</Column>
               <Column style={summaryValue}>
                 {getClientTypeLabel(clientType)}
+              </Column>
+            </Row>
+            <Row style={summaryRow}>
+              <Column style={summaryLabel}>Luogo</Column>
+              <Column style={summaryValue}>
+                {appointmentMode === "online" ? "Online" : "In studio"}
               </Column>
             </Row>
           </Section>

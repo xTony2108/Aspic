@@ -35,7 +35,6 @@ export const DashboardRichieste = () => {
     );
 
   const appointments = data?.pages.flatMap((page) => page.data);
-  console.log(appointments);
 
   const totals = data?.pages[0] ?? {
     pending: 0,
@@ -75,11 +74,14 @@ export const DashboardRichieste = () => {
     (node: HTMLDivElement) => {
       if (isFetchingNextPage) return;
       if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasNextPage) {
-          fetchNextPage();
-        }
-      });
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && hasNextPage) {
+            fetchNextPage();
+          }
+        },
+        { threshold: 1 },
+      );
 
       if (node) observer.current.observe(node);
     },
@@ -88,7 +90,6 @@ export const DashboardRichieste = () => {
 
   return (
     <>
-      <Toaster position="top-center" reverseOrder={false} />
       <DashboardTitle title="Richieste" titleEm="in attesa" />
       <div className="p-6">
         <StatsGrid stats={stats} />

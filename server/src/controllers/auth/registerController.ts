@@ -1,13 +1,12 @@
 import { Request, Response } from "express";
-import { sendEmail } from "../../emails/sendEmail";
-import { createElement } from "react";
-import VerificaEmail from "../../emails/templates/VerifyEmail";
-import { logger } from "../../logger";
-import { config } from "../../config";
-import { createUserService, findUserByEmailService } from "../../services/auth";
+import { logger } from "../../logger.js";
+import {
+  createUserService,
+  findUserByEmailService,
+} from "../../services/auth.js";
 
 export const registerController = async (req: Request, res: Response) => {
-  const { email, createdBy, firstName, lastName } = req.body;
+  const { email, createdBy } = req.body;
 
   try {
     logger.info(
@@ -26,33 +25,7 @@ export const registerController = async (req: Request, res: Response) => {
 
     // Creo utente con password temporanea e dati di verifica email
 
-    const { id, emailVerificationToken, generatedPw } = await createUserService(
-      req.body,
-    );
-
-    logger.info(`[REGISTER] User created: ${id} - ${email}`);
-
-    // Invio mail di verifica
-    const verificationUrl =
-      config.NODE_ENV === "development"
-        ? `http://localhost:5173/admin/verifica?token=${emailVerificationToken}`
-        : `${config.ORIGIN}/admin/verifica?token=${emailVerificationToken}`;
-
-    await sendEmail(
-      "Verifica il tuo indirizzo email",
-      createElement(VerificaEmail, {
-        firstName,
-        lastName,
-        createdByName: createdBy,
-        verificationUrl,
-        expiresInHours: 24,
-        email,
-        temporaryPassword: generatedPw,
-      }),
-      email,
-    );
-
-    logger.info(`[REGISTER] Verification email sent to: ${email}`);
+    const { id } = await createUserService(req.body);
 
     return res.status(200).json({
       message: "Registrazione effettuata con successo!",

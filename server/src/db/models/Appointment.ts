@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-const appointmentSchema = new Schema(
+export const appointmentSchema = new Schema(
   {
     service: {
       type: String,
@@ -80,7 +80,15 @@ const appointmentSchema = new Schema(
       type: String,
       required: true,
       default: "pending",
-      enum: ["pending", "confirmed", "cancelled", "completed"],
+      enum: [
+        "pending", // prenotazione ricevuta, in attesa conferma professionista
+        "awaiting_payment", // confermata, link pagamento inviato al cliente
+        "paid", // pagamento completato, appuntamento in carico
+        "confirmed", // (opzionale) conferma post-pagamento manuale
+        "cancelled", // cancellato (prima del pagamento)
+        "refunded", // cancellato dopo pagamento → rimborso emesso
+        "completed", // appuntamento svolto
+      ],
     },
     assignedTo: {
       type: Schema.Types.ObjectId,
@@ -96,6 +104,20 @@ const appointmentSchema = new Schema(
       newTime: String,
       token: String,
       expiresAt: Date,
+    },
+    stripe: {
+      sessionId: { type: String }, // checkout.session.id
+      paymentIntentId: { type: String }, // per emettere il refund
+      amountPaid: { type: Number }, // in centesimi, da Stripe (source of truth)
+      paidAt: { type: Date },
+      refundId: { type: String }, // stripe refund id
+      refundedAt: { type: Date },
+      default: {},
+    },
+    cancellation: {
+      token: { type: String },
+      expiresAt: { type: Date },
+      default: {},
     },
   },
   { strict: true },

@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import { getActiveSessionsService } from "../../services/auth";
-import Appointment from "../../db/models/Appointment";
+import Appointment from "../../db/models/Appointment.js";
 
 export const appointmentSuccessController = async (
   req: Request,

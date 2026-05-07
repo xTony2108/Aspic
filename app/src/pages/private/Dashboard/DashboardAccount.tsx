@@ -2,8 +2,9 @@ import { DashboardTitle } from "../../../components/dashboard/DashboardTitle";
 import { DashboardAccountDataForm } from "../../../components/dashboard/account/DashboardAccountDataForm";
 import { DashboardPasswordChangeForm } from "../../../components/dashboard/account/DashboardPasswordChangeForm";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { createGetUserDataQueryOptions } from "../../../api/admin/getUserData";
+import { createGetUserDataQueryOptions } from "../../../api/admin/createGetUserDataQueryOptions";
 import { DashboardAccountSessions } from "../../../components/dashboard/account/DashboardAccountSessions";
+import { StripeConnectCard } from "../../../components/stripe/StripeConnectCard";
 
 export const DashboardAccount = () => {
   const {
@@ -37,6 +38,7 @@ export const DashboardAccount = () => {
           <DashboardAccountDataForm />
           <DashboardPasswordChangeForm />
           <DashboardAccountSessions />
+          <StripeConnectCard />
         </div>
       </div>
     </>

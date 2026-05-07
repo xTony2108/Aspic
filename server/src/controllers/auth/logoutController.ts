@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
-import RefreshToken from "../../db/models/RefreshToken";
-import { logger } from "../../logger";
-import { logoutService } from "../../services/auth";
+import { logger } from "../../logger.js";
+import { logoutService } from "../../services/auth.js";
 
 export const logoutController = async (req: Request, res: Response) => {
   const { jti, _id } = req.user;
@@ -9,7 +8,7 @@ export const logoutController = async (req: Request, res: Response) => {
   try {
     logger.info(`[LOGOUT] Attempt for user: ${_id} (JTI: ${jti})`);
 
-    const deletedToken = logoutService(jti);
+    const deletedToken = await logoutService(jti);
 
     if (!deletedToken) {
       logger.warn(`[LOGOUT] Token not found - JTI: ${jti}`);

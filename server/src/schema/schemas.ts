@@ -1,67 +1,61 @@
 import { z } from "zod";
-import { baseSchemaRefinements } from "../utility/baseSchemaRefinements";
 
-export const baseSchema = z
-  .object({
-    service: z.enum(
-      ["consulenza-psicologica", "valutazione-psicodiagnostica"],
-      {
-        error: "Seleziona il servizio",
-      },
+export const baseSchema = z.object({
+  service: z.enum(["consulenza-psicologica", "valutazione-psicodiagnostica"], {
+    error: "Seleziona il servizio",
+  }),
+  appointmentDate: z.coerce.date({ error: "Seleziona una data valida" }),
+  appointmentTime: z
+    .string({ error: "Seleziona un orario" })
+    .nonempty({ error: "Seleziona un orario" }),
+  appointmentMode: z.enum(["online", "in_person"], {
+    error: "Seleziona una modalità",
+  }),
+  urgent: z.boolean({
+    error: "Richiesta urgente è di un formato non valido",
+  }),
+  clientAge: z
+    .enum(["0-3", "4-11", "12-14", "15-18"], {
+      error: "Seleziona la fascia d'età",
+    })
+    .nullable(),
+  clientType: z.enum(["bambini", "adulti", "anziani"], {
+    error: "Seleziona un tipo di paziente",
+  }),
+  reason: z.string({
+    error: "Motivo della richiesta è di un formato non valido",
+  }),
+  firstName: z
+    .string({ error: "Inserisci un nome valido" })
+    .min(2, { error: "Inserisci un nome valido" }),
+  lastName: z
+    .string({ error: "Inserisci un cognome valido" })
+    .min(2, { error: "Inserisci un cognome valido" }),
+  address: z
+    .string({ error: "Inserisci un indirizzo valido" })
+    .min(5, { error: "Inserisci un indirizzo valido" }),
+  birthday: z.string({ error: "Inserisci la data di nascita" }),
+  birthPlace: z
+    .string({ error: "Inserisci un città valida" })
+    .min(2, { error: "Inserisci una città valida" }),
+  fiscalCode: z
+    .string({
+      error: "Inserisci un codice fiscale",
+    })
+    .length(16, "Il codice fiscale deve essere di 16 caratteri")
+    .toUpperCase()
+    .regex(
+      /^[A-Z]{6}[0-9]{2}[ABCDEHLMPRST][0-9]{2}[A-Z][0-9]{3}[A-Z]$/,
+      "Codice fiscale non valido",
     ),
-    appointmentDate: z.coerce.date({ error: "Seleziona una data valida" }),
-    appointmentTime: z
-      .string({ error: "Seleziona un orario" })
-      .nonempty({ error: "Seleziona un orario" }),
-    appointmentMode: z.enum(["online", "in_person"], {
-      error: "Seleziona una modalità",
-    }),
-    urgent: z.boolean({
-      error: "Richiesta urgente è di un formato non valido",
-    }),
-    clientAge: z
-      .enum(["0-3", "4-11", "12-14", "15-18"], {
-        error: "Seleziona la fascia d'età",
-      })
-      .nullable(),
-    clientType: z.enum(["bambini", "adulti", "anziani"], {
-      error: "Seleziona un tipo di paziente",
-    }),
-    reason: z.string({
-      error: "Motivo della richiesta è di un formato non valido",
-    }),
-    firstName: z
-      .string({ error: "Inserisci un nome valido" })
-      .min(2, { error: "Inserisci un nome valido" }),
-    lastName: z
-      .string({ error: "Inserisci un cognome valido" })
-      .min(2, { error: "Inserisci un cognome valido" }),
-    address: z
-      .string({ error: "Inserisci un indirizzo valido" })
-      .min(5, { error: "Inserisci un indirizzo valido" }),
-    birthday: z.string({ error: "Inserisci la data di nascita" }),
-    birthPlace: z
-      .string({ error: "Inserisci un città valida" })
-      .min(2, { error: "Inserisci una città valida" }),
-    fiscalCode: z
-      .string({
-        error: "Inserisci un codice fiscale",
-      })
-      .length(16, "Il codice fiscale deve essere di 16 caratteri")
-      .toUpperCase()
-      .regex(
-        /^[A-Z]{6}[0-9]{2}[ABCDEHLMPRST][0-9]{2}[A-Z][0-9]{3}[A-Z]$/,
-        "Codice fiscale non valido",
-      ),
-    email: z.email({ error: "Inserisci un indirizzo email valido" }),
-    phoneNumber: z
-      .string({ error: "Inserisci un numero di cellulare valido" })
-      .regex(/^3\d{9}$/, "Numero di cellulare non valido"),
-    privacyAccepted: z.literal(true, {
-      error: "Devi accettare il trattamento dei dati per procedere",
-    }),
-  })
-  .superRefine(baseSchemaRefinements);
+  email: z.email({ error: "Inserisci un indirizzo email valido" }),
+  phoneNumber: z
+    .string({ error: "Inserisci un numero di cellulare valido" })
+    .regex(/^3\d{9}$/, "Numero di cellulare non valido"),
+  privacyAccepted: z.literal(true, {
+    error: "Devi accettare il trattamento dei dati per procedere",
+  }),
+});
 
 export type BaseTypeSchema = z.infer<typeof baseSchema>;
 
@@ -78,7 +72,7 @@ export const loginSchema = z.object({
 
 export type LoginTypeSchema = z.infer<typeof loginSchema>;
 
-export const personalDataSchema = z.object({
+export const changePersonalDataDataSchema = z.object({
   firstName: z
     .string({ error: "Inserisci un nome valido" })
     .min(2, { error: "Inserisci un nome valido" }),
@@ -91,7 +85,9 @@ export const personalDataSchema = z.object({
     .regex(/^3\d{9}$/, "Numero di cellulare non valido"),
 });
 
-export type AccountPersonalTypeSchema = z.infer<typeof personalDataSchema>;
+export type ChangePersonalDataTypeSchema = z.infer<
+  typeof changePersonalDataDataSchema
+>;
 
 export const changePasswordSchema = z
   .object({
@@ -109,8 +105,7 @@ export const changePasswordSchema = z
     message: "Le password non corrispondono",
     path: ["confirmPassword"],
   });
-
-export type PasswordChangeTypeSchema = z.infer<typeof changePasswordSchema>;
+export type ChangePasswordTypeSchema = z.infer<typeof changePasswordSchema>;
 
 export const changeDateSchema = z.object({
   newDate: z.coerce
@@ -139,8 +134,10 @@ export const registerProfessionalSchema = z.object({
       /^[A-Z]{6}[0-9]{2}[ABCDEHLMPRST][0-9]{2}[A-Z][0-9]{3}[A-Z]$/,
       "Codice fiscale non valido",
     ),
-  iban: z.string().min(15, "IBAN non valido"),
-  createdBy: z.string("Professionista non specificato"),
+  phoneNumber: z
+    .string({ error: "Inserisci un numero di cellulare valido" })
+    .regex(/^3\d{9}$/, "Numero di cellulare non valido"),
+  createdBy: z.string(),
 });
 
 export type RegisterProfessionalTypeSchema = z.infer<

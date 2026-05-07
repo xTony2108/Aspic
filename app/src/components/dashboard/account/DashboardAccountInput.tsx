@@ -17,8 +17,6 @@ export const DashboardAccountInput = <T extends Record<string, any>>({
   placeholder,
   label,
 }: DashboardAccountInputProps<T>) => {
-  console.log(control);
-
   const { field } = useController({
     control,
     name: inputName,

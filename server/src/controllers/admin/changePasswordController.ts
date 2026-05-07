@@ -1,12 +1,10 @@
 import { Request, Response } from "express";
-import User from "../../db/models/User";
-import bcrypt from "bcrypt";
-import { logger } from "../../logger";
+import { logger } from "../../logger.js";
 import {
   changePasswordService,
-  comparePasswordService,
   findUserByIDService,
-} from "../../services/auth";
+} from "../../services/admin.js";
+import { comparePasswordService } from "../../services/auth.js";
 
 export const changePasswordController = async (req: Request, res: Response) => {
   const { _id } = req.user;

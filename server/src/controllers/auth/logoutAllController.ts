@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { logger } from "../../logger";
-import { logoutAllService } from "../../services/auth";
+import { logger } from "../../logger.js";
+import { logoutAllService } from "../../services/auth.js";
 
 export const logoutAllController = async (req: Request, res: Response) => {
   const { jti, _id } = req.user;

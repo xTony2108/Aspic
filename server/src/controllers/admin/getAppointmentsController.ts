@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import { paginateAppointmentsService } from "../../services/auth";
-import mongoose from "mongoose";
+import { paginateAppointmentsService } from "../../services/auth.js";
 
 export const getAppointmentsController = async (
   req: Request,
@@ -10,7 +9,10 @@ export const getAppointmentsController = async (
 
   const page = Number(req.query.page);
   const limit = Number(req.query.limit);
-  const status = String(req.query.filter);
+  const status = String(req.query.filter) as
+    | "pending"
+    | "confirmed"
+    | "cancelled";
 
   if (!page || !limit || !status)
     return res.status(400).json({ message: "Paginazione non presente" });

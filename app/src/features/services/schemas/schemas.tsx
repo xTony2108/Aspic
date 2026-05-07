@@ -138,10 +138,16 @@ export const registerProfessionalSchema = z.object({
       /^[A-Z]{6}[0-9]{2}[ABCDEHLMPRST][0-9]{2}[A-Z][0-9]{3}[A-Z]$/,
       "Codice fiscale non valido",
     ),
-  iban: z.string().min(15, "IBAN non valido"),
+  phoneNumber: z
+    .string({ error: "Inserisci un numero di cellulare valido" })
+    .regex(/^3\d{9}$/, "Numero di cellulare non valido"),
   createdBy: z.string(),
 });
 
 export type RegisterProfessionalTypeSchema = z.infer<
   typeof registerProfessionalSchema
 >;
+
+export const stripeSearchSchema = z.object({
+  action: z.enum(["return", "refresh"]).optional(),
+});

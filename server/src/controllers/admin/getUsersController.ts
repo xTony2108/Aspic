@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
-import { logger } from "../../logger";
-import { findUsers } from "../../services/auth";
+import { logger } from "../../logger.js";
+import { findUsers } from "../../services/auth.js";
 
-export const getUsersController = async (_: Request, res: Response) => {
+export const getUsersController = async (req: Request, res: Response) => {
   try {
-    const users = await findUsers();
+    const userID = req?.user?._id;
+
+    const users = await findUsers(userID);
 
     if (!users || users.length <= 0) {
       logger.warn(`[PROFESSIONAL] USERS NOT FOUND`);

@@ -1,6 +1,6 @@
 const SERVICES_PRICES = {
-  "consulenza-psicologica": 80,
-  "valutazione-psicodiagnostica": 250,
+  "consulenza-psicologica": 8000,
+  "valutazione-psicodiagnostica": 25000,
 };
 
 export const getServicePrice = (
