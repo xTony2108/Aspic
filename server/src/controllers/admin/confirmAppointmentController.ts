@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import {
   createStripeSession,
   findAppointmentByID,
+  findUserStripeDataByIDService,
   updateAppointmentStatus,
 } from "../../services/admin.js";
 import { sendEmail } from "../../emails/sendEmail.js";
@@ -22,7 +23,7 @@ export const confirmAppointmentController = async (
     if (!appointmentID)
       return res.status(400).json({ message: "Appuntamento non definito" });
 
-    if (status !== "confirmed")
+    if (status !== "awaiting_payment")
       return res.status(400).json({ message: "Stato non valido" });
 
     const appointment = await findAppointmentByID(appointmentID.toString());
@@ -39,16 +40,13 @@ export const confirmAppointmentController = async (
     const searchFields = { _id: appointmentID };
     const updateFields = { status, assignedTo: professionalID };
 
-    const assignee = await User.findById(
-      professionalID,
-      "firstName lastName stripeAccountId onboardingCompleted chargesEnabled payoutsEnabled",
-    );
+    const assignee = await findUserStripeDataByIDService(professionalID);
 
     if (
       !assignee?.stripeAccountId ||
-      !assignee.onboardingCompleted ||
-      !assignee.chargesEnabled ||
-      !assignee.payoutsEnabled
+      !assignee.stripeOnboardingCompleted ||
+      !assignee.stripeChargesEnabled ||
+      !assignee.stripePayoutsEnabled
     )
       return res
         .status(400)
@@ -64,7 +62,6 @@ export const confirmAppointmentController = async (
       stripeAccountId: assignee.stripeAccountId,
       clientEmail: appointment.email,
     };
-    console.log(appointmentInfo);
 
     const session = await createStripeSession(appointmentInfo);
 
@@ -96,9 +93,9 @@ export const confirmAppointmentController = async (
 
     await updateAppointmentStatus(searchFields, updateFields);
 
-    return res
-      .status(200)
-      .json({ message: "Appuntamento preso in carico con successo!" });
+    return res.status(200).json({
+      message: "Richiesta presa in carico e link pagamento inviato con successo!",
+    });
   } catch (error) {
     console.log(error);
 

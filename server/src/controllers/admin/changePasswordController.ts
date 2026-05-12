@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { logger } from "../../logger.js";
 import {
   changePasswordService,
-  findUserByIDService,
+  findUserPasswordByIDService,
 } from "../../services/admin.js";
 import { comparePasswordService } from "../../services/auth.js";
 
@@ -21,7 +21,7 @@ export const changePasswordController = async (req: Request, res: Response) => {
         .json({ message: "Tutti i campi sono obbligatori" });
     }
 
-    const user = await findUserByIDService(_id);
+    const user = await findUserPasswordByIDService(_id);
 
     if (!user) {
       logger.warn(`[PASSWORD] Failed: user not found - ${_id}`);

@@ -81,13 +81,14 @@ export const appointmentSchema = new Schema(
       required: true,
       default: "pending",
       enum: [
-        "pending", // prenotazione ricevuta, in attesa conferma professionista
-        "awaiting_payment", // confermata, link pagamento inviato al cliente
-        "paid", // pagamento completato, appuntamento in carico
-        "confirmed", // (opzionale) conferma post-pagamento manuale
-        "cancelled", // cancellato (prima del pagamento)
-        "refunded", // cancellato dopo pagamento → rimborso emesso
-        "completed", // appuntamento svolto
+        "pending",
+        "awaiting_payment",
+        "date_change_pending",
+        "confirmed",
+        "cancelled",
+        "refunded",
+        "payment_failed",
+        "completed",
       ],
     },
     assignedTo: {
@@ -104,13 +105,14 @@ export const appointmentSchema = new Schema(
       newTime: String,
       token: String,
       expiresAt: Date,
+      previousStatus: String,
     },
     stripe: {
-      sessionId: { type: String }, // checkout.session.id
-      paymentIntentId: { type: String }, // per emettere il refund
-      amountPaid: { type: Number }, // in centesimi, da Stripe (source of truth)
+      sessionId: { type: String },
+      paymentIntentId: { type: String },
+      amountPaid: { type: Number },
       paidAt: { type: Date },
-      refundId: { type: String }, // stripe refund id
+      refundId: { type: String },
       refundedAt: { type: Date },
       default: {},
     },

@@ -2,10 +2,12 @@ import { Request, Response } from "express";
 import {
   findAppointmentByID,
   updateAppointmentDate,
+  updateAppointmentDateStatus,
 } from "../../services/admin.js";
 import { sendEmail } from "../../emails/sendEmail.js";
 import { createElement } from "react";
 import AppointmentDateChange from "../../emails/templates/AppointmentDateChange.js";
+import { config } from "../../config.js";
 
 export const changeAppointmentDateController = async (
   req: Request,
@@ -20,8 +22,6 @@ export const changeAppointmentDateController = async (
     if (!appointmentID)
       return res.status(400).json({ message: "Appuntamento non definito" });
 
-    const searchFields: Record<string, unknown> = { _id: appointmentID };
-
     const appointment = await findAppointmentByID(appointmentID.toString());
 
     if (!appointment)
@@ -33,16 +33,13 @@ export const changeAppointmentDateController = async (
     )
       return res.status(403).json({ message: "Non autorizzato" });
 
-    const updateFields: Record<string, unknown> = {
+    const updateFields = {
       newDate,
       newTime,
+      previousStatus: appointment.status,
     };
 
-    const updatedAppointment = await updateAppointmentDate(
-      appointmentID.toString(),
-      searchFields,
-      updateFields,
-    );
+    const updatedAppointment = await updateAppointmentDate(appointmentID.toString(), updateFields);
 
     if (
       !updatedAppointment?.pendingDateChange ||
@@ -56,8 +53,8 @@ export const changeAppointmentDateController = async (
         .json({ message: "Errore durante la modifica della data" });
 
     // link per email
-    const confirmUrl = `${process.env.ORIGIN}/appuntamento/conferma-data?token=${updatedAppointment?.pendingDateChange.token}`;
-    const rejectUrl = `${process.env.ORIGIN}/appuntamento/rifiuta-data?token=${updatedAppointment?.pendingDateChange.token}`;
+    const confirmUrl = `${config.ORIGIN}/appuntamento/conferma-data?token=${updatedAppointment.pendingDateChange.token}`;
+    const rejectUrl = `${config.ORIGIN}/appuntamento/rifiuta-data?token=${updatedAppointment.pendingDateChange.token}`;
     await sendEmail(
       `Modifica della data dell'appuntamento – ${appointment.protocolNumber}`,
       createElement(AppointmentDateChange, {
@@ -77,6 +74,8 @@ export const changeAppointmentDateController = async (
       }),
       appointment.email,
     );
+
+    await updateAppointmentDateStatus(appointmentID.toString());
 
     return res
       .status(200)

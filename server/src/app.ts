@@ -41,11 +41,10 @@ if (process.env.NODE_ENV === "production") {
 } else {
   app.use(helmet());
 }
-const isDev = config.NODE_ENV === "development";
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: isDev ? config.ORIGIN : config.ORIGIN_DEV,
+    origin: config.ORIGIN,
     credentials: true,
   }),
 );

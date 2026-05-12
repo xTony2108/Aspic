@@ -11,7 +11,10 @@ export const getAppointmentsController = async (
   const limit = Number(req.query.limit);
   const status = String(req.query.filter) as
     | "pending"
+    | "awaiting_payment"
+    | "date_change_pending"
     | "confirmed"
+    | "completed"
     | "cancelled";
 
   if (!page || !limit || !status)
@@ -32,8 +35,6 @@ export const getAppointmentsController = async (
       ...counts,
     });
   } catch (error) {
-    console.log(error);
-
     return res.status(500).json({ message: "Errore interno del server" });
   }
 };

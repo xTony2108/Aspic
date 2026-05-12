@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import z, { ZodType } from "zod";
-import { logger } from "../logger";
+import { logger } from "../logger.js";
 
 export const validateBody = <T extends ZodType<any>>(schema: T) => {
   return (req: Request, res: Response, next: NextFunction) => {

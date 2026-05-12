@@ -1,30 +1,31 @@
 import { Request, Response } from "express";
 import {
-  confirmEmailService,
+  activateAccountService,
   findEmailTokenService,
 } from "../../services/auth.js";
 
 export const verifyEmailController = async (req: Request, res: Response) => {
-  const { token } = req.body;
+  const { token, password } = req.body;
 
   try {
     const user = await findEmailTokenService(token);
 
     if (!user) return res.status(404).json({ message: "Link non valido." });
 
-    const tokenScaduto =
-      user?.emailVerificationExpires &&
-      new Date(user?.emailVerificationExpires).getTime() < Date.now();
+    const tokenExpired =
+      user.emailVerificationExpires &&
+      new Date(user.emailVerificationExpires).getTime() < Date.now();
 
-    if (tokenScaduto)
+    if (tokenExpired)
       return res.status(410).json({ message: "Il link è scaduto." });
 
-    await confirmEmailService(token);
+    if (user.emailVerified)
+      return res.status(409).json({ message: "Account gia attivato." });
 
-    return res
-      .status(200)
-      .json({ message: "Verifica effettuata con successo!" });
-  } catch (error) {
+    await activateAccountService(token, password);
+
+    return res.status(200).json({ message: "Account attivato con successo!" });
+  } catch {
     return res.status(500).json({ message: "Errore interno del server" });
   }
 };

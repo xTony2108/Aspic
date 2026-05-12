@@ -59,6 +59,20 @@ const successoRoute = createRoute({
   },
 }).lazy(() => import("./public/prenota/successo.routes").then((d) => d.Route));
 
+const confermaCambioDataRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "appuntamento/conferma-data",
+}).lazy(() =>
+  import("./public/appuntamento/conferma-data.routes").then((d) => d.Route),
+);
+
+const rifiutaCambioDataRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "appuntamento/rifiuta-data",
+}).lazy(() =>
+  import("./public/appuntamento/rifiuta-data.routes").then((d) => d.Route),
+);
+
 // AUTENTICATO
 
 const adminAutenticatoRoute = createRoute({
@@ -240,6 +254,8 @@ export const routeTree = rootRoute.addChildren([
     riepilogoRoute,
   ]),
   successoRoute,
+  confermaCambioDataRoute,
+  rifiutaCambioDataRoute,
   adminAutenticatoRoute.addChildren([
     adminRoute.addChildren([adminIndexRoute, adminVerificaRoute]),
     dashboardLayoutRoute.addChildren([

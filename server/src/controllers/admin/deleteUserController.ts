@@ -15,7 +15,7 @@ export const deleteUserController = async (req: Request, res: Response) => {
 
     const activeAppointments = await Appointment.find({
       assignedTo: professional._id,
-      status: { $in: ["paid", "awaiting_payment"] },
+      status: { $in: ["awaiting_payment", "date_change_pending", "confirmed"] },
     });
 
     if (activeAppointments.length > 0) {

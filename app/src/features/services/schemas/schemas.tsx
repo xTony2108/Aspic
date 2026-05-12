@@ -76,6 +76,24 @@ export const loginSchema = z.object({
 
 export type LoginTypeSchema = z.infer<typeof loginSchema>;
 
+export const activateAccountSchema = z
+  .object({
+    password: z
+      .string({ error: "Inserisci la password" })
+      .min(8, "La password deve contenere almeno 8 caratteri")
+      .regex(/[A-Z]/, "Deve contenere almeno una lettera maiuscola")
+      .regex(/[a-z]/, "Deve contenere almeno una lettera minuscola")
+      .regex(/[0-9]/, "Deve contenere almeno un numero")
+      .regex(/[^A-Za-z0-9]/, "Deve contenere almeno un carattere speciale"),
+    confirmPassword: z.string({ error: "Conferma la password" }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Le password non corrispondono",
+    path: ["confirmPassword"],
+  });
+
+export type ActivateAccountTypeSchema = z.infer<typeof activateAccountSchema>;
+
 export const changePersonalDataDataSchema = z.object({
   firstName: z
     .string({ error: "Inserisci un nome valido" })

@@ -5,7 +5,11 @@ import { verifyResendController } from "../../../controllers/auth/verifyResendCo
 import { refreshController } from "../../../controllers/auth/refreshController.js";
 import { verifyRefreshToken } from "../../../middleware/verifyRefreshToken.js";
 import { validateBody } from "../../../middleware/validateBody.js";
-import { loginSchema } from "../../../schema/schemas.js";
+import {
+  activateAccountSchema,
+  loginSchema,
+  verificationTokenSchema,
+} from "../../../schema/schemas.js";
 import { verifyAccessToken } from "../../../middleware/verifyAccessToken.js";
 import { logoutController } from "../../../controllers/auth/logoutController.js";
 import { logoutAllController } from "../../../controllers/auth/logoutAllController.js";
@@ -38,14 +42,18 @@ router.post("/logout-all", verifyAccessToken, logoutAllController);
  * @METHOD POST
  */
 
-router.post("/verify", verifyEmailController);
+router.post("/verify", validateBody(activateAccountSchema), verifyEmailController);
 
 /**
  * @path /api/auth/verify
  * @METHOD POST
  */
 
-router.post("/verify/resend", verifyResendController);
+router.post(
+  "/verify/resend",
+  validateBody(verificationTokenSchema),
+  verifyResendController,
+);
 
 /**
  * @path /api/auth/refresh

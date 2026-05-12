@@ -5,12 +5,17 @@ import { RequestCard } from "../../../components/dashboard/appointments/RequestC
 import { StatsGrid } from "../../../components/dashboard/appointments/StatsGrid";
 import { FilterTab } from "../../../components/dashboard/appointments/FilterTab";
 import { createPatchAppointmentMutationOptions } from "../../../api/dashboard/appointments/createPatchAppointmentMutationOptions";
-import { Toaster } from "react-hot-toast";
 import { DashboardTitle } from "../../../components/dashboard/DashboardTitle";
 import { AppointmentSkeleton } from "../../../components/dashboard/AppointmentSkeleton";
 import { createChangeDateMutationOptions } from "../../../api/dashboard/appointments/createChangeDateMutationOptions";
 
-export type Status = "pending" | "confirmed" | "cancelled" | "completed";
+export type Status =
+  | "pending"
+  | "awaiting_payment"
+  | "date_change_pending"
+  | "confirmed"
+  | "cancelled"
+  | "completed";
 
 export const DashboardRichieste = () => {
   const observer = useRef<IntersectionObserver>(null);
@@ -38,6 +43,8 @@ export const DashboardRichieste = () => {
 
   const totals = data?.pages[0] ?? {
     pending: 0,
+    awaiting_payment: 0,
+    date_change_pending: 0,
     confirmed: 0,
     cancelled: 0,
     completed: 0,
@@ -51,13 +58,25 @@ export const DashboardRichieste = () => {
       accent: true,
     },
     {
-      label: "In carico",
-      value: totals.confirmed || 0,
-      sub: "Pagamento richiesto",
+      label: "Pagamento",
+      value: totals.awaiting_payment || 0,
+      sub: "In attesa pagamento",
       accent: false,
     },
     {
-      label: "Confermate",
+      label: "Cambio data",
+      value: totals.date_change_pending || 0,
+      sub: "In attesa risposta",
+      accent: false,
+    },
+    {
+      label: "In carico",
+      value: totals.confirmed || 0,
+      sub: "Pagamento ricevuto",
+      accent: false,
+    },
+    {
+      label: "Svolte",
       value: totals.completed || 0,
       sub: "Totale",
       accent: false,

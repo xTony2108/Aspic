@@ -17,18 +17,24 @@ import { isAxiosError } from "axios";
 
 interface BodyRequest {
   _id: string;
-  status: "confirmed" | "cancelled";
+  status: "awaiting_payment" | "cancelled";
 }
 
 const patchAppointment = (data: BodyRequest): Promise<GenericResponse> =>
   axiosPrivate
     .patch(
-      `/admin/appointments/${data.status === "confirmed" ? "confirm" : "cancel"}/${data._id}`,
+      `/admin/appointments/${data.status === "awaiting_payment" ? "confirm" : "cancel"}/${data._id}`,
       { status: data.status },
     )
     .then((r) => r.data);
 
-export type Status = "pending" | "confirmed" | "cancelled" | "completed";
+export type Status =
+  | "pending"
+  | "awaiting_payment"
+  | "date_change_pending"
+  | "confirmed"
+  | "cancelled"
+  | "completed";
 
 export const createPatchAppointmentMutationOptions = <
   TError = ApiError<GenericResponse>,
@@ -38,7 +44,7 @@ export const createPatchAppointmentMutationOptions = <
     UseMutationOptions<
       GenericResponse,
       TError,
-      { _id: string; status: "confirmed" | "cancelled" },
+      { _id: string; status: "awaiting_payment" | "cancelled" },
       { previousData: InfiniteData<AppointmentResponse, number> | undefined }
     >,
     | "mutationFn"
@@ -49,26 +55,29 @@ export const createPatchAppointmentMutationOptions = <
     | "onSuccess"
   >,
 ) => {
+  const appointmentInfiniteQueryKey = createAppointmentsUseInfiniteQueryOptions(
+    10,
+    filter,
+  ).queryKey;
   return mutationOptions({
     ...options,
     mutationFn: (data: BodyRequest) => patchAppointment(data),
     mutationKey: ["patchAppointment"],
     onMutate: async (data: BodyRequest) => {
-      const queryKey = ["getBookings"];
       // CANCELLO EVENTUALI REFETCH
       await queryClient.cancelQueries({
-        queryKey,
+        queryKey: appointmentInfiniteQueryKey,
       });
 
       // SALVO LO STATO DELLA CACHE PER ERRORE
       const previousData =
         queryClient.getQueryData<InfiniteData<AppointmentResponse, number>>(
-          queryKey,
+          appointmentInfiniteQueryKey,
         );
 
       // AGGIORNO LA CACHE RIMUOVENDO L'ID AGGIORNATO
       queryClient.setQueryData<InfiniteData<AppointmentResponse, number>>(
-        queryKey,
+        appointmentInfiniteQueryKey,
         (oldData) => {
           if (!oldData) return;
 
@@ -85,14 +94,14 @@ export const createPatchAppointmentMutationOptions = <
       );
 
       //RITORNO VECCHIO STATO
-      return { previousData, queryKey };
+      return { previousData, queryKey: appointmentInfiniteQueryKey };
     },
     onError: (err, data, context) => {
       // SE ERRORE ROLLBACK
       if (isAxiosError(err)) toast.error(err.response?.data.message);
       else
         toast.error(
-          `Errore durante ${data.status === "confirmed" ? "la conferma" : "la cancellazione"} dell'appuntamento`,
+          `Errore durante ${data.status === "awaiting_payment" ? "la presa in carico" : "la cancellazione"} dell'appuntamento`,
         );
 
       if (context?.queryKey)

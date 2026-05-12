@@ -84,15 +84,22 @@ export const stripeWebhookDispatcher = async (event: Stripe.Event) => {
        * IDEMPOTENCY
        */
 
-      if (appointment.status === "paid") {
-        logger.info(`[STRIPE] Appointment already paid: ${appointmentId}`);
+      if (appointment.status === "confirmed") {
+        logger.info(`[STRIPE] Appointment already confirmed: ${appointmentId}`);
 
         return;
       }
 
       const cancellationToken = crypto.randomBytes(32).toString("hex");
 
-      appointment.status = "paid";
+      if (
+        appointment.status === "date_change_pending" &&
+        appointment.pendingDateChange?.previousStatus === "awaiting_payment"
+      ) {
+        appointment.pendingDateChange.previousStatus = "confirmed";
+      } else {
+        appointment.status = "confirmed";
+      }
 
       appointment.stripe.sessionId = session.id;
 
@@ -110,7 +117,9 @@ export const stripeWebhookDispatcher = async (event: Stripe.Event) => {
 
       await appointment.save();
 
-      logger.info(`[STRIPE] Appointment paid: ${appointmentId}`);
+      logger.info(
+        `[STRIPE] Appointment confirmed after payment: ${appointmentId}`,
+      );
 
       // await sendPaymentConfirmationEmail(
       //   appointment,
@@ -139,9 +148,26 @@ export const stripeWebhookDispatcher = async (event: Stripe.Event) => {
         return;
       }
 
-      await Appointment.findByIdAndUpdate(appointmentId, {
-        status: "payment_failed",
-      });
+      const appointment = await Appointment.findById(appointmentId);
+
+      if (!appointment) {
+        logger.warn(
+          `[STRIPE] Appointment not found for failed payment: ${appointmentId}`,
+        );
+
+        return;
+      }
+
+      if (
+        appointment.status === "date_change_pending" &&
+        appointment.pendingDateChange?.previousStatus === "awaiting_payment"
+      ) {
+        appointment.pendingDateChange.previousStatus = "payment_failed";
+        await appointment.save();
+      } else {
+        appointment.status = "payment_failed";
+        await appointment.save();
+      }
 
       logger.warn(`[STRIPE] Payment failed for appointment: ${appointmentId}`);
 
@@ -229,7 +255,7 @@ export const stripeWebhookDispatcher = async (event: Stripe.Event) => {
        * Refund failed -> restore paid status
        */
 
-      appointment.status = "paid";
+      appointment.status = "awaiting_payment";
 
       await appointment.save();
 
@@ -255,7 +281,6 @@ export const stripeWebhookDispatcher = async (event: Stripe.Event) => {
         account.details_submitted &&
         account.charges_enabled &&
         account.payouts_enabled;
-      console.log("STRIPE " + JSON.stringify(account));
 
       const accountStatus =
         account.charges_enabled && account.payouts_enabled

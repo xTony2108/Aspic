@@ -42,7 +42,7 @@ export const RequestCard = ({
     status,
   }: {
     _id: string;
-    status: "confirmed" | "cancelled";
+    status: "awaiting_payment" | "cancelled";
   }) => void;
   changeDate: ({
     _id,
@@ -128,6 +128,8 @@ export const RequestCard = ({
       )}
 
       {(appointment.status === "pending" ||
+        appointment.status === "awaiting_payment" ||
+        appointment.status === "date_change_pending" ||
         appointment.status === "confirmed") && (
         <div className="flex flex-wrap gap-2">
           {appointment.status === "pending" && (
@@ -150,7 +152,7 @@ export const RequestCard = ({
                       onClick={() =>
                         patchAppointment({
                           _id: appointment._id,
-                          status: "confirmed",
+                          status: "awaiting_payment",
                         })
                       }
                     />
@@ -179,7 +181,9 @@ export const RequestCard = ({
               </button>
             </>
           )}
-          {appointment.status === "pending" && (
+          {(appointment.status === "pending" ||
+            appointment.status === "awaiting_payment" ||
+            appointment.status === "confirmed") && (
             <>
               <DashboardSubmitWhite
                 text="📅 Cambia orario"

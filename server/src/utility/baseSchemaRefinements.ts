@@ -1,5 +1,5 @@
 import z from "zod";
-import { isValidAge } from "./isValidAge";
+import { isValidAge } from "./isValidAge.js";
 
 export const baseSchemaRefinements = (
   data: {
