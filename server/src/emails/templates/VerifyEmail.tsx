@@ -18,7 +18,6 @@ interface VerifyEmailProps {
   firstName: string;
   lastName: string;
   email: string;
-  temporaryPassword: string;
   verificationUrl: string;
   createdByName?: string;
   expiresInHours?: number;
@@ -28,7 +27,6 @@ export const VerifyEmail = ({
   firstName = "Maria",
   lastName = "Rossi",
   email = "m.rossi@aspicrc.it",
-  temporaryPassword = "Temp#2026!",
   verificationUrl = "https://aspicrc.it/admin/verifica?token=xxx",
   createdByName = "Amministrazione ASPIC",
   expiresInHours = 24,
@@ -46,9 +44,7 @@ export const VerifyEmail = ({
         fontStyle="normal"
       />
     </Head>
-    <Preview>
-      Benvenuto in ASPIC Psicologia — Le tue credenziali di accesso
-    </Preview>
+    <Preview>Benvenuto in ASPIC Psicologia - Attiva il tuo account</Preview>
     <Body style={body}>
       <Container style={container}>
         <Section style={header}>
@@ -63,7 +59,10 @@ export const VerifyEmail = ({
         </Section>
 
         <Section style={iconSection}>
-          <div style={iconCircle}>👤</div>
+          <div style={iconCircle}>
+            {firstName.charAt(0)}
+            {lastName.charAt(0)}
+          </div>
         </Section>
 
         <Section style={content}>
@@ -80,12 +79,13 @@ export const VerifyEmail = ({
           </Text>
           <Text style={paragraph}>
             <strong style={strong}>{createdByName}</strong> ha creato un account
-            professionista per te su ASPIC Psicologia Reggio Calabria. Trovi qui
-            sotto le tue credenziali di accesso temporanee.
+            professionista per te su ASPIC Psicologia Reggio Calabria. Per
+            completare l'attivazione devi verificare l'email e scegliere la tua
+            password personale.
           </Text>
 
           <Section style={credentialsCard}>
-            <Text style={credentialsTitle}>Le tue credenziali</Text>
+            <Text style={credentialsTitle}>Account da attivare</Text>
             <Hr style={credentialsDivider} />
             <table style={{ width: "100%", borderCollapse: "collapse" }}>
               <tbody>
@@ -93,34 +93,28 @@ export const VerifyEmail = ({
                   <td style={credLabelTd}>Email</td>
                   <td style={credValueTd}>{email}</td>
                 </tr>
-                <tr>
-                  <td style={credLabelTd}>Password temporanea</td>
-                  <td style={credValueTd}>
-                    <span style={passwordBadge}>{temporaryPassword}</span>
-                  </td>
-                </tr>
               </tbody>
             </table>
           </Section>
 
           <Section style={warnBox}>
             <Text style={warnText}>
-              🔐 <strong>Importante:</strong> al primo accesso ti verrà
-              richiesto di impostare una nuova password personale. La password
-              temporanea non potrà essere riutilizzata.
+              <strong>Importante:</strong> il link apre una pagina sicura in cui
+              potrai impostare direttamente la password del tuo account. La
+              password non viene inviata via email.
             </Text>
           </Section>
 
           <Section style={buttonSection}>
             <Button style={button} href={verificationUrl}>
-              Verifica email e accedi →
+              Attiva account {"->"}
             </Button>
           </Section>
 
           <Text style={smallNote}>
-            Il link è valido per{" "}
+            Il link e valido per{" "}
             <strong style={strong}>{expiresInHours} ore</strong>. Dopo tale
-            termine contatta l'amministrazione per ricevere un nuovo link.
+            termine potrai richiederne uno nuovo.
           </Text>
 
           <Hr style={divider} />
@@ -144,7 +138,7 @@ export const VerifyEmail = ({
 
         <Section style={footer}>
           <Text style={footerText}>
-            © {new Date().getFullYear()} ASPIC Psicologia Reggio Calabria
+            (c) {new Date().getFullYear()} ASPIC Psicologia Reggio Calabria
           </Text>
           <Text style={footerText}>
             <Link href="https://aspicrc.it/privacy" style={footerLink}>
@@ -161,7 +155,6 @@ export const VerifyEmail = ({
   </Html>
 );
 
-// ── STYLES ──
 const body: React.CSSProperties = {
   backgroundColor: "#f5f5f7",
   fontFamily: "'DM Sans', Helvetica, Arial, sans-serif",
@@ -182,20 +175,6 @@ const header: React.CSSProperties = {
   backgroundColor: "hsl(229,30%,14%)",
   padding: "28px 40px 24px",
   textAlign: "center",
-};
-
-const logoText: React.CSSProperties = {
-  fontFamily: "Georgia, 'Times New Roman', serif",
-  fontSize: "22px",
-  fontWeight: 600,
-  color: "#ffffff",
-  margin: 0,
-  letterSpacing: "0.02em",
-};
-
-const logoEm: React.CSSProperties = {
-  fontStyle: "italic",
-  color: "hsl(229,40%,82%)",
 };
 
 const headerSub: React.CSSProperties = {
@@ -219,7 +198,8 @@ const iconCircle: React.CSSProperties = {
   borderRadius: "50%",
   backgroundColor: "hsl(229,40%,95%)",
   color: "hsl(229,54.2%,32.5%)",
-  fontSize: "28px",
+  fontSize: "20px",
+  fontWeight: 700,
   textAlign: "center",
 };
 
@@ -291,16 +271,6 @@ const credValueTd: React.CSSProperties = {
   color: "hsl(229,30%,14%)",
   paddingBottom: "10px",
   verticalAlign: "middle",
-};
-
-const passwordBadge: React.CSSProperties = {
-  fontFamily: "monospace",
-  fontSize: "14px",
-  backgroundColor: "hsl(229,30%,14%)",
-  color: "#ffffff",
-  padding: "4px 12px",
-  borderRadius: "6px",
-  letterSpacing: "0.05em",
 };
 
 const warnBox: React.CSSProperties = {

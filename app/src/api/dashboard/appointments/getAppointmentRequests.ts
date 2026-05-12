@@ -17,7 +17,13 @@ const getAppointments = ({
 }: {
   page: number;
   limit: number;
-  filter: "pending" | "confirmed" | "cancelled" | "completed";
+  filter:
+    | "pending"
+    | "awaiting_payment"
+    | "date_change_pending"
+    | "confirmed"
+    | "cancelled"
+    | "completed";
 }): Promise<AppointmentResponse> => {
   const queryParams = new URLSearchParams();
 
@@ -35,7 +41,13 @@ export const createAppointmentsUseInfiniteQueryOptions = <
   TError = ApiError<AppointmentResponse>,
 >(
   limit: number,
-  filter: "pending" | "confirmed" | "cancelled" | "completed",
+  filter:
+    | "pending"
+    | "awaiting_payment"
+    | "date_change_pending"
+    | "confirmed"
+    | "cancelled"
+    | "completed",
   options?: Omit<
     UseInfiniteQueryOptions<
       AppointmentResponse,

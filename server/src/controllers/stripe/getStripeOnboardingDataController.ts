@@ -22,7 +22,6 @@ export const getStripeOnboardingDataController = async (
     logger.info(`[PROFILE] Retrieved for user: ${userID}`);
 
     const stripeData = await getStripeOnboardingLinkService(userID);
-    console.log(stripeData);
 
     return res.status(200).json({
       message: "Dati recuperati con successo",

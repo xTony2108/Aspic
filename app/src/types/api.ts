@@ -4,6 +4,13 @@ export type GenericResponse = {
   message: string;
 };
 
+export type ValidationErrorResponse = GenericResponse & {
+  errors?: {
+    fieldErrors?: Record<string, string[] | undefined>;
+    formErrors?: string[];
+  };
+};
+
 export type ApiError<T = GenericResponse> = AxiosError<T>;
 
 export type LoginResponse = GenericResponse & {
@@ -58,7 +65,13 @@ export type AppointmentData = {
   appointmentTime: string;
   appointmentMode: "online" | "in_person";
   urgent: boolean;
-  status: "pending" | "confirmed" | "cancelled" | "completed";
+  status:
+    | "pending"
+    | "awaiting_payment"
+    | "date_change_pending"
+    | "confirmed"
+    | "cancelled"
+    | "completed";
   service: string;
   clientType: "bambini" | "adulti" | "anziani";
   clientAge: "0-3" | "4-11" | "12-14" | "15-18" | null;
@@ -77,6 +90,8 @@ export type AppointmentResponse = GenericResponse & {
     totalPages: number;
   };
   pending: number;
+  awaiting_payment: number;
+  date_change_pending: number;
   confirmed: number;
   completed: number;
   cancelled: number;

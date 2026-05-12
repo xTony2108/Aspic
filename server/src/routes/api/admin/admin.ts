@@ -17,7 +17,6 @@ import { confirmAppointmentController } from "../../../controllers/admin/confirm
 import { registerController } from "../../../controllers/auth/registerController.js";
 import { cancelAppointmentController } from "../../../controllers/admin/cancelAppointmentController.js";
 import { changeAppointmentDateController } from "../../../controllers/admin/changeAppointmentDateController.js";
-import { appointmentSuccessController } from "../../../controllers/admin/appointmentSuccessController.js";
 import { getUsersController } from "../../../controllers/admin/getUsersController.js";
 import { deleteUserController } from "../../../controllers/admin/deleteUserController.js";
 const router = express.Router();
@@ -111,15 +110,8 @@ router.patch(
 );
 
 /**
- * @path /api/admin/appointments/success
- * PATCH
- */
-
-router.get("/appointments/success", appointmentSuccessController);
-
-/**
  * @path /api/admin/getUsers
- * PATCH
+ * GET
  */
 
 router.get("/getUsers", getUsersController);

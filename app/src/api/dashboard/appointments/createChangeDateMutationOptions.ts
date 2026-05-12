@@ -29,7 +29,13 @@ const patchAppointment = (data: BodyRequest): Promise<GenericResponse> =>
     })
     .then((r) => r.data);
 
-export type Status = "pending" | "confirmed" | "cancelled" | "completed";
+export type Status =
+  | "pending"
+  | "awaiting_payment"
+  | "date_change_pending"
+  | "confirmed"
+  | "cancelled"
+  | "completed";
 
 export const createChangeDateMutationOptions = <
   TError = ApiError<GenericResponse>,
@@ -39,7 +45,7 @@ export const createChangeDateMutationOptions = <
     UseMutationOptions<
       GenericResponse,
       TError,
-      { _id: string; status: "confirmed" | "cancelled" },
+      BodyRequest,
       { previousData: InfiniteData<AppointmentResponse, number> | undefined }
     >,
     | "mutationFn"

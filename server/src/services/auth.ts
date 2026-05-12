@@ -7,7 +7,6 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../utility/generateJWTTokens.js";
-import { generateTempPassword } from "../utility/generateRandomPassword.js";
 import crypto from "crypto";
 import Appointment from "../db/models/Appointment.js";
 import mongoose from "mongoose";
@@ -107,9 +106,9 @@ interface RegisterTypeSchema {
   createdBy: string;
 }
 export const createUserService = async (data: RegisterTypeSchema) => {
-  const generatedPw = generateTempPassword();
   const emailVerificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 ore
-  const hashedPw = await bcrypt.hash(generatedPw, 12);
+  const initialPassword = crypto.randomBytes(32).toString("hex");
+  const hashedPw = await bcrypt.hash(initialPassword, 12);
   const emailVerificationToken = crypto.randomBytes(32).toString("hex");
 
   const stripeAccount = await createStripeAccount(data.email);
@@ -147,7 +146,6 @@ export const createUserService = async (data: RegisterTypeSchema) => {
         verificationUrl,
         expiresInHours: 24,
         email: data.email,
-        temporaryPassword: generatedPw,
       }),
       data.email,
     );
@@ -182,24 +180,37 @@ export const confirmEmailService = (token: string) => {
 };
 
 export const generateNewEmailToken = async (token: string) => {
-  const { SALT_ROUNDS } = process.env;
-
   const emailVerificationToken = crypto.randomBytes(32).toString("hex");
   const emailVerificationExpires = new Date(Date.now() + 1000 * 60 * 60 * 24);
-
-  const generatedPw = generateTempPassword();
-  const hashedPw = await bcrypt.hash(generatedPw, Number(SALT_ROUNDS));
 
   await User.updateOne(
     { emailVerificationToken: token },
     {
       emailVerificationToken,
       emailVerificationExpires,
-      password: hashedPw,
     },
   );
 
-  return { generatedPw, emailVerificationToken };
+  return { emailVerificationToken };
+};
+
+export const activateAccountService = async (
+  token: string,
+  password: string,
+) => {
+  const hashedPw = await bcrypt.hash(password, 12);
+
+  return User.updateOne(
+    { emailVerificationToken: token },
+    {
+      emailVerificationToken: null,
+      emailVerificationExpires: null,
+      emailVerified: true,
+      emailVerifiedAt: new Date(),
+      password: hashedPw,
+      passwordChanged: true,
+    },
+  );
 };
 
 export const paginateAppointmentsService = async (
@@ -210,18 +221,28 @@ export const paginateAppointmentsService = async (
     | "pending"
     | "cancelled"
     | "awaiting_payment"
-    | "paid"
+    | "date_change_pending"
     | "confirmed"
+    | "payment_failed"
     | "refunded"
     | "completed",
 ) => {
   const offset = (page - 1) * limit;
+  const isSharedStatus =
+    status === "pending" ||
+    status === "cancelled" ||
+    status === "date_change_pending";
+
+  const listFilter = isSharedStatus
+    ? { status }
+    : { status, assignedTo: userID };
   const matchCondition = {
     $or: [
       { status: "pending" },
       { status: "cancelled" },
+      { status: "date_change_pending" },
       {
-        status: { $nin: ["pending", "cancelled"] },
+        status: { $nin: ["pending", "cancelled", "date_change_pending"] },
         assignedTo: new mongoose.Types.ObjectId(userID),
       },
     ],
@@ -229,13 +250,11 @@ export const paginateAppointmentsService = async (
 
   const [appointments, currentTotal, statusCounts] = await Promise.all([
     Appointment.find(
-      status === "pending" || status === "cancelled"
-        ? { status }
-        : { status, assignedTo: userID },
+      listFilter,
       "_id firstName lastName appointmentDate appointmentTime appointmentMode urgent status service clientType clientAge email phoneNumber createdAt protocolNumber reason",
       { lean: true, skip: offset, limit, sort: { appointmentDate: 1 } },
     ),
-    Appointment.countDocuments({ status }),
+    Appointment.countDocuments(listFilter),
     Appointment.aggregate([
       {
         $match: matchCondition,
@@ -258,6 +277,8 @@ export const paginateAppointmentsService = async (
 
   const counts: { [key: string]: number } = {
     pending: 0,
+    awaiting_payment: 0,
+    date_change_pending: 0,
     confirmed: 0,
     completed: 0,
     cancelled: 0,

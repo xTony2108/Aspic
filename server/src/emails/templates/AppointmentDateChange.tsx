@@ -159,8 +159,8 @@ const AppointmentDateChange = ({
 
           <Section style={warningNote}>
             <Text style={warningNoteText}>
-              ⚠ Se non risponde entro il {expiresAt}, la sua richiesta verrà
-              annullata automaticamente.
+              ⚠ Se non risponde entro il {expiresAt}, la sua richiesta non sarà
+              più possibile confermare o rifiutare online.
             </Text>
           </Section>
 

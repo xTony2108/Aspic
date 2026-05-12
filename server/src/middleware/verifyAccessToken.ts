@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import RefreshToken from "../db/models/RefreshToken";
+import RefreshToken from "../db/models/RefreshToken.js";
 import { JwtPayload } from "jsonwebtoken";
 
 interface MyJwtPayload extends JwtPayload {

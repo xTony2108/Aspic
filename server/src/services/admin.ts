@@ -31,20 +31,103 @@ export const updateAppointmentStatus = async (
 
 export const updateAppointmentDate = async (
   appointmentID: string,
-  searchFields: Record<string, unknown>,
-  updateFields: Record<string, unknown>,
+  updateFields: {
+    newDate: Date;
+    newTime: string;
+    previousStatus: string;
+  },
 ) => {
   const token = crypto.randomBytes(32).toString("hex");
 
-  await Appointment.findByIdAndUpdate(appointmentID, {
-    pendingDateChange: {
-      ...updateFields,
-      token,
-      expiresAt: new Date(Date.now() + 48 * 60 * 60 * 1000),
+  return Appointment.findByIdAndUpdate(
+    appointmentID,
+    {
+      $set: {
+        pendingDateChange: {
+          ...updateFields,
+          token,
+          expiresAt: new Date(Date.now() + 48 * 60 * 60 * 1000),
+        },
+      },
     },
-  });
+    { new: true, lean: true },
+  );
+};
 
-  return Appointment.findOneAndUpdate(searchFields, updateFields);
+export const updateAppointmentDateStatus = async (appointmentID: string) => {
+  return Appointment.findByIdAndUpdate(
+    appointmentID,
+    {
+      $set: {
+        status: "date_change_pending",
+      },
+    },
+    { new: true, lean: true },
+  );
+};
+
+export const findAppointmentByPendingDateChangeTokenService = async (
+  token: string,
+) => {
+  return Appointment.findOne(
+    { "pendingDateChange.token": token },
+    "_id status appointmentDate appointmentTime pendingDateChange protocolNumber",
+    { lean: true },
+  );
+};
+
+export const confirmPendingAppointmentDateChangeService = async (
+  token: string,
+  newDate: Date,
+  newTime: string,
+  previousStatus: string,
+) => {
+  return Appointment.findOneAndUpdate(
+    { "pendingDateChange.token": token },
+    {
+      $set: {
+        appointmentDate: newDate,
+        appointmentTime: newTime,
+        status: previousStatus,
+      },
+      $unset: {
+        pendingDateChange: "",
+      },
+    },
+    { new: true, lean: true },
+  );
+};
+
+export const rejectPendingAppointmentDateChangeService = async (token: string) => {
+  const appointment = await Appointment.findOne(
+    { "pendingDateChange.token": token },
+    "protocolNumber",
+    { lean: true },
+  );
+
+  if (!appointment) return null;
+
+  return Appointment.findOneAndUpdate(
+    { "pendingDateChange.token": token },
+    {
+      $set: {
+        status: "cancelled",
+        firstName: "Anonimizzato",
+        lastName: "Anonimizzato",
+        address: "Anonimizzato",
+        fiscalCode: `ANNULLATO-${appointment.protocolNumber}`,
+        email: "Anonimizzato",
+        phoneNumber: "Anonimizzato",
+        reason: "Anonimizzato",
+        birthday: "Anonimizzato",
+        birthPlace: "Anonimizzato",
+      },
+      $unset: {
+        pendingDateChange: "",
+      },
+    },
+    { new: true, lean: true },
+  );
 };
 
 export const changePasswordService = async (
@@ -62,8 +145,19 @@ export const changePasswordService = async (
 export const findUserByIDService = async (userId: string) => {
   return User.findById(
     userId,
-    "_id email firstName lastName phoneNumber password passwordChanged onboardingCompleted",
+    "_id email firstName lastName phoneNumber passwordChanged stripeOnboardingCompleted",
     { lean: true },
+  );
+};
+
+export const findUserPasswordByIDService = async (userId: string) => {
+  return User.findById(userId, "_id password", { lean: true });
+};
+
+export const findUserStripeDataByIDService = async (userId: string) => {
+  return await User.findById(
+    userId,
+    "firstName lastName stripeAccountId stripeOnboardingCompleted stripeChargesEnabled stripePayoutsEnabled",
   );
 };
 

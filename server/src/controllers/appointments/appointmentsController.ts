@@ -20,7 +20,7 @@ export const appointmentsController = async (req: Request, res: Response) => {
       logger.warn(`[BOOKING] Failed: duplicate fiscal code - ${fiscalCode}`);
       return res.status(400).json({
         message:
-          "É già stata effettuata una richiesta con questo Codice Fiscale",
+          "Se i dati sono validi, la richiesta è stata/sarà presa in carico e riceverai comunicazioni via email",
       });
     }
 
