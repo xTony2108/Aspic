@@ -82,8 +82,8 @@ export const DatiPersonali = () => {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex flex-col gap-5 mb-8">
-          <div className="flex flex-col gap-5 md:flex-row">
+        <div className="flex flex-col gap-4 mb-8">
+          <div className="flex flex-col gap-4 md:flex-row">
             <div className="flex-1">
               <FormInput
                 inputType="text"
@@ -106,7 +106,7 @@ export const DatiPersonali = () => {
             </div>
           </div>
 
-          <div className="flex flex-col gap-5 md:flex-row">
+          <div className="flex flex-col gap-4 md:flex-row">
             <div className="flex-1">
               <FormInput
                 inputType="date"

@@ -13,7 +13,6 @@ export const rejectDateChangeController = async (
   try {
     const appointment =
       await findAppointmentByPendingDateChangeTokenService(token);
-    console.log(appointment);
 
     if (!appointment || !appointment.pendingDateChange?.token)
       return res.status(404).json({ message: "Link non valido." });

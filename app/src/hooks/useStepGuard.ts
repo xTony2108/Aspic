@@ -72,11 +72,8 @@ export const useStepGuard = (currentIndex: number) => {
   );
 
   const clearItems = useServizioFormStore((s) => s.clearItems);
-  const _hydrated = useServizioFormStore((s) => s._hydrated);
 
   useEffect(() => {
-    if (!_hydrated) return;
-
     for (let i = 1; i <= currentIndex; i++) {
       const schema = STEP_SCHEMAS[i];
 
@@ -95,5 +92,5 @@ export const useStepGuard = (currentIndex: number) => {
         return;
       }
     }
-  }, [_hydrated, currentIndex]);
+  }, [currentIndex]);
 };

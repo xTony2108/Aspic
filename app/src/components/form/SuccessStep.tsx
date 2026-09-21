@@ -12,8 +12,8 @@ export const SuccessStep = ({
       {number}
     </span>
     <div>
-      <h3 className="font-medium text-sm mb-1">{title}</h3>
-      <p className="text-sm font-light text-text-muted">{children}</p>
+      <h3 className="text-sm mb-1">{title}</h3>
+      <p className="text-sm text-text-muted">{children}</p>
     </div>
   </div>
 );

@@ -10,6 +10,7 @@ import { DashboardSubmitWhite } from "../DashboardSubmitWhite";
 import { DashboardSubmit } from "../DashboardSubmit";
 import { Modal } from "../appointments/Modal";
 import type { UsersType } from "../../../types/api";
+import { FiX } from "react-icons/fi";
 
 export const ProfessionalRow = ({ user }: { user: UsersType }) => {
   const [openDelete, setOpenDelete] = useState(false);
@@ -54,14 +55,14 @@ export const ProfessionalRow = ({ user }: { user: UsersType }) => {
       <td className="py-4 px-4.5 text-text truncate">{user.phoneNumber}</td>
       <td className="py-4 px-4.5 text-center">
         <button
-          className="text-warnBorder text-lg font-bold cursor-pointer disabled:hidden"
+          className="text-warnBorder cursor-pointer disabled:hidden"
           disabled={
             user.createdBy.toLowerCase() === "system" ||
             user._id === me.userData._id
           }
           onClick={() => setOpenDelete(true)}
         >
-          ✕
+          <FiX size={18} />
         </button>
         <Modal
           isOpen={openDelete}
@@ -70,7 +71,7 @@ export const ProfessionalRow = ({ user }: { user: UsersType }) => {
           titleEm="selezionato"
           maxWidth="max-w-lg"
         >
-          <div className="bg-cream rounded-xl p-4 text-[13px] text-text-muted font-light leading-relaxed">
+          <div className="bg-cream rounded-xl p-4 text-[13px] text-text-muted leading-relaxed">
             <strong className="font-medium text-text block mb-1">
               {user.firstName} {user.lastName}
             </strong>

@@ -82,6 +82,8 @@ const adminAutenticatoRoute = createRoute({
     const { accessToken } = useAuthStore.getState();
     if (accessToken) return;
 
+    const isAdminRoot = /^\/admin\/?$/.test(location.pathname);
+    const isAdminArea = /^\/admin(\/|$)/.test(location.pathname);
     try {
       const response = await axios.get("/api/auth/refresh", {
         withCredentials: true,
@@ -90,16 +92,13 @@ const adminAutenticatoRoute = createRoute({
         .getState()
         .setData({ accessToken: response.data.accessToken });
 
-      if (
-        location.pathname.endsWith("/admin") ||
-        location.pathname.endsWith("/admin/")
-      ) {
+      if (isAdminRoot || isAdminArea) {
         throw redirect({ to: "/dashboard/richieste" });
       }
     } catch (error) {
       if (isRedirect(error)) throw error;
       if (isAxiosError(error)) {
-        if (error.status === 401 && !location.pathname.startsWith("/admin")) {
+        if (error.status === 401 && !isAdminRoot) {
           throw redirect({ to: "/admin" });
         }
 
@@ -145,19 +144,18 @@ const dashboardLayoutRoute = createRoute({
   pendingComponent: Loading,
   pendingMs: 300,
   pendingMinMs: 800,
-  loader: async ({ location, context: { queryClient } }) => {
+  beforeLoad: async ({ location }) => {
     if (
       location.pathname.endsWith("/dashboard") ||
       location.pathname.endsWith("/dashboard/")
     ) {
       throw redirect({ to: "/dashboard/richieste" });
     }
-
-    const { userData } = await queryClient.ensureQueryData(
+  },
+  loader: async ({ context: { queryClient } }) => {
+    await queryClient.ensureQueryData(
       createGetUserDataQueryOptions({ staleTime: Infinity }),
     );
-
-    return { userData };
   },
 }).lazy(() =>
   import("./private/dashboard/dashboard.routes").then((d) => d.Route),
@@ -173,33 +171,22 @@ const dashboardRichiesteRoute = createRoute({
 const dashboardDisponibilitaRoute = createRoute({
   getParentRoute: () => dashboardLayoutRoute,
   path: "disponibilita",
-});
+}).lazy(() =>
+  import("./private/dashboard/disponibilita.routes").then((d) => d.Route),
+);
 
 const dashboardProfessionistiRoute = createRoute({
   getParentRoute: () => dashboardLayoutRoute,
   path: "professionisti",
   loader: async ({ context: { queryClient } }) => {
     try {
-      const { users } = await queryClient.ensureQueryData(
-        createGetUsersQueryOptions(),
-      );
-
-      return { users };
+      await queryClient.ensureQueryData(createGetUsersQueryOptions());
     } catch (error) {
-      if (isAxiosError(error)) {
-        if (error.status === 401 && !location.pathname.startsWith("/admin")) {
-          throw redirect({ to: "/admin" });
-        }
+      const isAdminRoot = /^\/admin\/?$/.test(location.pathname);
 
-        if (!error.response) {
-          throw new Response("Server offline", { status: 503 });
-        }
-
-        if (error.status === 500)
-          throw new Error(error.response?.data?.message || "Server error");
+      if (isAxiosError(error) && error.status === 403 && !isAdminRoot) {
+        throw redirect({ to: "/dashboard/non-autorizzato" });
       }
-
-      throw error;
     }
   },
 }).lazy(() =>
@@ -210,28 +197,7 @@ const dashboardImpostazioniRoute = createRoute({
   getParentRoute: () => dashboardLayoutRoute,
   path: "impostazioni",
   loader: async ({ context: { queryClient } }) => {
-    try {
-      const { sessions } = await queryClient.ensureQueryData(
-        createActiveSessionsQueryOptions(),
-      );
-
-      return sessions;
-    } catch (error) {
-      if (isAxiosError(error)) {
-        if (error.status === 401 && !location.pathname.startsWith("/admin")) {
-          throw redirect({ to: "/admin" });
-        }
-
-        if (!error.response) {
-          throw new Response("Server offline", { status: 503 });
-        }
-
-        if (error.status === 500)
-          throw new Error(error.response?.data?.message || "Server error");
-      }
-
-      throw error;
-    }
+    await queryClient.ensureQueryData(createActiveSessionsQueryOptions());
   },
 }).lazy(() =>
   import("./private/dashboard/account.routes").then((d) => d.Route),
@@ -243,6 +209,13 @@ const dashboardStripeCallbackRoute = createRoute({
   validateSearch: stripeSearchSchema,
 }).lazy(() =>
   import("./private/dashboard/stripe-callback.routes").then((d) => d.Route),
+);
+
+const dashboardForbiddenRoute = createRoute({
+  getParentRoute: () => dashboardLayoutRoute,
+  path: "non-autorizzato",
+}).lazy(() =>
+  import("./private/dashboard/non-autorizzato.routes").then((d) => d.Route),
 );
 
 export const routeTree = rootRoute.addChildren([
@@ -264,6 +237,7 @@ export const routeTree = rootRoute.addChildren([
       dashboardProfessionistiRoute,
       dashboardImpostazioniRoute,
       dashboardStripeCallbackRoute,
+      dashboardForbiddenRoute,
     ]),
   ]),
 ]);

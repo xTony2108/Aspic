@@ -12,12 +12,12 @@ export const loginController = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   try {
-    logger.info(`[LOGIN] Attempt for email: ${email}`);
+    logger.info("[LOGIN] Attempt");
 
     const user = await findUserByEmailService(email);
 
     if (!user) {
-      logger.warn(`[LOGIN] Failed: user not found - ${email}`);
+      logger.warn("[LOGIN] Failed: user not found");
       return res.status(400).json({ message: "Credenziali errate" });
     }
 
@@ -29,7 +29,6 @@ export const loginController = async (req: Request, res: Response) => {
     if (!user.emailVerified)
       return res.status(403).json({
         message: "ACCOUNT_NOT_COMPLETED",
-        emailVerificationToken: user.emailVerificationToken,
       });
 
     const { onboardingCompleted, url } = await getStripeOnboardingLinkService(
@@ -64,7 +63,7 @@ export const loginController = async (req: Request, res: Response) => {
       stripeOnboardingUrl: url,
     });
   } catch (error) {
-    logger.error(`[LOGIN] Error for ${email}: ${error}`);
+    logger.error(`[LOGIN] Error: ${error}`);
     return res.status(500).json({ message: "Errore interno del server" });
   }
 };

@@ -19,10 +19,6 @@ export type LoginResponse = GenericResponse & {
   stripeOnboardingUrl?: string | null;
 };
 
-export type LoginErrorResponse = GenericResponse & {
-  emailVerificationToken?: string;
-};
-
 export type UserDataResponse = GenericResponse & {
   userData: {
     _id: string;
@@ -31,6 +27,7 @@ export type UserDataResponse = GenericResponse & {
     email: string;
     phoneNumber: string;
     passwordChanged: boolean;
+    role: "admin" | "professional";
   };
 };
 
@@ -114,4 +111,20 @@ export type UsersType = {
 
 export type GetUsersResponse = GenericResponse & {
   users: UsersType[];
+};
+
+type SlotsType = {
+  time: string;
+  status: string;
+  bookingId?: string;
+  _id: string;
+};
+
+export type DaysType = {
+  date: string;
+  slots: SlotsType[];
+};
+
+export type SlotsResponse = GenericResponse & {
+  days: DaysType[];
 };

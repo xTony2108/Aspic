@@ -11,6 +11,17 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { changeDateSchema } from "../../../features/services/schemas/schemas";
 import z from "zod";
+import {
+  FiCalendar,
+  FiUser,
+  FiMail,
+  FiPhone,
+  FiCheck,
+  FiChevronUp,
+  FiChevronDown,
+  FiX,
+} from "react-icons/fi";
+import { BsBuilding, BsLaptop } from "react-icons/bs";
 
 type FormOutput = z.output<typeof changeDateSchema>;
 
@@ -21,8 +32,16 @@ const CLIENT_TYPE_LABELS = {
 };
 
 const APPOINTMENT_MODE_LABELS = {
-  online: "💻 Online",
-  in_person: "🏥 Studio",
+  online: (
+    <span className="inline-flex items-center gap-1.5">
+      <BsLaptop size={14} /> Online
+    </span>
+  ),
+  in_person: (
+    <span className="inline-flex items-center gap-1.5">
+      <BsBuilding size={14} /> Studio
+    </span>
+  ),
 };
 
 function formatDate(str: string) {
@@ -71,40 +90,47 @@ export const RequestCard = ({
   const onSubmit = (data: FormOutput) => {
     changeDate({ ...data, _id: appointment._id });
   };
+
   return (
     <div
-      ref={ref}
-      className={`bg-white border rounded-2xl p-5 transition-all hover:shadow-sm hover:border-blue-light ${appointment.urgent ? "border-l-[3px] border-l-amber-400 border-border" : "border-border"}`}
+      className={`bg-white border border-border rounded-2xl p-5 transition-all hover:shadow-md ${appointment.urgent ? "border-l-[3px] border-l-warning" : ""}`}
     >
-      <div className="flex items-start justify-between mb-3">
+      <div className="flex items-start justify-between gap-2">
         <div>
           {appointment.protocolNumber && (
-            <div className="text-[11px] font-mono text-text-muted mb-0.5 tracking-wide">
+            <div className="text-xs font-mono text-text-muted mb-1 tracking-wide opacity-70">
               Protocollo #{appointment.protocolNumber}
             </div>
           )}
-          <div className="font-medium text-base text-text leading-none">
+          <div className="font-medium text-base text-heading leading-tight">
             {appointment.firstName} {appointment.lastName}
           </div>
-          <div className="text-xs font-light text-text-muted mt-0.5">
+          <p className="text-sm text-text-muted mt-1 opacity-80">
             {getServiceLabel(appointment.service)}
-          </div>
+          </p>
         </div>
         <StatusBadge status={appointment.status} urgent={appointment.urgent} />
       </div>
 
-      <div className="flex flex-col md:flex-row flex-wrap gap-x-5 gap-y-1 text-[13px] text-text-muted font-light mb-4">
-        <span>
-          📅 {formatDate(appointment.appointmentDate)} alle{" "}
-          {appointment.appointmentTime}
+      <div className="flex flex-col md:flex-row flex-wrap gap-x-4 gap-y-2 text-sm text-text-muted mt-3">
+        <span className="inline-flex items-center gap-2">
+          <FiCalendar size={14} /> {formatDate(appointment.appointmentDate)}{" "}
+          alle {appointment.appointmentTime}
         </span>
-        <span>
-          👤 {CLIENT_TYPE_LABELS[appointment.clientType]}
+        <span className="inline-flex items-center gap-2">
+          <FiUser size={14} /> {CLIENT_TYPE_LABELS[appointment.clientType]}
           {appointment.clientAge ? ` · ${appointment.clientAge} anni` : ""}
         </span>
-        {/* {appointment.assignedTo && <span>🩺 {appointment.assignedTo}</span>} */}
-        {appointment.email && <span>✉️ {appointment.email}</span>}
-        {appointment.phoneNumber && <span>📞 {appointment.phoneNumber}</span>}
+        {appointment.email && (
+          <span className="inline-flex items-center gap-2">
+            <FiMail size={14} /> {appointment.email}
+          </span>
+        )}
+        {appointment.phoneNumber && (
+          <span className="inline-flex items-center gap-2">
+            <FiPhone size={14} /> {appointment.phoneNumber}
+          </span>
+        )}
         {appointment.appointmentMode && (
           <span>{APPOINTMENT_MODE_LABELS[appointment.appointmentMode]}</span>
         )}
@@ -114,13 +140,17 @@ export const RequestCard = ({
         <div className="mb-4">
           <button
             onClick={() => setShowMotivation((prev) => !prev)}
-            className="text-[12px] text-text-muted font-light flex items-center gap-1 hover:text-text transition-colors cursor-pointer"
+            className="text-sm text-text flex items-center gap-1.5 hover:text-primary transition-colors cursor-pointer"
           >
-            <span>{showMotivation ? "▲" : "▼"}</span>
+            {showMotivation ? (
+              <FiChevronUp size={14} />
+            ) : (
+              <FiChevronDown size={14} />
+            )}
             <span>Motivazioni</span>
           </button>
           {showMotivation && (
-            <div className="mt-2 bg-cream rounded-xl px-4 py-3 text-[13px] text-text-muted font-light leading-relaxed">
+            <div className="mt-3 bg-primary-xlight rounded-xl px-4 py-3 text-sm text-text leading-relaxed border border-border/50">
               {appointment.reason}
             </div>
           )}
@@ -131,14 +161,13 @@ export const RequestCard = ({
         appointment.status === "awaiting_payment" ||
         appointment.status === "date_change_pending" ||
         appointment.status === "confirmed") && (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-3 mt-5 pt-4 border-t border-border/60">
           {appointment.status === "pending" && (
             <>
               <Modal
                 isOpen={showTakeCharge}
                 onClose={() => setShowTakeCharge(false)}
-                title="Prendi in"
-                titleEm="carico"
+                title="Prendi in carico"
                 footer={
                   <>
                     <DashboardSubmitWhite
@@ -159,26 +188,26 @@ export const RequestCard = ({
                   </>
                 }
               >
-                <div className="bg-cream rounded-xl p-4 text-[13px] text-text-muted font-light leading-relaxed">
-                  <strong className="font-medium text-text block mb-1">
+                <div className="bg-primary-xlight rounded-xl p-4 text-sm text-text leading-relaxed border border-border/50">
+                  <strong className="font-semibold block mb-1.5">
                     {appointment.firstName} {appointment.lastName}
                   </strong>
                   {getServiceLabel(appointment.service)} ·{" "}
                   {formatDate(appointment.appointmentDate)} alle{" "}
                   {appointment.appointmentTime}
                 </div>
-                <p className="text-[13px] text-text-muted font-light mt-4 leading-relaxed">
+                <p className="text-sm text-text mt-4 leading-relaxed opacity-80">
                   Prendendo in carico questa richiesta verrà inviata al paziente
                   la mail con le istruzioni per il pagamento. L'operazione non è
                   reversibile.
                 </p>
               </Modal>
-              <button
+              <DashboardSubmit
+                translate={false}
+                type="button"
+                text="Prendi in carico"
                 onClick={() => setShowTakeCharge(true)}
-                className="cursor-pointer inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-[13px] font-medium bg-dashboard-successBg text-dashboard-successText border border-dashboard-successBorder hover:bg-green-100 transition-colors"
-              >
-                ✓ Prendi in carico
-              </button>
+              />
             </>
           )}
           {(appointment.status === "pending" ||
@@ -186,18 +215,27 @@ export const RequestCard = ({
             appointment.status === "confirmed") && (
             <>
               <DashboardSubmitWhite
-                text="📅 Cambia orario"
+                text="Cambia orario"
                 onClick={() => setShowChangeDate(true)}
               />
               <Modal
                 isOpen={showChangeDate}
                 onClose={() => setShowChangeDate(false)}
-                title="Cambia"
-                titleEm="orario"
+                title="Cambia orario"
                 maxWidth="max-w-lg"
+                footer={
+                  <>
+                    <DashboardSubmitWhite
+                      text="Annulla"
+                      type="button"
+                      onClick={() => setShowChangeDate(false)}
+                    />
+                    <DashboardSubmit type="button" text="Conferma modifiche" />
+                  </>
+                }
               >
-                <div className="bg-cream rounded-xl p-4 text-[13px] text-text-muted font-light leading-relaxed">
-                  <strong className="font-medium text-text block mb-1">
+                <div className="bg-primary-xlight rounded-xl p-4 text-sm text-text leading-relaxed border border-border/50">
+                  <strong className="font-semibold block mb-1.5">
                     {appointment.firstName} {appointment.lastName}
                   </strong>
                   {getServiceLabel(appointment.service)} ·{" "}
@@ -229,18 +267,6 @@ export const RequestCard = ({
                       />
                     </div>
                   </div>
-                  <div className="flex gap-2 justify-end pt-4 border-t border-border">
-                    <DashboardSubmitWhite
-                      text="Annulla"
-                      type="button"
-                      onClick={() => setShowChangeDate(false)}
-                    />
-                    <DashboardSubmit
-                      translate={false}
-                      type="submit"
-                      text="Conferma modifiche"
-                    />
-                  </div>
                 </form>
               </Modal>
             </>
@@ -248,8 +274,7 @@ export const RequestCard = ({
           <Modal
             isOpen={showCancel}
             onClose={() => setShowCancel(false)}
-            title="Annulla"
-            titleEm="richiesta"
+            title="Annulla richiesta"
             maxWidth="max-w-lg"
             footer={
               <>
@@ -258,20 +283,20 @@ export const RequestCard = ({
                   onClick={() => setShowCancel(false)}
                 />
                 <DashboardSubmitRed
-                  label="Annulla richiesta"
                   onClick={() =>
                     patchAppointment({
                       _id: appointment._id,
                       status: "cancelled",
                     })
                   }
+                  label="Annulla richiesta"
                 />
               </>
             }
           >
-            <p className="text-[13px] text-text-muted font-light leading-relaxed">
+            <p className="text-sm text-text leading-relaxed">
               Stai per annullare la richiesta di{" "}
-              <strong className="font-medium text-text">
+              <strong className="font-semibold mb-1.5">
                 {appointment.firstName} {appointment.lastName}
               </strong>
               . Il paziente verrà notificato via email. Questa azione è
@@ -279,7 +304,7 @@ export const RequestCard = ({
             </p>
           </Modal>
           <DashboardSubmitRed
-            label="✕ Annulla"
+            label="Annulla"
             onClick={() => setShowCancel(true)}
           />
         </div>

@@ -3,6 +3,24 @@ import morgan from "morgan";
 import { config } from "./config.js";
 import { pinoHttp } from "pino-http";
 
+const redactUrl = (url?: string) => {
+  if (!url) return "unknown";
+
+  try {
+    const parsed = new URL(url, "http://localhost");
+
+    for (const key of ["token", "session_id"]) {
+      if (parsed.searchParams.has(key)) {
+        parsed.searchParams.set(key, "[REDACTED]");
+      }
+    }
+
+    return `${parsed.pathname}${parsed.search}`;
+  } catch {
+    return url.split("?")[0] || "unknown";
+  }
+};
+
 const logger = pino({
   level: config.NODE_ENV === "production" ? "info" : "debug",
   transport: {
@@ -60,15 +78,15 @@ export const httpLogger = pinoHttp({
     return "info";
   },
   customSuccessMessage: (req, res) => {
-    return `${req.method} ${req.url || "unknown"} - ${res.statusCode}`;
+    return `${req.method} ${redactUrl(req.url)} - ${res.statusCode}`;
   },
   customErrorMessage: (req, res, err) => {
-    return `${req.method} ${req.url || "unknown"} - ${res.statusCode} - ${err?.message || "Unknown error"}`;
+    return `${req.method} ${redactUrl(req.url)} - ${res.statusCode} - ${err?.message || "Unknown error"}`;
   },
   serializers: {
     req: (req) => ({
       method: req.method,
-      url: req.url,
+      url: redactUrl(req.url),
       headers: {
         "user-agent": req.headers["user-agent"],
         "content-type": req.headers["content-type"],
@@ -89,7 +107,7 @@ export const morganMiddleware = morgan(
   (tokens, req, res) => {
     return [
       tokens.method(req, res),
-      tokens.url(req, res),
+      redactUrl(tokens.url(req, res)),
       tokens.status(req, res),
       tokens.res(req, res, "content-length"),
       "-",

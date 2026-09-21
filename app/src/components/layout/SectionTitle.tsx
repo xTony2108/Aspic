@@ -23,7 +23,7 @@ export const SectionTitle = ({
         </Link>
       )}
       <div className="flex-1 text-center">
-        <h1>{text}</h1>
+        <h1 className="font-garamond leading-tight">{text}</h1>
       </div>
     </div>
   );

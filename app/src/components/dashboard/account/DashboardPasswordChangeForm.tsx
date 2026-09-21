@@ -11,6 +11,7 @@ import { useMutation } from "@tanstack/react-query";
 import { createChangePasswordMutationOptions } from "../../../api/dashboard/profile/createChangePasswordMutationOptions";
 import { DasbhoardAccountFormTitle } from "./DasbhoardAccountFormTitle";
 import { DashboardAlert } from "./DashboardAlert";
+import { FiCheck, FiX as FiXIcon } from "react-icons/fi";
 import { createGetUserDataQueryOptions } from "../../../api/admin/createGetUserDataQueryOptions";
 import { useRouteContext } from "@tanstack/react-router";
 
@@ -99,13 +100,14 @@ export const DashboardPasswordChangeForm = () => {
           />
         </div>
         {isSuccess && (
-          <DashboardAlert type="success" text={`✓ ${data?.message}`} />
+          <DashboardAlert type="success" icon={<FiCheck size={16} />} text={data?.message} />
         )}
 
         {isError && (
           <DashboardAlert
             type="error"
-            text={`✕ ${error?.response?.data.message}`}
+            icon={<FiXIcon size={16} />}
+            text={error?.response?.data.message}
           />
         )}
       </form>

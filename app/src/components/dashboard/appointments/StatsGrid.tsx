@@ -9,17 +9,17 @@ export const StatsGrid = ({ stats }: { stats: Stat[] }) => {
           className={`rounded-2xl px-5 py-4 border ${s.accent ? "bg-primary border-primary" : "bg-white border-border"}`}
         >
           <div
-            className={`text-[11px] font-medium uppercase tracking-widest mb-2 ${s.accent ? "text-white/60" : "text-text-muted"}`}
+            className={`text-xs font-medium uppercase tracking-widest mb-2 ${s.accent ? "text-white/60" : "text-text-muted"}`}
           >
             {s.label}
           </div>
           <div
-            className={`font-garamond text-4xl font-semibold leading-none ${s.accent ? "text-white" : "text-text"}`}
+            className={`font-garamond text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-tight ${s.accent ? "text-white" : "text-text"}`}
           >
             {s.value}
           </div>
           <div
-            className={`text-[12px] mt-1 ${s.accent ? "text-white/50" : "text-text-muted"}`}
+            className={`text-sm mt-1 ${s.accent ? "text-white/60" : "text-text-muted"}`}
           >
             {s.sub}
           </div>

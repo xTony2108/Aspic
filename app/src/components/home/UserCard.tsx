@@ -14,19 +14,18 @@ export const UserCard = ({
   description,
 }: UserCardProps) => {
   return (
-    <div className="bg-white border border-border rounded-3xl p-8 flex flex-col items-center gap-6 text-center hover:-translate-y-1 hover:shadow-xl transition-all duration-300 ease-out flex-1">
-      <div className="font-garamond w-19 h-19 bg-primary text-white text-3xl relative rounded-full flex items-center justify-center">
-        <div>{icon}</div>
-        <div className="before:absolute before:content-[''] before:-top-1.5 before:-right-1.5 before:-bottom-1.5 before:-left-1.5 before:border before:rounded-full before:border-blue-light"></div>
+    <div className="group flex flex-1 flex-col gap-8 border border-border bg-white p-7 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-primary-light md:p-9">
+      <div className="flex items-start justify-between gap-5">
+        <span className="landing-kicker">{title}</span>
+        <div className="font-garamond flex h-16 w-16 shrink-0 items-center justify-center rounded-full border border-blue-light bg-primary-xlight text-3xl text-primary">
+          {icon}
+        </div>
       </div>
       <div>
-        <span className="text-xs font-medium uppercase text-primary">
-          {title}
-        </span>
-        <h3 className="font-garamond text-xl font-semibold mb-3">
+        <h3 className="mb-4 font-garamond text-[clamp(1.5rem,3vw,2rem)] font-semibold leading-snug text-text">
           {name} <em className="text-primary">{lastName}</em>
         </h3>
-        <p className="text-sm font-light">{description}</p>
+        <p className="text-sm leading-relaxed">{description}</p>
       </div>
     </div>
   );

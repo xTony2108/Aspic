@@ -1,9 +1,12 @@
+import type { ReactNode } from "react";
+import { FiCheckCircle, FiAlertTriangle } from "react-icons/fi";
+
 type StateType = "loading" | "success" | "error";
 
-const STATE_CONFIG: Record<StateType, { iconBg: string; icon?: string }> = {
+const STATE_CONFIG: Record<StateType, { iconBg: string; icon?: ReactNode }> = {
   loading: { iconBg: "bg-white/10" },
-  success: { iconBg: "bg-green-500/20 text-white", icon: "✓" },
-  error: { iconBg: "bg-warn/10", icon: "⚠" },
+  success: { iconBg: "bg-success/20 text-white", icon: <FiCheckCircle size={28} /> },
+  error: { iconBg: "bg-warn/10", icon: <FiAlertTriangle size={28} /> },
 };
 
 export const StateView = ({
@@ -31,16 +34,16 @@ export const StateView = ({
         {type === "loading" ? (
           <div className="w-7 h-7 border-2 border-white/20 border-t-white/80 rounded-full animate-spin" />
         ) : (
-          <span className="text-2xl">{cfg.icon}</span>
+          cfg.icon
         )}
       </div>
 
       <div className="flex flex-col gap-2">
-        <h2 className="font-garamond text-2xl font-light text-white">
+        <h2 className="font-garamond text-2xl text-white">
           {message}
         </h2>
         {sub && (
-          <p className="text-sm font-light text-white/40 leading-relaxed">
+          <p className="text-sm text-white/40 leading-relaxed">
             {sub}
           </p>
         )}
@@ -49,19 +52,16 @@ export const StateView = ({
       {statusCode === 410 && onResend && (
         <button
           onClick={onResend}
-          className="bg-white/10 border border-white/20 text-white/70 text-sm font-light px-6 py-3 rounded-xl cursor-pointer transition-all duration-200 hover:bg-white/20 hover:text-white"
+          className="px-6 py-2.5 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors cursor-pointer"
         >
-          Richiedi nuovo link
+          {action?.label ?? "Reinvia email"}
         </button>
       )}
 
-      {action && (
-        <button
-          onClick={action.onClick}
-          className="bg-primary text-white text-sm font-medium px-6 py-3 rounded-xl cursor-pointer transition-all duration-200 hover:bg-blue-mid hover:-translate-y-px"
-        >
-          {action.label}
-        </button>
+      {statusCode && (
+        <div className="text-xs font-mono text-white/30">
+          Status: {statusCode}
+        </div>
       )}
     </div>
   );

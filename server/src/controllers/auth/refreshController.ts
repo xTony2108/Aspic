@@ -5,6 +5,10 @@ import { refreshTokenService } from "../../services/auth.js";
 export const refreshController = async (req: Request, res: Response) => {
   const { decoded, refreshToken } = req.user;
 
+  if (!decoded || !refreshToken) {
+    return res.status(401).json({ message: "Non autorizzato" });
+  }
+
   try {
     logger.info(`[REFRESH] Token refresh attempt for user: ${decoded._id}`);
 

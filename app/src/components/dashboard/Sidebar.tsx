@@ -1,7 +1,11 @@
 import { useState } from "react";
 import logo from "../../assets/logo_aspic_bianco.svg";
 import { SidebarLink } from "./SidebarLink";
-import { CiLogout } from "react-icons/ci";
+import { CiLogout, CiMenuFries } from "react-icons/ci";
+import { BsClipboardCheck } from "react-icons/bs";
+import { FaCalendarDays } from "react-icons/fa6";
+import { MdOutlineGroup } from "react-icons/md";
+import { IoSettingsOutline } from "react-icons/io5";
 import { SidebarLabel } from "./SidebarLabel";
 import { DashboardAvatar } from "./DashboardAvatar";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
@@ -34,7 +38,7 @@ export const Sidebar = () => {
         className="flex items-center justify-center lg:hidden fixed top-4 right-4 z-50 min-w-10 min-h-10 rounded-lg bg-sidebar text-white"
         onClick={() => setIsOpen(!isOpen)}
       >
-        ☰
+        <CiMenuFries size={20} />
       </button>
 
       {isOpen && (
@@ -53,7 +57,7 @@ export const Sidebar = () => {
             fetchPriority="high"
             className="w-3/4"
           />
-          <div className="text-sidebar-text text-sidebar-text-color tracking-sidebar uppercase mt-[.2rem]">
+          <div className="text-[0.7rem] font-medium text-sidebar-text-color tracking-widest uppercase mt-[0.25rem]">
             Pannello amministrativo
           </div>
         </div>
@@ -61,33 +65,37 @@ export const Sidebar = () => {
           <SidebarLabel label="Principale" />
           <div className="text-sm font-medium pointer relative">
             <SidebarLink
-              icon="📋"
+              icon={<BsClipboardCheck size={18} />}
               label="Richieste"
               to="/dashboard/richieste"
               onClick={() => setIsOpen(false)}
             />
             <SidebarLink
-              icon="📅"
+              icon={<FaCalendarDays size={18} />}
               label="Disponibilità"
               to="/dashboard/disponibilita"
               onClick={() => setIsOpen(false)}
             />
           </div>
 
-          <SidebarLabel label="Gestione" />
-          <div className="text-sm font-medium pointer relative">
-            <SidebarLink
-              icon="👥"
-              label="Professionisti"
-              to="/dashboard/professionisti"
-              onClick={() => setIsOpen(false)}
-            />
-          </div>
+          {userData && userData.role === "admin" && (
+            <>
+              <SidebarLabel label="Gestione" />
+              <div className="text-sm font-medium pointer relative">
+                <SidebarLink
+                  icon={<MdOutlineGroup size={18} />}
+                  label="Professionisti"
+                  to="/dashboard/professionisti"
+                  onClick={() => setIsOpen(false)}
+                />
+              </div>
+            </>
+          )}
 
           <SidebarLabel label="Account" />
           <div className="text-sm font-medium pointer relative">
             <SidebarLink
-              icon="⚙️"
+              icon={<IoSettingsOutline size={18} />}
               label="Impostazioni"
               to="/dashboard/impostazioni"
               onClick={() => setIsOpen(false)}
@@ -101,7 +109,7 @@ export const Sidebar = () => {
               size="base"
             />
             <div className="flex-1 shrink-0 min-w-0">
-              <div className="text-sm text-white font-medium text-nowrap text-ellipsis overflow-hidden">
+              <div className="text-[0.875rem] text-white font-medium text-nowrap text-ellipsis overflow-hidden">
                 {`${userData.firstName} ${userData.lastName}`}
               </div>
               <div className="text-xs text-sidebar-text-color">

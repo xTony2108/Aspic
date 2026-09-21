@@ -165,6 +165,7 @@ export const registerProfessionalSchema = z.object({
     .string({ error: "Inserisci un numero di cellulare valido" })
     .regex(/^3\d{9}$/, "Numero di cellulare non valido"),
   createdBy: z.string(),
+  role: z.enum(["admin", "professional"]).optional(),
 });
 
 export type RegisterProfessionalTypeSchema = z.infer<

@@ -44,16 +44,22 @@ export const Home = () => {
           <Guide />
           <Equipe />
           <FooterCTA />
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2640.0310980247996!2d15.63709074197764!3d38.104282139445274!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x13145a81e903fbc7%3A0x26f313946bafad4f!2sDott.ssa%20Maria%20Assunta%20Zappia!5e0!3m2!1sit!2sit!4v1748795203510!5m2!1sit!2sit"
-            width="100%"
-            height="100%"
-            style={{ border: 0 }}
-            allowFullScreen={undefined}
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            title="Mappa studio"
-          ></iframe>
+          <section className="bg-bg p-0">
+            <div className="landing-shell py-12 md:py-16">
+              <div className="overflow-hidden border border-border bg-white">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2640.0310980247996!2d15.63709074197764!3d38.104282139445274!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x13145a81e903fbc7%3A0x26f313946bafad4f!2sDott.ssa%20Maria%20Assunta%20Zappia!5e0!3m2!1sit!2sit!4v1748795203510!5m2!1sit!2sit"
+                  width="100%"
+                  height="420"
+                  style={{ border: 0 }}
+                  allowFullScreen={undefined}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Mappa studio"
+                ></iframe>
+              </div>
+            </div>
+          </section>
           <Footer />
         </Suspense>
       </main>

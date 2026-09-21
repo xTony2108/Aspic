@@ -4,16 +4,16 @@ import { motion } from "motion/react";
 export const Guide = () => {
   return (
     <section className="bg-bg" id="guide">
-      <div className="max-w-225 m-auto">
-        <span className="mb-3 text-primary text-xs font-medium uppercase block tracking-widest text-center">
-          La guida
-        </span>
-        <h2 className="font-light leading-tight font-garamond text-center mb-10">
-          Chi <em className="text-primary">dirige</em>
-        </h2>
-        <div className="flex flex-col lg:flex-row gap-5">
+      <div className="landing-shell">
+        <div className="mb-10 max-w-2xl">
+          <span className="landing-kicker mb-4 block">La guida</span>
+          <h2 className="font-garamond leading-snug">
+            Chi <em className="text-primary">dirige</em>
+          </h2>
+        </div>
+        <div className="grid gap-5 lg:grid-cols-2">
           <motion.div
-            className="flex-1 flex"
+            className="flex"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
@@ -24,18 +24,11 @@ export const Guide = () => {
               name="Maria Assunta"
               lastName="Zappia"
               title="Presidente e direttore di sede"
-              description="Specialista in Psicologia Clinica di Comunità e Psicoterapia
-                        Umanistica Integrata Forte di una consolidata esperienza clinica
-                        maturata nel settore della Salute Mentale (Privato e SSN) coniuga
-                        l'Attività Clinica con un costante impegno nella formazione
-                        specialistica, ricoprendo inoltre il ruolo di Coordinatrice
-                        dell’Équipe Multidisciplinare della Sede. Opera inoltre come Tutor e
-                        Supervisore clinico per studenti universitari e medici/psicologi
-                        specializzandi in Psicoterapia."
+              description="Specialista in Psicologia Clinica di Comunità e Psicoterapia Umanistica Integrata. Forte di una consolidata esperienza clinica maturata nel settore della Salute Mentale (Privato e SSN), coniuga l'attività clinica con un costante impegno nella formazione specialistica, ricoprendo inoltre il ruolo di Coordinatrice dell'Équipe Multidisciplinare della Sede. Opera inoltre come Tutor e Supervisore clinico per studenti universitari e medici/psicologi specializzandi in Psicoterapia."
             />
           </motion.div>
           <motion.div
-            className="flex-1 flex"
+            className="flex"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.1 }}
@@ -45,9 +38,8 @@ export const Guide = () => {
               icon="V"
               name="Amelia Eva"
               lastName="Cugliandro"
-              title="VICE PRESIENTE DI SEDE"
-              description="Responsabile Area Legale Marketing/Progettista e SportAvv. già
-                        Delegato FIPIC Calabria"
+              title="Vice presidente di sede"
+              description="Responsabile Area Legale Marketing/Progettista e Sport. Avv. già Delegato FIPIC Calabria."
             />
           </motion.div>
         </div>

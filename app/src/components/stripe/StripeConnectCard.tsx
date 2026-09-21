@@ -39,7 +39,7 @@ export const StripeConnectCard = () => {
   if (isError || !stripeData) {
     return (
       <div className="p-6 border rounded-2xl bg-white">
-        <p className="text-red-500 text-sm">
+        <p className="text-danger text-sm">
           Impossibile caricare le informazioni dell'account Stripe. Riprova più
           tardi.
         </p>
@@ -55,7 +55,7 @@ export const StripeConnectCard = () => {
             Gestione
             <em className="text-primary italic"> pagamenti</em>
           </h2>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-text-muted mt-1">
             {statusDescription[stripeData.status] ?? "Stato sconosciuto"}
           </p>
         </div>

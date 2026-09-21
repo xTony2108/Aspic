@@ -25,7 +25,7 @@ export const PagamentoSuccesso = () => {
         Pagamento avvenuto con successo
       </h1>
 
-      <p className="text-sm font-light text-text-muted max-w-sm leading-relaxed mb-8">
+      <p className="text-sm text-text-muted max-w-sm leading-relaxed mb-8">
         Il tuo pagamento è stato ricevuto. Il tuo appuntamento è ora confermato.
         Riceverai una email di riepilogo a breve.
       </p>

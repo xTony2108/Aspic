@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import RefreshToken from "../db/models/RefreshToken.js";
 import { JwtPayload } from "jsonwebtoken";
+import User from "../db/models/User.js";
 
 interface MyJwtPayload extends JwtPayload {
   _id: string;
@@ -36,7 +37,14 @@ export const verifyAccessToken = async (
     if (!sessionExists)
       return res.status(401).json({ message: "Non autorizzato" });
 
-    req.user = decoded;
+    const user = await User.findById(decoded._id, "role status", {
+      lean: true,
+    });
+
+    if (!user || user.status === "deleted")
+      return res.status(401).json({ message: "Non autorizzato" });
+
+    req.user = { ...decoded, role: user.role || "professional" };
 
     return next();
   } catch (error) {

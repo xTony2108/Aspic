@@ -1,9 +1,13 @@
+import type { ReactNode } from "react";
+
 export const DashboardAlert = ({
   text,
   type,
+  icon,
 }: {
   text: string;
   type: "success" | "error";
+  icon?: ReactNode;
 }) => {
   const className = {
     error:
@@ -11,5 +15,10 @@ export const DashboardAlert = ({
     success:
       "text-xs bg-dashboard-successBg border border-dashboard-successBorder text-dashboard-successText rounded-lg px-3.5 py-2 mt-3",
   };
-  return <div className={className[type]}>{text}</div>;
+  return (
+    <div className={className[type]}>
+      {icon && <span className="mr-1.5">{icon}</span>}
+      {text}
+    </div>
+  );
 };

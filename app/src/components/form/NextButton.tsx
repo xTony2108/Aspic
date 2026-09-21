@@ -10,7 +10,7 @@ export const NextButton = ({
   return (
     <button
       type="submit"
-      className="text-sm bg-blue-dark text-white px-7 py-3.5 cursor-pointer flex items-center gap-1.5 rounded-full disabled:opacity-40 disabled:cursor-not-allowed"
+      className="soft-button text-sm bg-primary text-white px-7 py-3.5 cursor-pointer flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-text"
       disabled={disabled}
     >
       {text}

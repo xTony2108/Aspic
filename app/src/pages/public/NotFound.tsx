@@ -14,16 +14,16 @@ export const NotFound = () => {
           <p className="text-primary text-xs font-medium tracking-widest uppercase mb-3">
             Errore 404
           </p>
-          <h1 className="font-garamond text-5xl font-light text-charcoal mb-3">
+          <h1 className="font-garamond text-5xl text-charcoal mb-3">
             Pagina <em className="italic text-primary">non trovata</em>
           </h1>
-          <p className="text-sm font-light text-text-muted leading-relaxed">
+          <p className="text-sm text-text-muted leading-relaxed">
             La pagina che stai cercando non esiste o è stata spostata.
           </p>
         </div>
 
         <Link
-          to=".."
+          to="/dashboard/richieste"
           className="bg-primary text-white text-sm font-medium px-6 py-3 rounded-xl transition-all duration-200 hover:bg-text hover:-translate-y-px"
         >
           Indietro

@@ -16,6 +16,7 @@ import { FormTextArea } from "../../../components/form/FormTextArea";
 import { ErrorSpan } from "../../../components/form/ErrorSpan";
 import { FormDatePicker } from "../../../components/form/FormDatePicker";
 import { refineClientType } from "../../../features/services/schemas/refinements/refineClientType";
+import { BsBuilding, BsLaptop } from "react-icons/bs";
 import { FormInlineRadio } from "../../../components/form/FormInlineRadio";
 
 const refinedSchema = baseSchema
@@ -83,7 +84,7 @@ export const Appuntamento = () => {
   return (
     <>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
-        <div className="flex flex-col gap-5 mb-8">
+        <div className="flex flex-col gap-4 mb-8">
           <div className="flex flex-col gap-4 md:flex-row">
             <div className="flex-1 relative">
               <FormDatePicker
@@ -103,15 +104,15 @@ export const Appuntamento = () => {
               />
             </div>
           </div>
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="modalita">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="appointmentMode">
               Modalità <span className="text-primary ml-0.5 text-xs">*</span>
             </label>
             <div className="flex gap-2 wrap">
               <FormInlineRadio
                 control={methods.control}
                 inputName="appointmentMode"
-                icon="🏥"
+                icon={<BsBuilding size={18} />}
                 heading="In studio"
                 description="Presso la nostra sede"
                 value="in_person"
@@ -119,7 +120,7 @@ export const Appuntamento = () => {
               <FormInlineRadio
                 control={methods.control}
                 inputName="appointmentMode"
-                icon="💻"
+                icon={<BsLaptop size={18} />}
                 heading="Online"
                 description="Videochiamata sicura"
                 value="online"
@@ -132,10 +133,10 @@ export const Appuntamento = () => {
           </div>
 
           <div className="flex flex-col gap-2">
-            <span className="block text-[.8rem] font-medium text-text tracking-wide">
+            <label htmlFor="clientType" className="block">
               Tipo di paziente
               <span className="text-primary ml-0.5 text-xs"> *</span>
-            </span>
+            </label>
             <div className="flex gap-2">
               <FormRadio
                 inputName="clientType"

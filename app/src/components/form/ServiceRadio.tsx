@@ -33,9 +33,13 @@ export const ServiceRadio = <T extends Record<string, any>>({
     name: inputName,
   });
 
+  const isSelected = service === value;
+
   return (
-    <div className="border-[1.5px] border-border rounded-2xl has-checked:shadow-lg has-checked:border-primary overflow-hidden cursor-pointer">
-      <label className="transition-all duration-300 ease-in-out flex gap-4 p-5 bg-white cursor-pointer">
+    <div
+      className={`border border-border rounded-3xl overflow-hidden cursor-pointer transition-all duration-300 ${isSelected ? "bg-primary-xlight" : "bg-white/70 hover:bg-white"}`}
+    >
+      <label className="transition-all duration-300 ease-in-out flex gap-4 p-5 bg-transparent cursor-pointer">
         <input
           type="radio"
           name={field.name}
@@ -48,32 +52,32 @@ export const ServiceRadio = <T extends Record<string, any>>({
         />
         <div className="flex-1">
           <p
-            className={`text-xs mb-1 tracking-widest ${service === value ? "text-primary" : "text-text-muted"}`}
+            className={`text-xs mb-1 tracking-wide ${isSelected ? "text-primary font-semibold" : "text-text-muted"}`}
           >
             {number}
           </p>
-          <h3 className="font-garamond text-xl font-semibold text-blue-dark">
+          <h3 className="font-garamond text-xl font-semibold text-primary">
             {heading}
           </h3>
           <p
-            className={`text-sm font-medium mt-1.5 ${service === value ? "text-primary" : "text-text-muted"}`}
+            className={`text-sm font-medium mt-1.5 ${isSelected ? "text-primary" : "text-text-muted"}`}
           >
             Importo: {price}
           </p>
         </div>
       </label>
       <div
-        className={`grid transition-all duration-300 ease-out  bg-white ${service === value ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+        className={`grid transition-all duration-300 ease-out bg-transparent ${isSelected ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
       >
         <div className="overflow-hidden">
-          <div className="p-6 border-t border-border">
+          <div className="p-6 border-t border-border/50">
             {children}
             {list && (
-              <ul className="flex flex-col gap-2 list-none p-0">
+              <ul className="flex flex-col gap-2 list-none p-0 mt-3">
                 {list.map((item, i) => (
                   <li
                     key={i}
-                    className="flex items-center gap-3 text-sm font-light bg-cream px-3.5 py-2.5 rounded-lg before:content-[''] before:w-1.5 before:h-1.5 before:bg-primary before:rounded-full before:shrink-0"
+                    className={`flex items-center gap-3 text-sm rounded-xl px-3.5 py-2.5 ${isSelected ? "bg-white" : "bg-primary-xlight"}`}
                   >
                     {item}
                   </li>

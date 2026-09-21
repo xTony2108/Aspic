@@ -117,7 +117,7 @@ export const DashboardRichieste = () => {
 
         <div className="flex flex-col gap-3">
           {appointments && appointments.length === 0 ? (
-            <div className="text-center py-12 text-text-muted text-sm font-light">
+            <div className="text-center py-12 text-text-muted text-sm">
               Nessuna richiesta in questa categoria.
             </div>
           ) : (

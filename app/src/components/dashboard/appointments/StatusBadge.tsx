@@ -9,37 +9,37 @@ export const StatusBadge = ({
 }) => (
   <div className="flex flex-col gap-1.5 md:flex-row shrink-0">
     {urgent && (
-      <span className="inline-flex justify-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-amber-50 text-amber-600 border border-amber-200">
+      <span className="inline-flex justify-center px-2.5 py-0.5 rounded-full text-[0.7rem] font-semibold uppercase tracking-wide bg-warning-xlight text-warning border border-warning-light">
         Urgente
       </span>
     )}
     {status === "pending" && (
-      <span className="inline-flex justify-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-blue-pale text-primary border border-blue-light">
+      <span className="inline-flex justify-center px-2.5 py-0.5 rounded-full text-[0.7rem] font-semibold uppercase tracking-wide bg-primary-xlight text-primary border border-primary-light">
         In attesa
       </span>
     )}
     {status === "awaiting_payment" && (
-      <span className="inline-flex justify-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-amber-50 text-amber-700 border border-amber-200">
+      <span className="inline-flex justify-center px-2.5 py-0.5 rounded-full text-[0.7rem] font-semibold uppercase tracking-wide bg-warning-xlight text-warning border border-warning-light">
         Pagamento atteso
       </span>
     )}
     {status === "date_change_pending" && (
-      <span className="inline-flex justify-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-violet-50 text-violet-700 border border-violet-200">
+      <span className="inline-flex justify-center px-2.5 py-0.5 rounded-full text-[0.7rem] font-semibold uppercase tracking-wide bg-violet-100 text-violet-600 border border-violet-300">
         Cambio data
       </span>
     )}
     {status === "confirmed" && (
-      <span className="inline-flex justify-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-dashboard-successBg text-dashboard-successText border border-dashboard-successBorder">
+      <span className="inline-flex justify-center px-2.5 py-0.5 rounded-full text-[0.7rem] font-semibold uppercase tracking-wide bg-dashboard-success-bg text-dashboard-success-text border border-dashboard-success-border">
         In carico
       </span>
     )}
     {status === "completed" && (
-      <span className="inline-flex justify-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+      <span className="inline-flex justify-center px-2.5 py-0.5 rounded-full text-[0.7rem] font-semibold uppercase tracking-wide bg-emerald-100 text-emerald-600 border border-emerald-300">
         Svolta
       </span>
     )}
     {status === "cancelled" && (
-      <span className="inline-flex justify-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-dashboard-errorBg text-dashboard-errorText border border-dashboard-errorBorder">
+      <span className="inline-flex justify-center px-2.5 py-0.5 rounded-full text-[0.7rem] font-semibold uppercase tracking-wide bg-dashboard-error-bg text-dashboard-error-text border border-dashboard-error-border">
         Annullata
       </span>
     )}

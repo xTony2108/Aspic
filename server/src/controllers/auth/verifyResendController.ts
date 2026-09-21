@@ -32,8 +32,8 @@ export const verifyResendController = async (req: Request, res: Response) => {
         createdByName: user.createdBy,
         verificationUrl:
           config.NODE_ENV === "development"
-            ? `http://localhost:5173/admin/verifica?token=${emailVerificationToken}`
-            : `${config.ORIGIN}/admin/verifica?token=${emailVerificationToken}`,
+            ? `http://localhost:5173/admin/verifica#token=${emailVerificationToken}`
+            : `${config.ORIGIN}/admin/verifica#token=${emailVerificationToken}`,
         expiresInHours: 24,
         email: user.email,
       }),

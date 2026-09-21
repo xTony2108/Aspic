@@ -1,9 +1,10 @@
+import { type ReactNode } from "react";
 import { useController, type Control, type Path } from "react-hook-form";
 
 interface FormInlineRadioProps<T extends Record<string, any>> {
   control: Control<T>;
   inputName: Path<T>;
-  icon: string;
+  icon: ReactNode;
   heading: string;
   description: string;
   value: string;
@@ -24,11 +25,11 @@ export const FormInlineRadio = <T extends Record<string, any>>({
 
   return (
     <>
-      <div className="relative px-4.5 py-2.5 flex items-center gap-2 rounded-xl text-text-muted bg-white border border-border has-checked:bg-blue-pale has-checked:border-primary has-checked:text-primary transition-colors duration-200">
+      <div className="relative px-4.5 py-2.5 flex items-center gap-2 rounded-2xl text-text-muted bg-bg/75 border border-border has-checked:bg-primary-xlight has-checked:border-primary has-checked:text-primary transition-colors duration-200">
         <span className="text-base">{icon}</span>
         <div>
           <span className="font-medium text-sm block">{heading}</span>
-          <span className="text-xs font-light mt-0.5 block">{description}</span>
+          <span className="text-xs mt-0.5 block">{description}</span>
         </div>
         <input
           onBlur={field.onBlur}

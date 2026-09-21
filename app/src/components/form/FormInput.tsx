@@ -26,27 +26,27 @@ export const FormInput = <T extends Record<string, any>>({
   });
 
   return (
-    <>
-      <label>
+    <div className="flex flex-col gap-2">
+      <label htmlFor={inputName}>
         {label}{" "}
         {required ? (
-          <span className="text-primary text-xs">*</span>
+          <span className="text-primary ml-0.5 text-xs">*</span>
         ) : (
-          <span className="text-text-muted text-xs">(facoltativo)</span>
+          <span className="text-text-muted ml-0.5 text-xs">(facoltativo)</span>
         )}
-        <input
-          onChange={field.onChange}
-          onBlur={field.onBlur}
-          value={field.value}
-          name={field.name}
-          ref={field.ref}
-          placeholder={placeholder}
-          type={inputType}
-          className="bg-white border border-border py-3 px-4 rounded-[10px] w-full appearance-none mt-1.5 font-light"
-          min={minDate}
-        />
       </label>
+      <input
+        onChange={field.onChange}
+        onBlur={field.onBlur}
+        value={field.value}
+        name={field.name}
+        ref={field.ref}
+        placeholder={placeholder}
+        type={inputType}
+        className="bg-white border border-border py-3 px-4 rounded-2xl w-full appearance-none text-text"
+        min={minDate}
+      />
       <ErrorSpan errors={formState.errors} inputName={inputName} />
-    </>
+    </div>
   );
 };

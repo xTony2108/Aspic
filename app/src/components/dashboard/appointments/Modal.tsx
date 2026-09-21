@@ -1,5 +1,6 @@
 import { type ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { FiX } from "react-icons/fi";
 
 interface ModalProps {
   isOpen: boolean;
@@ -37,9 +38,9 @@ export const Modal = ({
           </h3>
           <button
             onClick={onClose}
-            className="text-text-muted hover:text-text p-1.5 rounded-lg hover:bg-cream transition-colors text-lg aspect-square w-10 cursor-pointer"
+            className="text-text-muted hover:text-text p-1.5 rounded-lg hover:bg-cream transition-colors cursor-pointer"
           >
-            ✕
+            <FiX size={20} />
           </button>
         </div>
 

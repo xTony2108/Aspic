@@ -61,7 +61,6 @@ export const Riepilogo = () => {
   );
 
   const privacyAccepted = useServizioFormStore((s) => s.privacyAccepted);
-  const clearData = useServizioFormStore((s) => s.clearData);
   const {
     handleSubmit,
     register,
@@ -106,7 +105,6 @@ export const Riepilogo = () => {
     },
     onSuccess: () => {
       reset();
-      clearData();
 
       navigate({
         from: "/prenota/riepilogo",
@@ -181,7 +179,7 @@ export const Riepilogo = () => {
             </dl>
           </div>
           <div className="px-5 py-6">
-            <span className="uppercase font-light text-primary mb-3.5 text-xs tracking-widest block">
+            <span className="uppercase text-primary mb-3.5 text-xs tracking-widest block">
               Dati Personali
             </span>
             <dl>
@@ -220,7 +218,7 @@ export const Riepilogo = () => {
               />
               <IoIosCheckmark className="absolute inset-0 w-5 h-5 pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity duration-200 text-white" />
             </div>
-            <p className="text-sm font-light">
+            <p className="text-sm">
               Ho letto e accetto il{" "}
               <a className="text-primary underline" href="/privacy">
                 trattamento dei dati personali

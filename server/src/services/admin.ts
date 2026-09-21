@@ -145,7 +145,7 @@ export const changePasswordService = async (
 export const findUserByIDService = async (userId: string) => {
   return User.findById(
     userId,
-    "_id email firstName lastName phoneNumber passwordChanged stripeOnboardingCompleted",
+    "_id email firstName lastName phoneNumber passwordChanged stripeOnboardingCompleted role",
     { lean: true },
   );
 };
