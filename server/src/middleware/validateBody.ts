@@ -8,9 +8,7 @@ export const validateBody = <T extends ZodType<any>>(schema: T) => {
 
     if (!parsed.success) {
       const zodErrors = z.flattenError(parsed.error);
-      logger.error(
-        `[BOOKING] Error for ${req.body.fiscalCode}: ${JSON.stringify(zodErrors)}`,
-      );
+      logger.warn(`[VALIDATION] Body validation failed: ${req.path}`);
 
       return res.status(400).json({
         message: "Errore nella compilazione del form",

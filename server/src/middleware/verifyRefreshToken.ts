@@ -1,6 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
+interface RefreshJwtPayload extends jwt.JwtPayload {
+  _id: string;
+  jti: string;
+}
+
 const { JWT_REFRESH_SECRET } = process.env;
 
 export const verifyRefreshToken = (
@@ -15,7 +20,12 @@ export const verifyRefreshToken = (
   try {
     const decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
 
-    req.user = { decoded, refreshToken };
+    if (typeof decoded === "string" || !decoded._id || !decoded.jti)
+      return res.status(401).json({ message: "Non autorizzato" });
+
+    const refreshPayload = decoded as RefreshJwtPayload;
+
+    req.user = { ...refreshPayload, decoded: refreshPayload, refreshToken };
 
     return next();
   } catch (error) {

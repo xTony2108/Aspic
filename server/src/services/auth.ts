@@ -1,5 +1,5 @@
 import { createHash } from "crypto";
-import User from "../db/models/User.js";
+import User, { UserRole } from "../db/models/User.js";
 import bcrypt from "bcrypt";
 import { UAParser } from "ua-parser-js";
 import RefreshToken from "../db/models/RefreshToken.js";
@@ -104,6 +104,7 @@ interface RegisterTypeSchema {
   email: string;
   phoneNumber: string;
   createdBy: string;
+  role?: UserRole;
 }
 export const createUserService = async (data: RegisterTypeSchema) => {
   const emailVerificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 ore
@@ -128,14 +129,14 @@ export const createUserService = async (data: RegisterTypeSchema) => {
     await stripe.accounts.del(stripeAccount.id);
     throw dbError;
   }
-  logger.info(`[REGISTER] User created: ${user._id} - ${user.email}`);
+  logger.info(`[REGISTER] User created: ${user._id}`);
 
   try {
     // Invio mail di verifica
     const verificationUrl =
       config.NODE_ENV === "development"
-        ? `http://localhost:5173/admin/verifica?token=${emailVerificationToken}`
-        : `${config.ORIGIN}/admin/verifica?token=${emailVerificationToken}`;
+        ? `http://localhost:5173/admin/verifica#token=${emailVerificationToken}`
+        : `${config.ORIGIN}/admin/verifica#token=${emailVerificationToken}`;
 
     await sendEmail(
       "Verifica il tuo indirizzo email",
@@ -155,7 +156,7 @@ export const createUserService = async (data: RegisterTypeSchema) => {
     throw emailError;
   }
 
-  logger.info(`[REGISTER] Verification email sent to: ${data.email}`);
+  logger.info(`[REGISTER] Verification email sent for user: ${user._id}`);
   return { id: user._id };
 };
 
@@ -249,11 +250,14 @@ export const paginateAppointmentsService = async (
   };
 
   const [appointments, currentTotal, statusCounts] = await Promise.all([
-    Appointment.find(
-      listFilter,
-      "_id firstName lastName appointmentDate appointmentTime appointmentMode urgent status service clientType clientAge email phoneNumber createdAt protocolNumber reason",
-      { lean: true, skip: offset, limit, sort: { appointmentDate: 1 } },
-    ),
+    Appointment.find(listFilter)
+      .select(
+        "firstName lastName appointmentDate appointmentTime appointmentMode urgent status service clientType clientAge email phoneNumber createdAt protocolNumber reason",
+      )
+      .sort({ appointmentDate: 1 })
+      .skip(offset)
+      .limit(limit)
+      .lean(),
     Appointment.countDocuments(listFilter),
     Appointment.aggregate([
       {
@@ -319,6 +323,7 @@ export const findUsers = async (userID: string) => {
         lastName: 1,
         fiscalCode: 1,
         phoneNumber: 1,
+        role: 1,
         createdBy: 1,
       },
     },
@@ -333,7 +338,7 @@ export const comparePasswordService = async (
 };
 
 export const getStripeOnboardingLinkService = async (
-  userId: mongoose.Types.ObjectId,
+  userId: mongoose.Types.ObjectId | string,
 ) => {
   const user = await User.findById(userId);
 

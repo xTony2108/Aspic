@@ -19,6 +19,11 @@ import { cancelAppointmentController } from "../../../controllers/admin/cancelAp
 import { changeAppointmentDateController } from "../../../controllers/admin/changeAppointmentDateController.js";
 import { getUsersController } from "../../../controllers/admin/getUsersController.js";
 import { deleteUserController } from "../../../controllers/admin/deleteUserController.js";
+import { requireRole } from "../../../middleware/requireRole.js";
+import { createOrUpdateSlot } from "../../../controllers/admin/createOrUpdateSlotController.js";
+import { getSlotsController } from "../../../controllers/admin/getSlotsController.js";
+import { deleteSlotController } from "../../../controllers/admin/deleteSlotController.js";
+
 const router = express.Router();
 
 router.use(verifyAccessToken);
@@ -37,6 +42,7 @@ router.get("/me", meController);
 
 router.post(
   "/register",
+  requireRole("admin"),
   validateBody(registerProfessionalSchema),
   registerController,
 );
@@ -114,13 +120,34 @@ router.patch(
  * GET
  */
 
-router.get("/getUsers", getUsersController);
+router.get("/getUsers", requireRole("admin"), getUsersController);
 
 /**
  * @delete /api/admin/professionals/:id
  * DELETE
  */
 
-router.delete("/professionals/:id", deleteUserController);
+router.delete("/professionals/:id", requireRole("admin"), deleteUserController);
+
+/**
+ * @post /api/admin/slots
+ * POST
+ */
+
+router.post("/slots", createOrUpdateSlot);
+
+/**
+ * @get /api/admin/slots
+ * GET
+ */
+
+router.get("/slots", getSlotsController);
+
+/**
+ * @delete /api/admin/slots/:date/:time
+ * DELETE
+ */
+
+router.delete("/slots/:date/:time", deleteSlotController);
 
 export default router;

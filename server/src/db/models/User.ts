@@ -1,5 +1,7 @@
 import { Schema, model } from "mongoose";
 
+export type UserRole = "admin" | "professional";
+
 const userSchema = new Schema(
   {
     firstName: {
@@ -91,6 +93,13 @@ const userSchema = new Schema(
       type: String,
       enum: ["pending", "restricted", "active"],
       default: "pending",
+    },
+
+    role: {
+      type: String,
+      enum: ["admin", "professional"],
+      default: "professional",
+      required: true,
     },
 
     createdBy: {

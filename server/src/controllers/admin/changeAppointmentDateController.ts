@@ -39,7 +39,10 @@ export const changeAppointmentDateController = async (
       previousStatus: appointment.status,
     };
 
-    const updatedAppointment = await updateAppointmentDate(appointmentID.toString(), updateFields);
+    const updatedAppointment = await updateAppointmentDate(
+      appointmentID.toString(),
+      updateFields,
+    );
 
     if (
       !updatedAppointment?.pendingDateChange ||
@@ -53,8 +56,8 @@ export const changeAppointmentDateController = async (
         .json({ message: "Errore durante la modifica della data" });
 
     // link per email
-    const confirmUrl = `${config.ORIGIN}/appuntamento/conferma-data?token=${updatedAppointment.pendingDateChange.token}`;
-    const rejectUrl = `${config.ORIGIN}/appuntamento/rifiuta-data?token=${updatedAppointment.pendingDateChange.token}`;
+    const confirmUrl = `${config.ORIGIN}/appuntamento/conferma-data#token=${updatedAppointment.pendingDateChange.token}`;
+    const rejectUrl = `${config.ORIGIN}/appuntamento/rifiuta-data#token=${updatedAppointment.pendingDateChange.token}`;
     await sendEmail(
       `Modifica della data dell'appuntamento – ${appointment.protocolNumber}`,
       createElement(AppointmentDateChange, {
@@ -81,8 +84,6 @@ export const changeAppointmentDateController = async (
       .status(200)
       .json({ message: "Modifica della data effettuata con successo!" });
   } catch (error) {
-    console.log(error);
-
     return res.status(500).json({ message: "Errore interno del server" });
   }
 };

@@ -122,7 +122,7 @@ export const appointmentSchema = new Schema(
       default: {},
     },
   },
-  { strict: true },
+  { strict: true, timestamps: true },
 );
 
 const Appointment = model("Appointment", appointmentSchema);

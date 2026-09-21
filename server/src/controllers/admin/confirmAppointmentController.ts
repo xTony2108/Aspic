@@ -8,7 +8,6 @@ import {
 import { sendEmail } from "../../emails/sendEmail.js";
 import { createElement } from "react";
 import PayementRequest from "../../emails/templates/PayementRequest.jsx";
-import User from "../../db/models/User.js";
 
 export const confirmAppointmentController = async (
   req: Request,
@@ -94,11 +93,10 @@ export const confirmAppointmentController = async (
     await updateAppointmentStatus(searchFields, updateFields);
 
     return res.status(200).json({
-      message: "Richiesta presa in carico e link pagamento inviato con successo!",
+      message:
+        "Richiesta presa in carico e link pagamento inviato con successo!",
     });
   } catch (error) {
-    console.log(error);
-
     return res.status(500).json({ message: "Errore interno del server" });
   }
 };

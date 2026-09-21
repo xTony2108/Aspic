@@ -3,7 +3,12 @@ import { appointmentsController } from "../../../controllers/appointments/appoin
 import { confirmDateChangeController } from "../../../controllers/appointments/confirmDateChangeController.js";
 import { rejectDateChangeController } from "../../../controllers/appointments/rejectDateChangeController.js";
 import { validateBody } from "../../../middleware/validateBody.js";
-import { baseSchema, verificationTokenSchema } from "../../../schema/schemas.js";
+import {
+  baseSchema,
+  verificationTokenSchema,
+} from "../../../schema/schemas.js";
+import { getSlotsController } from "../../../controllers/admin/getSlotsController.js";
+
 const router = express.Router();
 
 /**
@@ -12,6 +17,13 @@ const router = express.Router();
  */
 
 router.post("/", validateBody(baseSchema), appointmentsController);
+
+/**
+ * @path /api/appointments/slots
+ * @method GET
+ */
+
+router.get("/slots", getSlotsController);
 
 /**
  * @path /api/appointments/change-date/confirm
