@@ -19,11 +19,11 @@ export const SessionItem = ({ session }: { session: SessionType }) => {
 
   return (
     <div
-      className={`flex justify-between border  px-4 py-3.5 rounded-xl ${session.current ? "bg-blue-pale border-blue-light" : "bg-bg border-border"}`}
+      className={`flex justify-between border  px-4 py-3.5 rounded-xl ${session.current ? "bg-primary-xlight border-primary-light" : "bg-bg border-border"}`}
     >
       <div className="flex items-center flex-1 gap-3.5">
         <div
-          className={`w-9 h-9 border rounded-lg text-base flex items-center justify-center shrink-0 ${session.current ? "bg-blue-pale border-blue-light" : "bg-bg border-border"}`}
+          className={`w-9 h-9 border rounded-lg text-base flex items-center justify-center shrink-0 ${session.current ? "bg-primary-xlight border-primary-light" : "bg-bg border-border"}`}
         >
           {getDeviceIcon(session.device_name)}
         </div>
@@ -36,7 +36,7 @@ export const SessionItem = ({ session }: { session: SessionType }) => {
               </div>
             )}
           </div>
-          <div className="text-xs mt-0.5 text-gray-mid font-light">
+          <div className="text-xs mt-0.5 text-gray-mid">
             {session.ip} · accesso effettuato{" "}
             {calculateDiffDays(new Date(session.createdAt))} giorni fa
           </div>

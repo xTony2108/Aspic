@@ -70,10 +70,9 @@ export const createPatchAppointmentMutationOptions = <
       });
 
       // SALVO LO STATO DELLA CACHE PER ERRORE
-      const previousData =
-        queryClient.getQueryData<InfiniteData<AppointmentResponse, number>>(
-          appointmentInfiniteQueryKey,
-        );
+      const previousData = queryClient.getQueryData<
+        InfiniteData<AppointmentResponse, number>
+      >(appointmentInfiniteQueryKey);
 
       // AGGIORNO LA CACHE RIMUOVENDO L'ID AGGIORNATO
       queryClient.setQueryData<InfiniteData<AppointmentResponse, number>>(
@@ -107,10 +106,12 @@ export const createPatchAppointmentMutationOptions = <
       if (context?.queryKey)
         queryClient.setQueryData(context.queryKey, context?.previousData);
     },
-    onSettled: (_data, _error, _variables, context) => {
+    onSettled: (_data, _error, _variables, _context) => {
       // SE OK INVALIDO QUERY
+
       queryClient.invalidateQueries({
-        queryKey: context?.queryKey,
+        queryKey: ["getBookings"],
+        refetchType: "all",
       });
     },
     onSuccess: (data) => {

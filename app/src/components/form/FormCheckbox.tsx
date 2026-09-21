@@ -22,8 +22,8 @@ export const FormCheckbox = <T extends Record<string, any>>({
   return (
     <label className="cursor-pointer">
       {label}
-      <div className="mt-2 flex items-center gap-3.5 bg-white border border-border rounded-xl p-4 pointer transition-colors duration-200 has-checked:border-warn has-checked:bg-warnBg select-none">
-        <div className="w-10 h-5.5 shrink-0 bg-border relative transition-all duration-200 rounded-xl select-none has-checked:bg-warn">
+      <div className="mt-2 flex items-center gap-3.5 bg-white border border-border rounded-xl p-4 pointer transition-colors duration-200 has-checked:border-warning has-checked:bg-warning-xlight select-none">
+        <div className="w-10 h-5.5 shrink-0 bg-border relative transition-all duration-200 rounded-xl select-none has-checked:bg-warning">
           <input
             onChange={() => field.onChange(!field.value)}
             checked={field.value}
@@ -36,11 +36,11 @@ export const FormCheckbox = <T extends Record<string, any>>({
         </div>
         <div className="flex flex-col flex-1">
           <strong
-            className={`text-form font-medium ${field.value ? "text-warn" : "text-text"}`}
+            className={`text-base font-medium ${field.value ? "text-warning" : "text-text"}`}
           >
             {heading}
           </strong>
-          <span className="text-xs font-light text-text-muted">
+          <span className="text-sm text-text-muted">
             {description}
           </span>
         </div>

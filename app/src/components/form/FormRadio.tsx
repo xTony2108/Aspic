@@ -29,7 +29,7 @@ export const FormRadio = <T extends Record<string, any>>({
           field.onChange(value);
         }}
         type="radio"
-        className="hidden appearance-none text-form"
+        className="hidden appearance-none text-text"
         value={value}
       />
       {text}

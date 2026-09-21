@@ -27,7 +27,7 @@ export const FormDatePicker = <T extends Record<string, any>>({
     <>
       <div className="relative">
         <label htmlFor={inputName}>
-          {label} <span className="text-primary text-xs">*</span>
+          {label} <span className="text-primary ml-0.5 text-xs">*</span>
         </label>
 
         <div className="relative mt-1.5">
@@ -35,13 +35,13 @@ export const FormDatePicker = <T extends Record<string, any>>({
             type="button"
             id={inputName}
             onClick={() => setIsOpen(!isOpen)}
-            className="w-full h-11 px-4 flex items-center justify-between bg-white border border-border rounded-lg hover:border-border/60 transition-colors cursor-pointer"
+            className="w-full h-11 px-4 flex items-center justify-between bg-white border border-border rounded-xl hover:border-border/60 transition-colors cursor-pointer"
           >
             <span
-              className={`text-form
+              className={`text-sm
               field.value
                 ? "text-sm "
-                : "appearance-none font-light text-text-muted"`}
+                : "appearance-none text-text-muted"`}
             >
               {field.value
                 ? new Date(field.value).toLocaleDateString("it-IT", {
@@ -98,15 +98,15 @@ export const FormDatePicker = <T extends Record<string, any>>({
                     month_grid: "w-full border-collapse space-y-1",
                     weekdays: "flex",
                     weekday:
-                      "text-secondary text-xs font-medium w-10 text-center pb-2 flex-1",
+                      "text-text-muted text-xs font-medium w-10 text-center pb-2 flex-1",
                     week: "flex w-full mt-2",
                     day: "h-10.5 w-10.5 text-center text-sm p-0 relative",
                     selected: "bg-primary rounded text-white font-medium",
                     today: "!font-bold !text-primary",
-                    outside: "text-secondary opacity-50 pointer-events-none",
+                    outside: "text-text-muted/30 opacity-50 pointer-events-none",
                     disabled: "text-text-muted/30",
                     day_button:
-                      "bg-none p-0 m-0 flex items-center justify-center w-full h-full disabled:cursor-not-allowed disabled:bg-warn-500 hover:cursor-pointer hover:bg-blue-light rounded aria-selected:hover:bg-blue-dark transition-colors duration-150",
+                      "bg-none p-0 m-0 flex items-center justify-center w-full h-full disabled:cursor-not-allowed hover:cursor-pointer hover:bg-primary-xlight rounded aria-selected:hover:bg-primary transition-colors duration-150",
                   }}
                 />
               </motion.div>

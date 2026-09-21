@@ -11,7 +11,7 @@ export const DashboardSubmitWhite = ({
     <button
       onClick={onClick}
       type={type}
-      className="cursor-pointer inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-[13px] border border-border text-text hover:border-text transition-colors"
+      className="cursor-pointer inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs border border-border text-text hover:border-text transition-colors"
     >
       {text}
     </button>

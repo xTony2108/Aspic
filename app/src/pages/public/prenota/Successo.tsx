@@ -9,10 +9,10 @@ export const Successo = () => {
       </div>
 
       <div>
-        <h1 className="font-garamond text-3xl font-light mb-2">
+        <h1 className="font-garamond text-3xl mb-2">
           Richiesta <em className="text-primary italic">inviata</em>
         </h1>
-        <p className="text-sm font-light text-text-muted max-w-md">
+        <p className="text-sm text-text-muted max-w-md">
           Abbiamo ricevuto la tua prenotazione. Ecco i prossimi passi.
         </p>
       </div>

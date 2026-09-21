@@ -17,7 +17,7 @@ export const PrenotaStepLayout = () => {
   return (
     <>
       <FormHeader />
-      <div className="border-b border-border fixed w-full bg-bg z-50 mt-18">
+      <div className="border-b border-border fixed w-full bg-bg/90 backdrop-blur-md z-50 mt-18">
         <div className="flex items-center m-auto px-5 py-3.5 max-w-3xl">
           {STEPS.map((step, i) => (
             <Fragment key={step.path}>
@@ -32,7 +32,7 @@ export const PrenotaStepLayout = () => {
           ))}
         </div>
       </div>
-      <main className="relative">
+      <main className="relative bg-bg min-h-dvh">
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -41,19 +41,21 @@ export const PrenotaStepLayout = () => {
           className="px-5 pt-42 max-w-3xl mx-auto"
           key={pathname}
         >
-          <div className="mb-8">
-            <span className="text-xs text-primary font-medium uppercase mb-2.5 tracking-widest">
+          <div className="surface-panel mb-8 p-6 md:p-8">
+            <span className="text-xs text-accent font-medium uppercase mb-2.5 tracking-widest">
               PASSO {currentIndex + 1} DI {STEPS.length}
             </span>
-            <h2 className="font-garamond font-light">
+            <h2 className="font-garamond">
               {STEPS[currentIndex] && STEPS[currentIndex].heading}
             </h2>
-            <p className="font-light mt-1">
+            <p className="mt-1">
               {STEPS[currentIndex] && STEPS[currentIndex].description}
             </p>
           </div>
 
-          <Outlet />
+          <div className="surface-panel p-5 md:p-8">
+            <Outlet />
+          </div>
         </motion.section>
       </main>
     </>

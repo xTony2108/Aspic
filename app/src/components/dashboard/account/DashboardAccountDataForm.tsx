@@ -14,6 +14,7 @@ import { createChangePersonalDataMutationOptions } from "../../../api/dashboard/
 import { queryClient } from "../../../queryClient";
 import { DasbhoardAccountFormTitle } from "./DasbhoardAccountFormTitle";
 import { DashboardAlert } from "./DashboardAlert";
+import { FiCheck } from "react-icons/fi";
 
 export const DashboardAccountDataForm = () => {
   const {
@@ -127,7 +128,7 @@ export const DashboardAccountDataForm = () => {
         />
       </div>
       {isSuccess && (
-        <DashboardAlert type="success" text="✓ Dati aggiornati con successo." />
+        <DashboardAlert type="success" icon={<FiCheck size={16} />} text="Dati aggiornati con successo." />
       )}
     </form>
   );

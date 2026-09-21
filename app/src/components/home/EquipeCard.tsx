@@ -1,16 +1,22 @@
+import type { ReactNode } from "react";
+
 interface EquipeCardProps {
-  icon: string;
+  icon: ReactNode;
   title: string;
   desc: string;
 }
 
 export const EquipeCard = ({ icon, title, desc }: EquipeCardProps) => {
   return (
-    <div className="group p-7 border border-border rounded-2xl bg-white h-full relative overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
-      <div className="absolute bottom-0 left-0 h-1 w-full bg-linear-to-r from-primary to-blue-light scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100"></div>
-      <div className="mb-3 text-2xl">{icon}</div>
-      <h3 className="mb-2 text-xl font-garamond font-semibold">{title}</h3>
-      <p className="text-sm font-light">{desc}</p>
+    <div className="group relative h-full overflow-hidden border border-border bg-bg p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary-light">
+      <div className="absolute left-0 top-0 h-full w-1 origin-top scale-y-0 bg-primary transition-transform duration-300 group-hover:scale-y-100" />
+      <div className="mb-7 flex h-12 w-12 items-center justify-center rounded-full border border-blue-light bg-white text-2xl text-primary">
+        {icon}
+      </div>
+      <h3 className="mb-3 font-garamond text-[clamp(1.5rem,3vw,2rem)] font-semibold leading-snug text-text">
+        {title}
+      </h3>
+      <p className="text-sm leading-relaxed">{desc}</p>
     </div>
   );
 };

@@ -28,7 +28,7 @@ export const FilterTab = ({ active, onChange, totals }: FilterTabProps) => {
         <button
           key={f.key}
           onClick={() => onChange(f.key)}
-          className={`px-3.5 py-2 rounded-lg text-[13px] transition-all whitespace-nowrap cursor-pointer ${
+          className={`px-3.5 py-2 rounded-lg text-xs transition-all whitespace-nowrap cursor-pointer ${
             active === f.key
               ? "bg-white text-text shadow-sm"
               : "text-text-muted hover:text-text"

@@ -21,10 +21,10 @@ export const FormTextArea = <T extends Record<string, any>>({
   });
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor="reason">
+      <label htmlFor={inputName}>
         {label}{" "}
         {required ? (
-          <span className="text-text ml-0.5 text-xs">*</span>
+          <span className="text-primary ml-0.5 text-xs">*</span>
         ) : (
           <span className="text-text-muted ml-0.5 text-xs">(facoltativo)</span>
         )}
@@ -34,8 +34,8 @@ export const FormTextArea = <T extends Record<string, any>>({
         name={field.name}
         ref={field.ref}
         onChange={field.onChange}
-        id="reason"
-        className="h-28 bg-white w-full rounded-xl px-4 py-3 border border-border text-form"
+        id={inputName}
+        className="h-28 bg-white w-full rounded-2xl px-4 py-3 border border-border text-text"
         placeholder={placeholder}
       />
     </div>

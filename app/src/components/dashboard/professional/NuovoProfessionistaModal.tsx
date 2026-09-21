@@ -14,6 +14,7 @@ import { useRouteContext } from "@tanstack/react-router";
 import { isAxiosError } from "axios";
 import { InfoBox } from "../../form/InfoBox";
 import { IoWarningOutline } from "react-icons/io5";
+import { FiX } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { createGetUsersQueryOptions } from "../../../api/dashboard/professional/createGetUsersQueryOptions";
 
@@ -91,9 +92,9 @@ export const NuovoProfessionistaModal = ({
           </h3>
           <button
             onClick={handleClose}
-            className="text-text-muted hover:text-text p-1.5 rounded-lg hover:bg-cream transition-colors text-lg leading-none"
+            className="text-text-muted hover:text-text p-1.5 rounded-lg hover:bg-cream transition-colors"
           >
-            ✕
+            <FiX size={20} />
           </button>
         </div>
 

@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate, useSearch } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import logo from "../../../assets/logo_aspic.svg";
 import { createConfirmDateChangeMutationOptions } from "../../../api/appointmentDateChange/createConfirmDateChangeMutationOptions";
 import { createRejectDateChangeMutationOptions } from "../../../api/appointmentDateChange/createRejectDateChangeMutationOptions";
@@ -8,11 +9,31 @@ interface AppointmentDateChangeActionProps {
   action: "confirm" | "reject";
 }
 
+const getTokenFromUrl = () => {
+  if (typeof window === "undefined") return undefined;
+
+  const searchToken = new URLSearchParams(window.location.search).get("token");
+  const hashToken = new URLSearchParams(
+    window.location.hash.replace(/^#/, ""),
+  ).get("token");
+
+  return searchToken || hashToken || undefined;
+};
+
 export const AppointmentDateChangeAction = ({
   action,
 }: AppointmentDateChangeActionProps) => {
-  const { token } = useSearch({ strict: false }) as { token?: string };
+  const { token: searchToken } = useSearch({ strict: false }) as {
+    token?: string;
+  };
+  const [token] = useState(() => searchToken || getTokenFromUrl());
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!window.location.search && !window.location.hash) return;
+
+    window.history.replaceState(null, "", window.location.pathname);
+  }, []);
 
   const mutation = useMutation(
     action === "confirm"
@@ -58,7 +79,7 @@ export const AppointmentDateChangeAction = ({
               <h1 className="font-garamond font-semibold text-3xl text-text mb-3">
                 Link non valido
               </h1>
-              <p className="text-sm font-light text-text-muted leading-relaxed mb-8">
+              <p className="text-sm text-text-muted leading-relaxed mb-8">
                 Controlla l'email ricevuta o contatta la segreteria.
               </p>
             </>
@@ -74,7 +95,7 @@ export const AppointmentDateChangeAction = ({
                   ? "Vuoi confermare la nuova data?"
                   : "Vuoi rifiutare la nuova data?"}
               </h1>
-              <p className="text-sm font-light text-text-muted leading-relaxed mb-8">
+              <p className="text-sm text-text-muted leading-relaxed mb-8">
                 {mutation.isPending
                   ? "Stiamo registrando la tua scelta."
                   : mutation.isError
@@ -109,10 +130,10 @@ export const AppointmentDateChangeAction = ({
               <h1 className="font-garamond font-semibold text-3xl text-text mb-3">
                 {successTitle}
               </h1>
-              <p className="text-sm font-light text-text-muted leading-relaxed mb-3">
+              <p className="text-sm text-text-muted leading-relaxed mb-3">
                 {successText}
               </p>
-              <p className="text-sm font-light text-text-muted leading-relaxed mb-8">
+              <p className="text-sm text-text-muted leading-relaxed mb-8">
                 {mutation.data.message}
               </p>
               <button

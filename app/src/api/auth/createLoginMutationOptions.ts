@@ -6,16 +6,14 @@ import { axiosPublic } from "../axios";
 import type { LoginTypeSchema } from "../../features/services/schemas/schemas";
 import {
   type ApiError,
-  type LoginErrorResponse,
+  type GenericResponse,
   type LoginResponse,
 } from "../../types/api";
 
 const login = (data: LoginTypeSchema): Promise<LoginResponse> =>
   axiosPublic.post("/auth/login", data).then((r) => r.data);
 
-export const createLoginMutationOptions = <
-  TError = ApiError<LoginErrorResponse>,
->(
+export const createLoginMutationOptions = <TError = ApiError<GenericResponse>>(
   options?: Omit<
     UseMutationOptions<LoginResponse, TError, LoginTypeSchema>,
     "mutationKey" | "mutationFn"

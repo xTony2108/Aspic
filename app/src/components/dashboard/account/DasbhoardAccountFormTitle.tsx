@@ -13,7 +13,7 @@ export const DasbhoardAccountFormTitle = ({
         {title} <em className="text-primary italic">{titleEm}</em>
       </span>
       {rightText && (
-        <span className="text-sm text-dashboard-gray">{rightText}</span>
+        <span className="text-sm text-text-muted">{rightText}</span>
       )}
     </div>
   );

@@ -11,7 +11,7 @@ export const SERVIZI_CONFIG: ServiziConfig[] = [
     heading: "Consulenza Psicologica Individuale",
     price: "€80,00 + €2,00 di imposta di bollo",
     children: (
-      <p className="text-sm font-light mb-4">
+      <p className="text-sm mb-4">
         La consulenza sarà eseguita da{" "}
         <strong className="text-blue-dark font-medium">
           psicologi psicoterapeuti
@@ -33,7 +33,7 @@ export const SERVIZI_CONFIG: ServiziConfig[] = [
     ],
     children: (
       <>
-        <p className="text-sm font-light mb-4">
+        <p className="text-sm mb-4">
           La valutazione sarà eseguita secondo le{" "}
           <strong className="text-blue-dark font-medium">
             linee guida internazionali
@@ -46,7 +46,7 @@ export const SERVIZI_CONFIG: ServiziConfig[] = [
           con comprovata competenza nell'ambito della psicodiagnostica clinica e
           del management terapeutico.
         </p>
-        <p className="text-sm font-light mb-4">
+        <p className="text-sm mb-4">
           La competenza clinica certificata assicura una{" "}
           <strong className="text-blue-dark font-medium">
             diagnosi differenziale rigorosa

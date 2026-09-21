@@ -2,7 +2,7 @@ import { createLink, type LinkComponent } from "@tanstack/react-router";
 import { forwardRef } from "react";
 
 interface BasicLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
-  icon: string;
+  icon: React.ReactNode;
   label: string;
 }
 
@@ -12,10 +12,10 @@ const BasicLinkComponent = forwardRef<HTMLAnchorElement, BasicLinkProps>(
       <a
         {...props}
         ref={ref}
-        className={`relative flex items-center justify-between text-sidebar-link-color w-full rounded-[10px] px-3 py-2.5 hover:bg-login-border transition-colors duration-200 ${className ? className : ""}`}
+        className={`relative flex items-center justify-between text-sidebar-link-color w-full rounded-xl px-3 py-2.5 hover:bg-sidebar-active transition-colors duration-200 ${className ? className : ""}`}
       >
         <div className="flex items-center gap-3">
-          <span className="text-base w-4.5 text-center shrink-0">{icon}</span>
+          <span className="w-5 text-center shrink-0">{icon}</span>
           {label}
         </div>
       </a>

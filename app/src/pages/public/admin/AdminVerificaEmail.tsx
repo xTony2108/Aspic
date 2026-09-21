@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -131,10 +131,10 @@ export const AdminVerificaEmail = () => {
           {token && !isSuccess && !resendSuccess && !resendPending && (
             <>
               <div className="mb-6">
-                <h2 className="font-garamond text-2xl font-light text-white">
+                <h2 className="font-garamond text-2xl text-white">
                   Attiva account
                 </h2>
-                <p className="text-sm font-light text-white/40 leading-relaxed mt-2">
+                <p className="text-sm text-white/40 leading-relaxed mt-2">
                   Imposta la tua password personale per completare
                   l'attivazione.
                 </p>
